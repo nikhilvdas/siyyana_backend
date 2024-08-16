@@ -57,6 +57,25 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
     approval_status = models.CharField(max_length=20, blank=True, null=True, choices=APPROVAL_CHOICES, default="Pending")
+    country = models.ForeignKey('siyyana_app.Country', on_delete=models.SET_NULL, null=True, blank=True,related_name='customuser_country')
+    state = models.ForeignKey('siyyana_app.State', on_delete=models.SET_NULL, null=True, blank=True,related_name='customuser_state')
+    district = models.ForeignKey('siyyana_app.District', on_delete=models.SET_NULL, null=True, blank=True,related_name='customuser_district')
+    prefered_work_location = models.ForeignKey('siyyana_app.District', on_delete=models.SET_NULL, null=True, blank=True,related_name='customuser_prefered_work_location')
+    id_card_type = models.CharField(max_length=20, blank=True, null=True)
+    id_card_number = models.CharField(max_length=20, blank=True, null=True)
+    id_card = models.FileField(upload_to='id_card/', blank=True, null=True)
+
     def __str__(self):
-        return f"Un: {self.username} - Mob: {self.mobile_number} - Type: {self.user_type} - Coins: {self.coins}"
+        return f"Un: {self.username} - Mob: {self.mobile_number} - Type: {self.user_type} "
+    
+
+
+
+class EmployeeWorkSchedule(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    sunday_start_time = models.TimeField(blank=True, null=True)
+    sunday_end_time = models.TimeField(blank=True, null=True)
+    monday_start_time = models.TimeField(blank=True, null=True)
+    monday_end_time = models.TimeField(blank=True, null=True)
+    tuesday_start_time = models.TimeField(blank=True, null=True)
     
