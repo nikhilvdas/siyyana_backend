@@ -48,3 +48,14 @@ class SubCategory(models.Model):
         verbose_name_plural = "SUBCATEGORY"
     def __str__(self):
         return self.name
+
+
+
+
+class RequestedCategory(models.Model):
+    name = models.CharField(max_length=100)
+    subcategory = models.CharField(max_length=1000)
+    class Meta:
+        verbose_name_plural = "REQUESTED CATEGORY"
+    def __str__(self):
+        return self.name

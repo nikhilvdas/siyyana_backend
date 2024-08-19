@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from siyyana_app.models import *
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import *
+from rest_framework.decorators import api_view
 
 
 def get_tokens_for_user(user):
@@ -70,3 +71,10 @@ class UserLogin(APIView):
 
 
 
+
+
+@api_view(['GET'])
+def category_with_subcategory_and_employees(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True, context={'request': request})
+    return Response(serializer.data)

@@ -1,1 +1,12 @@
-/env
+# Ignore Django env file & pycache files
+\env
+*.pyc
+
+# Ignore Django settings file
+# meditrac_project/settings.py
+
+# Ignore Django migration files
+**/migrations/
+
+# Ignore Media files
+media

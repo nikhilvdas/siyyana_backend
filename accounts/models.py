@@ -20,6 +20,13 @@ USER_TYPE = (
     ("Employee",  'Employee'),
 )
 
+
+CHARGE_TYPE = (
+    ("Hourly",  'Hourly'),
+    ("Day Charge", 'Day Charge'),
+)
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -47,7 +54,12 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     name = models.CharField(max_length=50, blank=True, null=True)
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
+    whatsapp_number = models.CharField(max_length=15, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_picture_new/', blank=True, default='images/profile.png')
+    about = models.TextField(max_length=10000, blank=True, null=True)
+    category = models.ManyToManyField('siyyana_app.Category',blank=True)
+    subcategory = models.ManyToManyField('siyyana_app.SubCategory',blank=True,related_name='subcategory')
+    charge = models.CharField(max_length=20, blank=True, null=True, choices=CHARGE_TYPE)
     objects = CustomUserManager()
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions')
@@ -71,11 +83,38 @@ class CustomUser(AbstractUser):
 
 
 
+
+
+
+
 class EmployeeWorkSchedule(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    class Meta:
+        verbose_name_plural = "EMPLOYEE WORK SCHEDULE"
+    def __str__(self):
+        return f"Un: {self.user} - Mob: {self.user.mobile_number} - Type: {self.user.user_type} "
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True)
     sunday_start_time = models.TimeField(blank=True, null=True)
     sunday_end_time = models.TimeField(blank=True, null=True)
     monday_start_time = models.TimeField(blank=True, null=True)
     monday_end_time = models.TimeField(blank=True, null=True)
     tuesday_start_time = models.TimeField(blank=True, null=True)
-    
+    tuesday_end_time = models.TimeField(blank=True,null=True)
+    wednesday_start_time = models.TimeField(blank=True,null=True)
+    wednesday_end_time = models.TimeField(blank=True,null=True)
+    thursday_start_time = models.TimeField(blank=True,null=True)
+    thursday_end_time = models.TimeField(blank=True,null=True)
+    friday_start_time = models.TimeField(blank=True,null=True)
+    friday_end_time = models.TimeField(blank=True,null=True)
+    saturday_start_time = models.TimeField(blank=True,null=True)
+    saturday_end_time = models.TimeField(blank=True,null=True)
+
+
+
+class EmployyeWages(models.Model):
+    class Meta:
+        verbose_name_plural = "EMPLOYEE WAGES"
+    def __str__(self):
+        return f"Un: {self.user} - Mob: {self.user.mobile_number} - Type: {self.user.user_type} "
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True)
+    subcategory = models.ForeignKey('siyyana_app.SubCategory', on_delete=models.CASCADE,blank=True,null=True)
+    wages = models.IntegerField(blank=True,null=True)

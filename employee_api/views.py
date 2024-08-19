@@ -64,11 +64,29 @@ class EmployeeRegistration(APIView):
             district = request.data.get('district')
             fcm_token = request.data.get('fcm_token')
             mobile_number = request.data.get('mobile_number')
+            whatsapp_number = request.data.get('whatsapp_number')
+            about = request.data.get('about')
+            category = request.data.get('category')
+            subcategory = request.data.get('subcategory')
+            charge_type = request.data.get('charge_type')
+
             id_card_type = request.data.get('id_card_type')
             id_card_number = request.data.get('id_card_number')
             id_card = request.data.get('id_card')
             sunday_start_time = request.data.get('sunday_start_time')
             sunday_end_time = request.data.get('sunday_end_time')
+            monday_start_time = request.data.get('monday_start_time')
+            monday_end_time = request.data.get('monday_end_time')
+            tuesday_start_time = request.data.get('tuesday_start_time')
+            tuesday_end_time = request.data.get('tuesday_end_time')
+            wednesday_start_time = request.data.get('wednesday_start_time')
+            wednesday_end_time = request.data.get('wednesday_end_time')
+            thursday_start_time = request.data.get('thursday_start_time')
+            thursday_end_time = request.data.get('thursday_end_time')
+            friday_start_time = request.data.get('friday_start_time')
+            friday_end_time = request.data.get('friday_end_time')
+            saturday_start_time = request.data.get('saturday_start_time')
+            saturday_end_time = request.data.get('saturday_end_time')
             
             
       
@@ -83,12 +101,52 @@ class EmployeeRegistration(APIView):
             if CustomUser.objects.filter(email=email).exists():
                 return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
             user = CustomUser.objects.create_user(username=email, name=name, email=email, password=password, country=country_instance, state=state_instance, 
-                                                  district=district_instance, fcm_token=fcm_token, mobile_number=mobile_number,user_type="Employee",
-                                                  profile_picture=profile_picture,first_name=first_name,last_name=last_name,prefered_work_location=prefered_work_location_instance,
+                                                  district=district_instance, fcm_token=fcm_token, mobile_number=mobile_number,whatsapp_number=whatsapp_number,about=about,user_type="Employee",
+                                                  profile_picture=profile_picture,charge=charge_type,first_name=first_name,last_name=last_name,prefered_work_location=prefered_work_location_instance,
                                                   id_card_type=id_card_type,id_card_number=id_card_number,id_card=id_card)
+
+            category_ids = request.data.get("category", "")
+            category_ids = [int(id.strip()) for id in category_ids.split(",") if id.strip().isdigit()]
+
+            subcategory_ids = request.data.get("subcategory", "")
+            subcategory_ids = [int(id.strip()) for id in subcategory_ids.split(",") if id.strip().isdigit()]
+
+            wages = request.data.get("wages", "")
+            wages = [int(id.strip()) for id in wages.split(",") if id.strip().isdigit()]
+
+            for subcategory_id, wage in zip(subcategory_ids, wages):
+                EmployyeWages.objects.create(
+                    user=user,
+                    subcategory_id=subcategory_id,
+                    wages=wage
+                )
+
+
+            if category_ids:
+                category = []
+                for i in category_ids:
+                    catgry = Category.objects.get(id=i)
+                    category.append(catgry)
+                user.category.set(category)
+
+            if subcategory_ids:
+                subcategory = []
+                for i in subcategory_ids:
+                    subcatgry = SubCategory.objects.get(id=i)
+                    subcategory.append(subcatgry)
+                user.subcategory.set(subcategory)
             access_token = RefreshToken.for_user(user).access_token
 
-            EmployeeWorkSchedule.objects.create(user=user,sunday_start_time=sunday_start_time,sunday_end_time=sunday_end_time)
+          
+
+            EmployeeWorkSchedule.objects.create(user=user,sunday_start_time=sunday_start_time,sunday_end_time=sunday_end_time,
+                                                monday_start_time=monday_start_time,monday_end_time=monday_end_time,
+                                                tuesday_start_time=tuesday_start_time,tuesday_end_time=tuesday_end_time,
+                                                wednesday_start_time=wednesday_start_time,wednesday_end_time=wednesday_end_time,
+                                                thursday_start_time=thursday_start_time,
+                                                thursday_end_time=thursday_end_time,friday_start_time=friday_start_time,
+                                                friday_end_time=friday_end_time,saturday_start_time=saturday_start_time,
+                                                saturday_end_time=saturday_end_time)
             return Response({
                 'message': 'Employee created successfully',
                 'access_token': str(access_token),
@@ -119,6 +177,47 @@ class EmployeeLogin(APIView):
                 return Response({"error": "Invalid password"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+@api_view(['GET'])
+def category_list(request):
+    categories = Category.objects.all()
+    serializer = CategoryListSerializer(categories, many=True,context={'request':request})
+    return Response(serializer.data)
+
+
+
+@api_view(['POST'])
+def subcategories_by_category(request):
+    # Extract category IDs from the request body (JSON data)
+    category_ids = request.data.get('category_ids', [])
+    
+    if not category_ids:
+        return Response({"error": "Category IDs are required"}, status=400)
+
+    # Fetch subcategories based on the provided category IDs
+    subcategories = SubCategory.objects.filter(service__id__in=category_ids)
+    serializer = SubCategorySerializer(subcategories, many=True)
+    return Response(serializer.data)
+
+
+
+@api_view(['POST'])
+def requested_category_api(request):
+    if request.method == 'POST':
+        serializer = RequestedCategorySerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.data)
+
+
+
+
 
 
 
