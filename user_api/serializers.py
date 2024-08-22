@@ -2,14 +2,15 @@ from rest_framework import serializers
 from accounts.models import *
 from django.conf import settings
 from siyyana_app.models import *
-
+from employee_api.serializers import *
 
 
 class UserSerializer(serializers.ModelSerializer):
+    employee_wages = EmplpoyeeWagesSerializer(many=True)
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'mobile_number', 'whatsapp_number', 'profile_picture']
+        fields = ['id','name','email', 'mobile_number', 'whatsapp_number', 'profile_picture','employee_wages','charge']
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
@@ -31,7 +32,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name','count','subcategories']
+        fields = ['id', 'name','logo','count','subcategories']
 
     def get_subcategories(self, obj):
         subcategories = SubCategory.objects.filter(service=obj)
@@ -40,3 +41,20 @@ class CategorySerializer(serializers.ModelSerializer):
     def get_count(self, obj):
         subcategories = SubCategory.objects.filter(service=obj).count()
         return subcategories
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

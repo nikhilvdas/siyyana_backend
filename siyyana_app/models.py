@@ -59,3 +59,39 @@ class RequestedCategory(models.Model):
         verbose_name_plural = "REQUESTED CATEGORY"
     def __str__(self):
         return self.name
+    
+
+
+
+STATUS_CHOICES = (
+    ('Accept',  'Accept'),
+    ('Pending', 'Pending'),
+    ('Reject', 'Reject'),
+    ('Completed', 'Completed'),
+
+)
+
+
+class Booking(models.Model):
+    employee = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='employee')
+    user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='user')
+    service = models.ManyToManyField('accounts.EmployyeWages', blank=True)
+    date = models.DateField()
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Pending')
+
+    class Meta:
+        verbose_name_plural = "BOOKING"
+    def __str__(self):
+        return f'{self.user} - {self.service} - {self.date} - {self.status}'
+
+
+
+
+
+class Saved_Employees(models.Model):
+    class Meta:
+        verbose_name_plural = "SAVED EMPLOYEES"
+    def __str__(self):
+        return f'{self.user} - {self.employee}'
+    employee = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='saved_employee')
+    user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='saved_user')

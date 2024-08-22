@@ -78,7 +78,7 @@ class CustomUser(AbstractUser):
     id_card = models.FileField(upload_to='id_card/', blank=True, null=True)
 
     def __str__(self):
-        return f"Un: {self.username} - Mob: {self.mobile_number} - Type: {self.user_type} "
+        return  str(self.name)
     
 
 
@@ -115,6 +115,6 @@ class EmployyeWages(models.Model):
         verbose_name_plural = "EMPLOYEE WAGES"
     def __str__(self):
         return f"Un: {self.user} - Mob: {self.user.mobile_number} - Type: {self.user.user_type} "
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True,related_name='employee_wages')
     subcategory = models.ForeignKey('siyyana_app.SubCategory', on_delete=models.CASCADE,blank=True,null=True)
     wages = models.IntegerField(blank=True,null=True)
