@@ -13,5 +13,6 @@ urlpatterns = [
     path('save-employee', save_employee, name='save-employee'),
 
     path('booking-api', booking_api, name='booking-api'),
+    path('reschedule-booking', reschedule_booking, name='reschedule-booking'),
 
 ]

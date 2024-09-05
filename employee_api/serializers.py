@@ -94,18 +94,17 @@ class UserSerializerForBookingDetails(serializers.ModelSerializer):
 
 class BookingSerializer(serializers.ModelSerializer):
     category_logo = serializers.SerializerMethodField()
-    service = EmplpoyeeWagesSerializer(many=True)
+    service = EmplpoyeeWagesSerializer()  # Remove `many=True`
     employee = serializers.StringRelatedField()
     user = UserSerializerForBookingDetails()
 
     class Meta:
         model = Booking
-        fields = ["id",'employee', 'date', 'status', 'category_logo','service','user']
+        fields = ["id", 'employee', 'date','start_time', 'end_time', 'status', 'category_logo', 'service', 'user']
 
     def get_category_logo(self, obj):
-        # Assuming you're only fetching the first related category logo.
-        if obj.service.exists():
-            employye_wage = obj.service.first()
-            if employye_wage.subcategory and employye_wage.subcategory.service:
-                return employye_wage.subcategory.service.logo.url
+        request = self.context.get('request')
+        if obj.service and obj.service.subcategory and obj.service.subcategory.service:
+            logo_url = obj.service.subcategory.service.logo.url
+            return request.build_absolute_uri(logo_url) if request else logo_url
         return None

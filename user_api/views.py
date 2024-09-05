@@ -89,19 +89,61 @@ def booking_api(request):
     if request.method == 'POST':
         employee_id = request.data.get('employee_id')
         employee = CustomUser.objects.get(id=employee_id)
-        user_id = request.data.get('user_id')
-        user = CustomUser.objects.get(id=user_id)
+        # user_id = request.data.get('user_id')
+        # user = CustomUser.objects.get(id=user_id)
         service_id = request.data.get("service_id", "")
         booking_date = request.data.get('booking_date')
-        data = Booking.objects.create(employee=employee, user=user, date=booking_date)
+        start_time = request.data.get('start_time')
+        end_time = request.data.get('end_time')
 
         service_id = [int(id.strip()) for id in service_id.split(",") if id.strip().isdigit()]
-        service = []
+        # service = []
         for i in service_id:
             services = EmployyeWages.objects.get(id=i)
-            service.append(services)
-        data.service.set(service)
+            Booking.objects.create(employee=employee, user=request.user, date=booking_date, start_time=start_time, end_time=end_time, service=services)
     return Response({'message': 'Booking created successfully'},status=status.HTTP_200_OK)
+
+
+
+
+@api_view(['POST'])
+def reschedule_booking(request):
+    if request.method == 'POST':
+        booking_id = request.POST.get('booking_id')
+        # Retrieve the booking instance
+        booking = get_object_or_404(Booking, id=booking_id)
+
+        # Get the new date and time from the request data
+        new_date = request.POST.get('date')
+        new_start_time = request.POST.get('start_time')
+        new_end_time = request.POST.get('end_time')
+
+        # Update the booking instance with new values
+        if new_date:
+            booking.date = new_date
+        if new_start_time:
+            booking.start_time = new_start_time
+        if new_end_time:
+            booking.end_time = new_end_time
+        
+        # Save the updated booking instance
+        booking.save()
+
+        # Return a success response
+        return JsonResponse({'status': 'success', 'message': 'Booking rescheduled successfully'})
+    
+    # If the request method is not POST, return an error response
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -178,7 +220,6 @@ def search_by_category(request):
 @permission_classes([IsAuthenticated])
 def save_employee(request):
     user = request.user
-
     if request.method == 'GET':
         saved_employees = Saved_Employees.objects.filter(user=user)
         employees_list = []

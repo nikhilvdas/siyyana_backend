@@ -240,7 +240,7 @@ def employee_home(request):
         total_booking = Booking.objects.filter(employee=user).count()
         completed_booking = Booking.objects.filter(employee=user, status='Completed').count()
         active_work_orders = Booking.objects.filter(employee=user, status='Pending')
-        active_work_orders_serializer = BookingSerializer(active_work_orders, many=True)
+        active_work_orders_serializer = BookingSerializer(active_work_orders, many=True,context={'request':request})
         return Response({'employee_dashboard':
                          
                          {'total_booking': total_booking,
@@ -250,9 +250,17 @@ def employee_home(request):
                          'active_work_orders': active_work_orders_serializer.data,
                           
                           
-                        }, status=status.HTTP_200_OK)
+                        })
 
 
+    if request.method == 'POST':
+        booking_id = request.data.get('booking_id')
+        status = request.data.get('status')
+        booking = get_object_or_404(Booking, id=booking_id)
+        booking.status = status
+        booking.save()
+        return Response({'message': 'Booking status updated successfully'})
+    
 
 
 
@@ -390,3 +398,30 @@ def edit_employee_profile(request):
             # wages.save()
 
     return JsonResponse({'status': 'success', 'message': 'Profile and related data updated successfully'})
+
+
+
+
+
+
+@api_view(['GET'])
+def my_orders(request):
+    # Fetch bookings based on each status
+    pending_bookings = Booking.objects.filter(status='Pending',employee=request.user)
+    accepted_bookings = Booking.objects.filter(status='Accept',employee=request.user)
+    completed_bookings = Booking.objects.filter(status='Completed',employee=request.user)
+    rejected_bookings = Booking.objects.filter(status='Reject',employee=request.user)
+
+    # Serialize the bookings
+    completed_serializer = BookingSerializer(completed_bookings, many=True, context={'request': request})
+    pending_serializer = BookingSerializer(pending_bookings, many=True, context={'request': request})
+    accepted_serializer = BookingSerializer(accepted_bookings, many=True, context={'request': request})
+    rejected_serializer = BookingSerializer(rejected_bookings, many=True, context={'request': request})
+
+    # Return the data in a structured response
+    return Response({
+        'pending_bookings': pending_serializer.data,
+        'accepted_bookings': accepted_serializer.data,
+        'completed_bookings': completed_serializer.data,
+        'rejected_bookings': rejected_serializer.data,
+    })

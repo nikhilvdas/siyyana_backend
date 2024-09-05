@@ -64,6 +64,7 @@ class RequestedCategory(models.Model):
 
 
 STATUS_CHOICES = (
+    
     ('Accept',  'Accept'),
     ('Pending', 'Pending'),
     ('Reject', 'Reject'),
@@ -75,8 +76,10 @@ STATUS_CHOICES = (
 class Booking(models.Model):
     employee = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='employee')
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='user')
-    service = models.ManyToManyField('accounts.EmployyeWages', blank=True)
+    service = models.ForeignKey('accounts.EmployyeWages', on_delete=models.SET_NULL, null=True,related_name='service')
     date = models.DateField()
+    start_time = models.TimeField(blank=True,null=True)
+    end_time = models.TimeField(blank=True,null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Pending')
 
     class Meta:

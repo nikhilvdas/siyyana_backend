@@ -18,6 +18,10 @@ urlpatterns = [
     path('employee-profile-api', views.employee_profile_api, name='employee-profile-api'),
     path('edit-employee-profile', views.edit_employee_profile, name='edit-employee-profile'),
 
+
+    path('my-orders', views.my_orders, name='my-orders'),
+
+
     
 
 ]
