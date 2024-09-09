@@ -89,6 +89,8 @@ def request_otp(request):
         try:
             user = CustomUser.objects.get(email=email)
             otp = send_otp(email)
+            request.session['email'] = email
+            request.session['otp'] = otp
             user.otp = otp  # Save OTP in the user model
             user.otp_created_at = timezone.now()
             user.save()
@@ -105,12 +107,12 @@ def request_otp(request):
             return JsonResponse({'error': 'Email not found.'}, status=400)
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
+@csrf_exempt
 def verify_otp(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
         otp = request.POST.get('otp')
         try:
-            user = CustomUser.objects.get(email=email)
+            user = CustomUser.objects.get(email=request.session['email'])
             if user.otp == otp:
                 otp_age = timezone.now() - user.otp_created_at
                 if otp_age <= timedelta(minutes=5):  # Check if OTP is still valid
@@ -125,24 +127,33 @@ def verify_otp(request):
 
 
 
-
+@csrf_exempt
 def reset_password(request):
+    print(request.session['otp'])
     if request.method == 'POST':
-        email = request.POST.get('email')
-        otp = request.POST.get('otp')
+        otp = request.session['otp']
+        print(otp)
         new_password = request.POST.get('new_password')
 
         try:
-            user = CustomUser.objects.get(email=email)
-            if user.otp == otp:
+            user = CustomUser.objects.get(email=request.session['email'])
+            print(user)
+            print('user.otp',user.otp)
+            print(otp)
+            if str(user.otp) == str(otp):
+                print('user.otp',user.otp)
                 otp_age = timezone.now() - user.otp_created_at
-                if otp_age <= timedelta(minutes=5):
-                    user.password = make_password(new_password)
-                    user.otp = None  # Clear the OTP
-                    user.save()
-                    return JsonResponse({'message': 'Password reset successfully.'})
-                else:
-                    return JsonResponse({'error': 'OTP has expired.'}, status=400)
+                print('otp_age',otp_age)
+                # if otp_age <= timedelta(minutes=5):
+                print('====>')
+                print('NEW PASSWORD',new_password)
+                # Update the password and clear OTP
+                user.set_password(new_password)
+                user.otp = None  # Clear OTP after successful reset
+                user.save()
+                return JsonResponse({'message': 'Password reset successfully.'})
+                # else:
+                #     return JsonResponse({'error': 'OTP has expired.'}, status=400)
             else:
                 return JsonResponse({'error': 'Invalid OTP.'}, status=400)
         except CustomUser.DoesNotExist:
