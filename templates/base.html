@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Siyyana"
+    <meta name="keywords" content="Yatri: Your Travel Partner"/>
+    <meta name="author" content="pixelstrap" />
+    <link
+      rel="icon"
+      href="{% static 'assets/images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="{% static 'assets/images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+    
+    <title>Siyyana</title>
+    <!-- Google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"/>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/tagsinput.css' %}"/>
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/font-awesome.css' %}"/>
+    <!-- ico-font-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/icofont.css' %}"
+    />
+    <!-- Themify icon-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/themify.css' %}"
+    />
+    <!-- Flag icon-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/flag-icon.css' %}"
+    />
+    <!-- Feather icon-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/feather-icon.css' %}"
+    />
+    <!-- Plugins css start-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/slick.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/slick-theme.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/scrollbar.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/animate.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/datatables.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/date-picker.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/owlcarousel.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/rating.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/vector-map.css' %}"
+    />
+    <!-- Plugins css Ends-->
+    <!-- Bootstrap css-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/bootstrap.css' %}"
+    />
+    <!-- App css-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/style.css' %}"
+    />
+    <link
+      id="color"
+      rel="stylesheet"
+      href="{% static 'assets/css/color-1.css' %}"
+      media="screen"
+    />
+    <!-- Responsive css-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/responsive.css' %}"
+    />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/vendors/js-datatables/style.css' %}"
+    />
+    <style>
+      .customizer-links{
+        display: none;
+      }
+
+      .btn-primary{
+        background: linear-gradient(117deg, #000 32.09%, #E8194F  98.68%) !important;
+      }
+    
+    </style>
+  </head>
+  <body>
+    <div class="loader-wrapper">
+      <div class="loader loader-1">
+        <div class="loader-outter"></div>
+        <div class="loader-inner"></div>
+        <div class="loader-inner-1"></div>
+      </div>
+    </div>
+    <!-- loader ends-->
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <div class="page-header row" id='pageheader'>
+        <div class="header-logo-wrapper col-auto" id='logoo'>
+          <div class="logo-wrapper">
+            <a href=""
+              ><img
+                class="img-fluid for-light"
+                src="{% static 'assets/images/logo/siyyana_logo.png' %}"
+                alt="" /><img
+                class="img-fluid for-dark"
+                src="{% static 'assets/images/logo/shoretime.png' %}"
+                alt=""
+            /></a>
+          </div>
+        </div>
+        <div class="col-4 col-xl-4 page-title" id='heading'>
+          <h4 class="f-w-700">
+            {% block pageheading %} {% endblock pageheading %}
+          </h4>
+        </div>
+        <!-- Page Header Start-->
+        <div class="header-wrapper col m-0" id='user-sec'>
+          <div class="row">
+            <form class="form-inline search-full col" action="#" method="get">
+              <div class="form-group w-100">
+                <div class="Typeahead Typeahead--twitterUsers">
+                  <div class="u-posRelative">
+                    <input
+                      class="demo-input Typeahead-input form-control-plaintext w-100"
+                      type="text"
+                      placeholder="Search shoretime .."
+                      name="q"
+                      title=""
+                      autofocus
+                    />
+                    <div class="spinner-border Typeahead-spinner" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                    <i class="close-search" data-feather="x"></i>
+                  </div>
+                  <div class="Typeahead-menu"></div>
+                </div>
+              </div>
+            </form>
+            <div class="header-logo-wrapper col-auto p-0">
+              <div class="logo-wrapper">
+                <a href="{% url 'siyyana_app:index' %}"
+                  ><img
+                    class="img-fluid"
+                    src="{% static 'assets/images/logo/siyyana_logo.png' %}"
+                    alt=""
+                /></a>
+              </div>
+              <div class="toggle-sidebar">
+                <svg class="stroke-icon sidebar-toggle status_toggle middle">
+                  <use
+                    href="{% static 'assets/svg/icon-sprite.svg#toggle-icon' %}"
+                  ></use>
+                </svg>
+              </div>
+            </div>
+            <div
+              class="nav-right col-xxl-8 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto"
+            >
+              <ul class="nav-menus">
+                <li>
+                  <span class="header-search">
+                    <svg>
+                      <use
+                        href="{% static 'assets/svg/icon-sprite.svg#search' %}"
+                      ></use></svg
+                  ></span>
+                </li>
+                
+              
+                <li class="profile-nav onhover-dropdown px-0 py-0">
+                  <div class="d-flex profile-media align-items-center">
+                    <img
+                      class="img-30"
+                      src="{% static 'assets/images/dashboard/profile.png' %}"
+                      alt=""
+                    />
+                    {% if request.user.is_superuser %}
+                    <div class="flex-grow-1">
+                      <span>{{user.username}}</span>
+                      {% comment %}
+                      <p class="mb-0 font-outfit">
+                        UI Designer<i class="fa fa-angle-down"></i>
+                      </p>
+                      {% endcomment %}
+                    </div>
+                    {% else %}
+                    <div class="flex-grow-1">
+                      <span>{{user.user.full_name}}</span>
+                      <p class="mb-0 font-outfit">
+                        {{user.user.role}}<i class="fa fa-angle-down"></i>
+                      </p>
+                    </div>
+                    {% endif %}
+                  </div>
+                  <ul class="profile-dropdown onhover-show-div">
+                    <li>
+                      <a href="{% url 'siyyana_app:admin_logout' %}"
+                        ><i data-feather="log-in"> </i><span>Log out</span></a
+                      >
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <script class="result-template" type="text/x-handlebars-template">
+              <div class="ProfileCard u-cf">
+                <div class="ProfileCard-avatar"><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-airplay m-0"
+                  ><path
+                      d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"
+                    ></path><polygon
+                      points="12 15 17 21 7 21 12 15"
+                    ></polygon></svg></div>
+                <div class="ProfileCard-details">
+                  <div class="ProfileCard-realName">{{name}}</div>
+                </div>
+              </div>
+            </script>
+            <script class="empty-template" type="text/x-handlebars-template">
+              <div class="EmptyMessage">Your search turned up 0 results. This
+                most likely means the backend is down, yikes!</div>
+            </script>
+          </div>
+        </div>
+        <!-- Page Header Ends                              -->
+      </div>
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <div class="sidebar-wrapper" data-layout="stroke-svg">
+          <div>
+            <div class="logo-wrapper" id='hidede'>
+              <a href="{% url 'siyyana_app:index' %}"
+                ><img
+                  class="img-fluid"
+                  src="{% static 'assets/images/logo/siyyana_logo.png' %}"
+                  style="height: 44px; width: 160px; margin-top: -9px;margin-left: -3px;"alt=""/>
+                </a>
+              <div class="back-btn"><i class="fa fa-angle-left"></i></div>
+              <div class="toggle-sidebar">
+                <svg class="stroke-icon sidebar-toggle status_toggle middle">
+                  <use
+                    href="static/assets/svg/icon-sprite.svg#toggle-icon"
+                  ></use>
+                </svg>
+                <svg class="fill-icon sidebar-toggle status_toggle middle">
+                  <use
+                    href="static/assets/svg/icon-sprite.svg#fill-toggle-icon"
+                  ></use>
+                </svg>
+              </div>
+            </div>
+            <div class="logo-icon-wrapper">
+              <a href="{% url 'siyyana_app:index' %}">
+                <img
+                  class="img-fluid"
+                  src="{% static 'assets/images/logo/siyyana_logo.png' %}" style='height:30px;weight:30px;'
+                  alt=""/>
+              </a>
+            </div>
+            <nav class="sidebar-main exclude-from-print" id="main-nav">
+              <div class="left-arrow" id="left-arrow">
+                <i data-feather="arrow-left"></i>
+              </div>
+              <div id="sidebar-menu">
+                <ul class="sidebar-links" id="simple-bar">
+                  <li class="back-btn">
+                    <a href="{% url 'siyyana_app:index' %}"
+                      ><img
+                        class="img-fluid"
+                        src="{% static 'assets/images/logo/logo-icon.png' %}"
+                        alt=""
+                    /></a>
+                    <div class="mobile-back text-end">
+                      <span>Back</span
+                      ><i class="fa fa-angle-right ps-2" aria-hidden="true"></i>
+                    </div>
+                  </li>
+
+                  <li class="sidebar-list">
+                    <a
+                      class="sidebar-link sidebar-title link-nav"
+                      href="{% url 'siyyana_app:index' %}"
+                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-bar-chart" viewBox="0 0 16 16">
+                      <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                    </svg>
+                      <svg class="fill-icon">
+                        <use
+                          href="static/assets/svg/icon-sprite.svg#fill-file"
+                        ></use></svg><span>Dashboard</span></a>
+                  </li>
+                  
+                  <li class="sidebar-main-title">
+                    <div>
+                      <h6 class="lan-1">LOCATION MANAGEMENT</h6>
+                    </div>
+                  </li>
+                  <li class="sidebar-list">
+                    <a
+                      class="sidebar-link sidebar-title link-nav"
+                      href="#"
+                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-tree" viewBox="0 0 16 16">
+                      <path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777zM6.437 4.758A.5.5 0 0 0 6 4.5h-.066L8 1.401 10.066 4.5H10a.5.5 0 0 0-.424.765L11.598 8.5H11.5a.5.5 0 0 0-.447.724L12.69 12.5H3.309l1.638-3.276A.5.5 0 0 0 4.5 8.5h-.098l2.022-3.235a.5.5 0 0 0 .013-.507"/>
+                    </svg>
+                      <svg class="fill-icon">
+                        <use
+                          href="static/assets/svg/icon-sprite.svg#stroke-editors"
+                        ></use></svg
+                      ><span>Locations</span></a>
+                  </li>
+                  
+
+                  <li class="sidebar-main-title">
+                    <div>
+                      <h6 class="lan-1">SERVICE MANAGEMENT</h6>
+                    </div>
+                  </li>
+
+                  <li class="sidebar-list">
+                    <a
+                      class="sidebar-link sidebar-title link-nav"
+                      href="{% url 'siyyana_app:services' %}"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-fill-lock" viewBox="0 0 16 16">
+                        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5v-1a2 2 0 0 1 .01-.2 4.49 4.49 0 0 1 1.534-3.693Q8.844 9.002 8 9c-5 0-6 3-6 4m7 0a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1"/>
+                      </svg>
+                      <svg class="fill-icon">
+                        <use
+                          href="static/assets/svg/icon-sprite.svg#fill-file"
+                        ></use></svg
+                      ><span>Services</span></a>
+                  </li>
+
+                  <li class="sidebar-list">
+                    <a
+                      class="sidebar-link sidebar-title link-nav"
+                      href="{% url 'siyyana_app:sub_services' %}"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-tag" viewBox="0 0 16 16">
+                        <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
+                        <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
+                      </svg>
+                      <svg class="fill-icon">
+                        <use
+                          href="static/assets/svg/icon-sprite.svg#stroke-to-do"
+                        ></use></svg
+                      ><span>Sub Services</span></a
+                    >
+                  </li>
+
+                  <li class="sidebar-list">
+                    <a
+                      class="sidebar-link sidebar-title link-nav"
+                      href="{% url 'siyyana_app:top_services' %}"
+                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-fill-lock" viewBox="0 0 16 16">
+                      <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5v-1a2 2 0 0 1 .01-.2 4.49 4.49 0 0 1 1.534-3.693Q8.844 9.002 8 9c-5 0-6 3-6 4m7 0a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1"/>
+                    </svg>
+                    <svg class="fill-icon">
+                      <use
+                        href="static/assets/svg/icon-sprite.svg#fill-file"
+                      ></use></svg><span>Top Services</span></a
+                    >
+                  </li>
+
+                  <li class="sidebar-main-title">
+                    <div>
+                      <h6 class="lan-1">EMPLOYEE MANAGEMENT</h6>
+                    </div>
+                  </li>
+                  <li class="sidebar-list">
+                    <a class="sidebar-link sidebar-title link-nav"
+                      href="{% url 'siyyana_app:employee_list' %}"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-boxes" viewBox="0 0 16 16">
+                        <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z"/>
+                      </svg>
+                      <svg class="fill-icon">
+                        <use
+                          href="static/assets/svg/icon-sprite.svg#stroke-editors"
+                        ></use></svg
+                      ><span>Employee List</span></a>
+                  </li>
+
+                  <li class="sidebar-main-title">
+                    <div>
+                      <h6 class="lan-1">USERS MANAGEMENT</h6>
+                    </div>
+                  </li>
+                  <li class="sidebar-list">
+                    <a class="sidebar-link sidebar-title link-nav"
+                      href="{% url 'siyyana_app:user_list' %}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-boxes" viewBox="0 0 16 16">
+                        <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z"/>
+                      </svg>
+                      <svg class="fill-icon">
+                        <use
+                          href="static/assets/svg/icon-sprite.svg#stroke-editors"
+                        ></use></svg
+                      ><span>User List</span></a>
+                  </li>
+                </ul>
+              </div>
+              <div class="right-arrow" id="right-arrow">
+                <i data-feather="arrow-right"></i>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <!-- Page Sidebar Ends-->
+
+        {% block content %} {% endblock content %}
+
+        <!-- footer start-->
+      </div>
+    </div>
+    <!-- Delete button -->
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      function showConfirmation(deleteUrl) {
+        console.log("Delete URL:", deleteUrl); // Check if the URL is correct
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          console.log("Result:", result); // Add this line
+          if (result.value === true) {
+            console.log("Deleting..."); // Check if this log is printed
+            Swal.fire({
+              title: "Deleted!",
+              icon: "success",
+            });
+            window.location.href = deleteUrl;
+          }
+        });
+      }
+    </script>
+    <script>
+      CKEDITOR.replace('id_text_editor');
+    </script>
+
+  
+
+    {% for message in messages %} {% if message.tags == 'success' %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+      var m = "{{message}}";
+      swal("{{message}}", '', 'success')
+      {% comment %} swal("Perfect!", m, "success") {% endcomment %}
+    </script>
+    {% else %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+      var m = "{{message}}";
+      swal("{{message}}", '', 'error')
+      {% comment %} swal("Perfect!", m, "success") {% endcomment %}
+    </script>
+    {% endif %} {% endfor %}
+
+    <!-- latest jquery-->
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <!-- Bootstrap js-->
+    <script src="{% static 'assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <!-- feather icon js-->
+    <script src="{% static 'assets/js/icons/feather-icon/feather.min.js' %}"></script>
+    <script src="{% static 'assets/js/icons/feather-icon/feather-icon.js' %}"></script>
+    <!-- scrollbar js-->
+    <script src="{% static 'assets/js/scrollbar/simplebar.js' %}"></script>
+    <script src="{% static 'assets/js/scrollbar/custom.js' %}"></script>
+    <!-- Sidebar jquery-->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+    <!-- Plugins JS start-->
+    <script src="{% static 'assets/js/sidebar-menu.js' %}"></script>
+    <script src="{% static 'assets/js/sidebar-pin.js' %}"></script>
+    <script src="{% static 'assets/js/slick/slick.min.js' %}"></script>
+    <script src="{% static 'assets/js/slick/slick.js' %}"></script>
+    <script src="{% static 'assets/js/header-slick.js' %}"></script>
+    <script src="{% static 'assets/js/chart/morris-chart/raphael.js' %}"></script>
+    <script src="{% static 'assets/js/chart/morris-chart/morris.js' %}"></script>
+    <script src="{% static 'assets/js/chart/morris-chart/prettify.min.js' %}"></script>
+    <script src="{% static 'assets/js/chart/apex-chart/apex-chart.js' %}"></script>
+    <script src="{% static 'assets/js/chart/apex-chart/stock-prices.js' %}"></script>
+    <script src="{% static 'assets/js/chart/apex-chart/moment.min.js' %}"></script>
+    <script src="{% static 'assets/js/chart/echart/pie-chart/facePrint.js' %}"></script>
+    <script src="{% static 'assets/js/chart/echart/pie-chart/testHelper.js' %}"></script>
+    <script src="{% static 'assets/js/chart/echart/pie-chart/custom-transition-texture.js' %}"></script>
+    <script src="{% static 'assets/js/chart/echart/data/symbols.js' %}"></script>
+    <script src="{% static 'assets/js/slick/slick.min.js' %}"></script>
+    <script src="{% static 'assets/js/slick/slick-theme.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/jquery-jvectormap-2.0.2.min.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-au-mill.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-in-mill.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map/jquery-jvectormap-asia-mill.js' %}"></script>
+    <!-- calendar js-->
+    <script src="{% static 'assets/js/datatable/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/js/datatable/datatables/datatable.custom.js' %}"></script>
+    <script src="{% static 'assets/js/datatable/datatables/datatable.custom1.js' %}"></script>
+    <script src="{% static 'assets/js/datepicker/date-picker/datepicker.js' %}"></script>
+    <script src="{% static 'assets/js/datepicker/date-picker/datepicker.en.js' %}"></script>
+    <script src="{% static 'assets/js/datepicker/date-picker/datepicker.custom.js' %}"></script>
+    <script src="{% static 'assets/js/rating/jquery.barrating.js' %}"></script>
+    <script src="{% static 'assets/js/rating/rating-script.js' %}"></script>
+    <script src="{% static 'assets/js/owlcarousel/owl.carousel.js' %}"></script>
+    <script src="{% static 'assets/js/vector-map/map-vector.js' %}"></script>
+    <script src="{% static 'assets/js/countdown.js' %}"></script>
+    <script src="{% static 'assets/js/dashboard/dashboard_3.js' %}"></script>
+    <script src="{% static 'assets/js/ecommerce.js' %}"></script>
+    <!-- Plugins JS Ends-->
+    <!-- Theme js-->
+    <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src="{% static 'assets/js/theme-customizer/customizer.js' %}"></script>
+    <!-- Plugin used-->
+    <script src="{% static 'assets/js/tagsinput.js' %}"></script>
+
+    <script src="{% static 'assets/js/js-datatables/simple-datatables@latest.js' %}"></script>
+    <script src="{% static 'assets/js/custom-list-product.js' %}"></script>
+
+  
+<style>
+  /* <---------------------toggle button start-------------------------> */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    /* Adjusted width */
+    height: 20px;
+    /* Adjusted height */
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 4px;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 10px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 15px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked+.slider {
+    background-color: #f48024;
+  }
+
+  input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked+.slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 10px;
+    height: 18px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  /* <---------------toggle button end---------------------> */
+</style>
+
+<!-- Toggle button -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    console.log("Category URL:", $('input[type="checkbox"]').data('category-url'));
+
+    // Attach a click event handler to the checkbox
+    $('input[type="checkbox"]').on('click', function () {
+      // Get the data-category-url attribute value
+      var categoryUrl = $(this).data('category-url');
+
+      // Perform any desired action with the categoryUrl, for example, navigate to the URL
+      window.location.href = categoryUrl;
+    });
+  });
+</script>
+  </body>
+</html>

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import CustomUser, EmployyeWages
+from accounts.models import CustomUser, EmployeeWorkSchedule, EmployyeWages
 from siyyana_app.models import *
 
 
@@ -66,13 +66,22 @@ class EmplpoyeeWagesSerializer(serializers.ModelSerializer):
         fields = ['id','subcategory','wages']
 
 
+class EmployeeWorkScheduleSerializer(serializers.ModelSerializer):
+    subcategory = serializers.StringRelatedField()
+    class Meta:
+        model = EmployeeWorkSchedule
+        exclude = ['user']
+
+
+
 
 class EmployeeSerializer(serializers.ModelSerializer):
     employee_wages = EmplpoyeeWagesSerializer(many=True)
     total_orders = serializers.SerializerMethodField()
+    employee_work_schedule = EmployeeWorkScheduleSerializer(many=True)
     class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','profile_picture','mobile_number','whatsapp_number','about','total_orders','employee_wages','charge']
+        fields = ['id','first_name','last_name','profile_picture','mobile_number','whatsapp_number','about','total_orders','employee_wages','charge','employee_work_schedule']
 
     def get_logo(self, obj):
         request = self.context.get('request')

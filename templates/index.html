@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %}
+
+   {% block pageheading %}
+   Siyyana
+   {% endblock %}
+<style>
+  .page-wrapper.compact-wrapper .page-body-wrapper .page-body {
+    min-height: calc(100vh - 80px);
+    margin-top: 80px;
+    margin-left: 252px;
+  }
+</style>
+
+      <!-- Page Body Start-->
+
+
+          <!-- Page Body Start-->
+          <div class="page-body-wrapper">
+            <div class="page-body">
+              <!-- Container-fluid starts-->
+               {% comment %} {% for i in counters %} {% endcomment %}
+              <div class="container-fluid dashboard-3">
+                <div class="row">
+                  <div class="col-xl-3 col-sm-6">
+                    <a href="#">
+                    <div class="card pb-4">
+                      <div class="card-header card-no-border pb-0">
+                        <div class="header-top daily-revenue-card">
+                          <h4>Bookings</h4>
+                        </div>
+                      </div>
+                      <div class="card-body pb-0 total-sells-3">
+                        <div class="d-flex align-items-center gap-3">
+                          <div class="flex-shrink-0">
+                            <img
+                              src="{% static 'assets/images/dashboard-3/icon/sent1.png' %}"
+                              alt="icon"
+                            />
+                          </div>
+                          <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                              <h2>{{booking_counts}}</h2>
+                              <div class="d-flex total-icon">
+                               
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </div>
+                  <div class="col-xl-3 col-sm-6">
+                    <a href="#">
+                    <div class="card pb-4">
+                      <div class="card-header card-no-border pb-0">
+                        <div class="header-top daily-revenue-card">
+                          <h4>Blogs</h4>
+        
+                        </div>
+                      </div>
+                      <div class="card-body pb-0 total-sells">
+                        <div class="d-flex align-items-center gap-3">
+                          <div class="flex-shrink-0">
+                            <img
+                              src="{% static 'assets/images/dashboard-3/icon/coin1.png' %}"
+                              alt="icon"
+                            />
+                          </div>
+                          <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                              <h2>{{blogs_count}}</h2>
+                              <div class="d-flex total-icon">
+                                
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </div>
+                  <div class="col-xl-3 col-sm-6">
+                    <a href="#">
+                    <div class="card pb-4">
+                      <div class="card-header card-no-border pb-0">
+                        <div class="header-top daily-revenue-card">
+                          <h4>Enquiry</h4>
+
+                        </div>
+                      </div>
+                      <div class="card-body pb-0 total-sells-2">
+                        <div class="d-flex align-items-center gap-3">
+                          <div class="flex-shrink-0">
+                            <img
+                              src="{% static 'assets/images/dashboard-3/icon/shopping1.png' %}"
+                              alt="icon"
+                            />
+                          </div>
+                          <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                              <h2>{{enquiry_count}}</h2>
+                              <div class="d-flex total-icon">
+                                
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </div>
+
+                  <div class="col-xl-3 col-sm-6">
+                    <a href="#">
+                    <div class="card pb-4">
+                      <div class="card-header card-no-border pb-0">
+                        <div class="header-top daily-revenue-card">
+                          <h4 style="font-size: 16px;">Locations</h4>
+
+                        </div>
+                      </div>
+                      <div class="card-body pb-0 total-sells-4">
+                        <div class="d-flex align-items-center gap-3">
+                          <div class="flex-shrink-0">
+                            <img
+                              src="{% static 'assets/images/dashboard-3/icon/revenue1.png' %}"
+                              alt="icon"
+                            />
+                          </div>
+                          <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                              <h2>{{locations_count}}</h2>
+                              <div class="d-flex total-icon">
+                              
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </div>
+                  <div class="col-xxl-12 col-xl-12 box-col-6 col-md-12 proorder-4-xl-1 proorder-md-7">
+                    <div class="card">
+                        <div class="card-header card-no-border pb-0">
+                            <div class="header-top">
+                                <h4>Recent Booking List</h4>
+                                <div class="dropdown icon-dropdown">
+                                    {% comment %} <button class="btn dropdown-toggle" id="userdropdown17" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="icon-more-alt"></i>
+                                    </button> {% endcomment %}
+                                    {% comment %} <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown17">
+                                        <a class="dropdown-item" href="/all-orders">Go To Order Details</a>
+                                    </div> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 featured-table">
+                            <div class="table-responsive theme-scrollbar">
+                                <table class="table display" id="featured-table" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                          <th>SL</th>
+                                          <th>Name</th>
+                                          <th>Phone</th>
+                                          <th>Date</th>
+                                          <th>Package</th>
+                                          <th>Children</th>
+                                          <th>Adult</th>
+                                          <th>Grand total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in recent_bookings %}
+                                        <tr>
+                                          <td>{{forloop.counter }}</td>
+                                          <td>{{i.name}}</td>
+                                          <td>{{i.country_code}} {{i.phone}}</td>
+                                          <td>{{i.date}}</td>
+                                          <td>{{i.tour_package}}</td>
+                                          <td>{{i.children}}</td>
+                                          <td>{{i.adult}}</td>
+                                          <td>{{i.total_amount}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+    
+
+              
+              
+
+                  {% comment %} <div class="col-xl-12 col-lg-12">
+                    <div class="card">
+                      <div class="card-header card-no-border pb-0">
+                        <div class="header-top top-sellers">
+                          <h4 class="text-truncate">Transactions</h4>
+                
+                        </div>
+                      </div>
+                      <div class="card-body pt-0 seller-month px-0">
+                        <div class="table-responsive theme-scrollbar">
+                          <table
+                            class="table display"
+                            id="seller-month"
+                            style="width: 100%"
+                          >
+                            <thead>
+                              <tr>
+                        
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for i in transactions %}
+                              <tr>
+                                
+                                <td>
+                                  <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-shrink-0">
+                                      
+                                    </div>
+                                    <div class="flex-grow-1">
+                                      <a href="#">
+                                        <h6>{{i.date | date}}</h6></a
+                                      >
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>{{i.date | time}}</td>
+                                <td>{{i.amount}}</td>
+                          
+                              </tr>
+                        {% endfor %}
+                              
+                  
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div> {% endcomment %}
+                </div>
+              </div>
+              {% comment %} {% endfor  %} {% endcomment %}
+              <!-- Container-fluid Ends-->
+            </div>
+            <!-- footer start-->
+          </div>
+                
+      {% if request.user.user.role == 'Branch Admin' %}
+
+          
+
+          <div class="page-body-wrapper">
+            <div class="page-body">
+              <!-- Container-fluid starts-->
+              <div class="container-fluid dashboard-3">
+                <div class="row">
+                  <div class="col-xxl-6 col-md-12 proorder-md-1">
+                    <div class="row">
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="">
+                          <div class="card">
+                            <div class="card-body student">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_admin_total_orders}}</h2>
+                                  <p class="mb-0" style="font-size: 16px;">Total Orders</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/student.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="{% url 'accounts_app:delivery_boys' %}">
+                          <div class="card">
+                            <div class="card-body student-2">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_delivery_boys}}</h2>
+                                  <p class="mb-0" style="font-size: 16px;">Total Delivery Boys</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/teacher.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="{% url 'accounts_app:delivery_boys' %}">
+                          <div class="card">
+                            <div class="card-body student-3">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_cash_in_hand}}</h2>
+                                  <p class="mb-0" style="font-size: 16px;">Total Cash in Hand</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/calendar.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="">
+                          <div class="card">
+                            <div class="card-body student-4">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_assigned_orders}}</h2>
+                                  <p class="mb-0">Total Delivery Boy Assigned</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/invoice.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="">
+                          <div class="card">
+                            <div class="card-body student-4">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_pending_orders}}</h2>
+                                  <p class="mb-0">Pending Orders</p>
+                                </div>
+                                <div class="flex-shrink-0" style="background-color: orange;">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/invoice.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="">
+                          <div class="card">
+                            <div class="card-body student-4">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_cod_orders}}</h2>
+                                  <p class="mb-0">COD Orders</p>
+                                </div>
+                                <div class="flex-shrink-0" style="background-color: aqua;">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/invoice.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="">
+                          <div class="card">
+                            <div class="card-body student-4">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_delivered_orders}}</h2>
+                                  <p class="mb-0">Delivered Orders</p>
+                                </div>
+                                <div class="flex-shrink-0" style="background-color: green;">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/invoice.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-xl-6 col-sm-6">
+                        <a href="">
+                          <div class="card">
+                            <div class="card-body student-4">
+                              <div class="d-flex gap-2 align-items-end">
+                                <div class="flex-grow-1">
+                                  <h2>{{branch_total_accepted_orders}}</h2>
+                                  <p class="mb-0">Accepted Orders</p>
+                                </div>
+                                <div class="flex-shrink-0" style="background-color: rgb(48, 22, 247);">
+                                  <img src="{% static 'assets/images/dashboard-4/icon/invoice.png' %}" alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h4>Order Status</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="apache-container" id="echart-pie"></div>
+                      </div>
+                    </div>
+                  </div> -->
+                  
+
+                  
+                  
+                  
+                  
+
+                  <div class="col-xxl-6 col-xl-6 box-col-6 col-md-6 proorder-4-xl-1 proorder-md-7">
+                    <div class="card">
+                        <div class="card-header card-no-border pb-0">
+                            <div class="header-top">
+                                <h4>Recent Orders List</h4>
+                                <div class="dropdown icon-dropdown">
+                                    <button class="btn dropdown-toggle" id="userdropdown17" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class="icon-more-alt"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown17">
+                                        <a class="dropdown-item" href="">Go To Order Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 featured-table">
+                            <div class="table-responsive theme-scrollbar">
+                                <table class="table display" id="featured-table" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Customer Name</th>
+                                            <th>Order ID</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in branch_orders %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="flex-grow-1">
+                                                        <a href="#">
+                                                            <h5>{{ order.customer.full_name }}</h5>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ order.order_id }}</td>
+                                            <td>{{ order.total_amount }}</td>
+                                            <td>{{ order.order_status }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Container-fluid Ends-->
+            </div>
+            <!-- footer start-->
+          </div>
+
+          <script src="https://cdn.jsdelivr.net/npm/echarts@5"></script>
+
+
+                <!-- Add this script to your template -->
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              // Define a container for the pie chart
+              var pieChartContainer = document.getElementById("echart-pie");
+
+              // Create a div to hold the chart
+              var chartDiv = document.createElement("div");
+              chartDiv.style.width = "100%";
+              chartDiv.style.height = "400px"; // You can adjust the height as needed
+              pieChartContainer.appendChild(chartDiv);
+
+              // Initialize echarts with the chart div
+              var orderStatusChart = echarts.init(chartDiv);
+
+              // Function to fetch and render order status data
+              function fetchAndRenderOrderStatus() {
+                console.log("Fetching order status data...");
+                // Fetch order status data and render the pie chart
+                fetch("/branch-order-status-distribution/")
+                  .then((response) => response.json())
+                  .then((data) => {
+                    
+                    console.log("Fetched order status data:", data);
+
+                    // Update the chart with the fetched data
+                    var options = {
+                      aria: { enabled: true },
+                      title: {
+                        text: "Order Status Distribution",
+                        subtext: "Counts of orders in different statuses",
+                        x: "center",
+                      },
+                      tooltip: {
+                        trigger: "item",
+                        formatter: "{a} <br/>{b} : {c} ({d}%)",
+                      },
+                      legend: {
+                        orient: "vertical",
+                        left: "left",
+                        data: data.labels,
+                      },
+                      series: [
+                        {
+                          name: "Order Status",
+                          type: "pie",
+                          radius: "55%",
+                          center: ["50%", "60%"],
+                          selectedMode: "single",
+                          data: data.seriesData,
+                          emphasis: {
+                            itemStyle: {
+                              shadowBlur: 10,
+                              shadowOffsetX: 0,
+                              shadowColor: "rgba(0, 0, 0, 0.5)",
+                            },
+                          },
+                        },
+                      ],
+                    };
+
+                    orderStatusChart.setOption(options);
+                  })
+                  .catch((error) => console.error("Error fetching order status data:", error));
+
+                window.onresize = orderStatusChart.resize;
+              }
+
+              // Call the function when the DOM content is fully loaded
+              fetchAndRenderOrderStatus();
+            });
+          </script>
+
+      {% endif %}
+
+
+
+
+      {% if request.user.is_superuser %}
+
+
+          <div class="page-body-wrapper">
+            <div class="page-body">
+              <!-- Container-fluid starts-->
+              <!-- Container-fluid Ends-->
+            </div>
+            <!-- footer start-->
+          </div>
+
+
+          <script src="https://cdn.jsdelivr.net/npm/echarts@5"></script>
+
+
+                <!-- Add this script to your template -->
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              // Define a container for the pie chart
+              var pieChartContainer = document.getElementById("echart-pie");
+
+              // Create a div to hold the chart
+              var chartDiv = document.createElement("div");
+              chartDiv.style.width = "100%";
+              chartDiv.style.height = "470px"; // You can adjust the height as needed
+              pieChartContainer.appendChild(chartDiv);
+
+              // Initialize echarts with the chart div
+              var orderStatusChart = echarts.init(chartDiv);
+
+              // Function to fetch and render order status data
+              function fetchAndRenderOrderStatus() {
+                console.log("Fetching order status data...");
+                // Fetch order status data and render the pie chart
+                fetch("/order-status-distribution/")
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log("Fetched order status data:", data);
+
+                    // Update the chart with the fetched data
+                    var options = {
+                      aria: { enabled: true },
+                      title: {
+                        text: "Order Status Distribution",
+                        subtext: "Counts of orders in different statuses",
+                        x: "center",
+                      },
+                      tooltip: {
+                        trigger: "item",
+                        formatter: "{a} <br/>{b} : {c} ({d}%)",
+                      },
+                      legend: {
+                        orient: "vertical",
+                        left: "left",
+                        data: data.labels,
+                      },
+                      series: [
+                        {
+                          name: "Order Status",
+                          type: "pie",
+                          radius: "55%",
+                          center: ["50%", "60%"],
+                          selectedMode: "single",
+                          data: data.seriesData,
+                          emphasis: {
+                            itemStyle: {
+                              shadowBlur: 10,
+                              shadowOffsetX: 0,
+                              shadowColor: "rgba(0, 0, 0, 0.5)",
+                            },
+                          },
+                        },
+                      ],
+                    };
+
+                    orderStatusChart.setOption(options);
+                  })
+                  .catch((error) => console.error("Error fetching order status data:", error));
+
+                window.onresize = orderStatusChart.resize;
+              }
+
+              // Call the function when the DOM content is fully loaded
+              fetchAndRenderOrderStatus();
+            });
+          </script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Define a container for the pie chart
+    var pieChartContainer = document.getElementById("echart-pie2");
+
+    // Create a div to hold the chart
+    var chartDiv = document.createElement("div");
+    chartDiv.style.width = "100%";
+    chartDiv.style.height = "470px"; // You can adjust the height as needed
+    pieChartContainer.appendChild(chartDiv);
+
+    // Initialize echarts with the chart div
+    var orderStatusChart = echarts.init(chartDiv);
+
+    // Function to fetch and render order status data
+    function fetchAndRenderOrderStatus() {
+      console.log("Fetching order status data...");
+      // Fetch order status data and render the pie chart
+      fetch("/branch-order-status-distribution/")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Fetched order status data:", data);
+
+          // Update the chart with the fetched data
+          var options = {
+            aria: { enabled: true },
+            title: {
+              text: "Branch wise Order",
+              subtext: "Counts of orders ",
+              x: "center",
+            },
+            tooltip: {
+              trigger: "item",
+              formatter: "{a} <br/>{b} : {c} ({d}%)",
+            },
+            legend: {
+              orient: "vertical",
+              left: "left",
+              data: data.labels,
+            },
+            series: [
+              {
+                name: "Order Status",
+                type: "pie",
+                radius: "55%",
+                center: ["50%", "60%"],
+                selectedMode: "single",
+                data: data.seriesData,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: "rgba(0, 0, 0, 0.5)",
+                  },
+                },
+              },
+            ],
+          };
+
+          orderStatusChart.setOption(options);
+        })
+        .catch((error) => console.error("Error fetching order status data:", error));
+
+      window.onresize = orderStatusChart.resize;
+    }
+
+    // Call the function when the DOM content is fully loaded
+    fetchAndRenderOrderStatus();
+  });
+</script>
+
+
+          <!-- Monthly order count -->
+
+          <script>
+            function fillMissingMonths(labels, counts) {
+              const allMonths = moment.monthsShort();
+              const filledLabels = allMonths.map((month) => `${month} ${moment().year()}`);
+              const filledCounts = Array(allMonths.length).fill(0);
+
+              labels.forEach((label, index) => {
+                const monthIndex = allMonths.indexOf(label.split(' ')[0]);
+                filledCounts[monthIndex] = counts[index];
+              });
+
+              return { labels: filledLabels, counts: filledCounts };
+            }
+
+            // Declare the variables in the global scope
+            let OrderChartEl;
+            let options = {
+              chart: {
+                type: 'line', // or the type of chart you want, e.g., 'bar', 'area', etc.
+              },
+              series: [
+                {
+                  name: 'Orders',
+                  data: [], // Will be updated with fetched data
+                },
+              ],
+              xaxis: {
+                categories: [], // Initialize the categories array
+              },
+              // ... (rest of your options)
+            };
+
+            // Declare the function in the global scope for fetching order data
+            function fetchOrderDataAndUpdateChart() {
+              console.log('Entering fetchOrderDataAndUpdateChart');
+
+              console.log('Fetching order data...');
+              fetch('/order-count/') // Update the URL to match your Django URL pattern
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log('Fetched order data:', data);
+
+                  // Fill missing months with zero counts
+                  const filledData = fillMissingMonths(data.labels, data.counts);
+
+                  // Update the chart data
+                  options.xaxis.categories = filledData.labels;
+                  options.series[0].data = filledData.counts;
+
+                  // Render or update the chart
+                  if (OrderChartEl) {
+                    OrderChartEl.updateOptions(options);
+                  } else {
+                    // If not initialized, create a new chart and render it
+                    OrderChartEl = new ApexCharts(
+                      document.querySelector('#study-statistics'),
+                      options
+                    );
+                    OrderChartEl.render();
+                  }
+                })
+                .catch((error) => console.error('Error fetching order data:', error));
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+              console.log('DOMContentLoaded event fired');
+
+              // Fetch and update data when the page is loaded
+              console.log('This was reached 1');
+              fetchOrderDataAndUpdateChart();
+              console.log('This was reached 2');
+
+              // Create the chart with initial data for Monthly Orders
+              OrderChartEl = new ApexCharts(
+                document.querySelector('#study-statistics'),
+                options
+              );
+              OrderChartEl.render();
+
+              // Add an event listener to fetch and update data when the window is resized
+              window.addEventListener('resize', fetchOrderDataAndUpdateChart);
+            });
+          </script>
+
+
+
+
+
+      {% endif %}
+
+
+
+ 
+    {% endblock content %}

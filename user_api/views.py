@@ -164,20 +164,12 @@ def reset_password(request):
 
 
 
-
-
-
-
-
-
-
 @api_view(['GET'])
 def category_with_subcategory_and_employees(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True, context={'request': request})
     top_categories = TopCategory.objects.all()
     topcategories_serializer = TopCategorySerializer(top_categories, many=True, context={'request': request})
-
     return Response({'datas': serializer.data,'top_categories': topcategories_serializer.data}, status=status.HTTP_200_OK)
 
 
@@ -304,26 +296,38 @@ def search_by_category(request):
 
         user_data = []
         for user in users:
+            # Fetch the employee's work schedule
+            work_schedule = EmployeeWorkSchedule.objects.filter(user=user).first()
+            work_schedule_data = {
+                'sunday': f"{work_schedule.sunday_start_time} - {work_schedule.sunday_end_time}" if work_schedule else None,
+                'monday': f"{work_schedule.monday_start_time} - {work_schedule.monday_end_time}" if work_schedule else None,
+                'tuesday': f"{work_schedule.tuesday_start_time} - {work_schedule.tuesday_end_time}" if work_schedule else None,
+                'wednesday': f"{work_schedule.wednesday_start_time} - {work_schedule.wednesday_end_time}" if work_schedule else None,
+                'thursday': f"{work_schedule.thursday_start_time} - {work_schedule.thursday_end_time}" if work_schedule else None,
+                'friday': f"{work_schedule.friday_start_time} - {work_schedule.friday_end_time}" if work_schedule else None,
+                'saturday': f"{work_schedule.saturday_start_time} - {work_schedule.saturday_end_time}" if work_schedule else None,
+            }
+
             user_data.append({
                 'name': user.name,
                 'mobile_number': user.mobile_number,
                 'whatsapp_number': user.whatsapp_number,
                 'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
                 'about': user.about,
+                'work_schedule': work_schedule_data,  # Include the work schedule here
             })
 
-        # Response format includes the searched category and the list of users
+        # Response format includes the searched category and the list of users with work schedule
         return JsonResponse({
             'searched_category': category.name,
             'users': user_data
         }, status=200)
 
     except Category.DoesNotExist:
-        return JsonResponse({'error': 'Category not found.'}, status=404)
-    
+        return JsonResponse({'error': 'Category not found.'}, status=404)    
 
 
-@api_view(['GET','POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def save_employee(request):
     user = request.user
@@ -331,22 +335,31 @@ def save_employee(request):
         saved_employees = Saved_Employees.objects.filter(user=user)
         employees_list = []
         for saved in saved_employees:
-            employees_list.append({
+            # Fetch the employee's work schedule
+            work_schedule = EmployeeWorkSchedule.objects.filter(user=saved.employee).first()
+            work_schedule_data = {
+                'sunday': f"{work_schedule.sunday_start_time} - {work_schedule.sunday_end_time}" if work_schedule else None,
+                'monday': f"{work_schedule.monday_start_time} - {work_schedule.monday_end_time}" if work_schedule else None,
+                'tuesday': f"{work_schedule.tuesday_start_time} - {work_schedule.tuesday_end_time}" if work_schedule else None,
+                'wednesday': f"{work_schedule.wednesday_start_time} - {work_schedule.wednesday_end_time}" if work_schedule else None,
+                'thursday': f"{work_schedule.thursday_start_time} - {work_schedule.thursday_end_time}" if work_schedule else None,
+                'friday': f"{work_schedule.friday_start_time} - {work_schedule.friday_end_time}" if work_schedule else None,
+                'saturday': f"{work_schedule.saturday_start_time} - {work_schedule.saturday_end_time}" if work_schedule else None,
+            }
 
+            employees_list.append({
                 "id": saved.employee.id,
                 "employee_name": saved.employee.name,
                 "employee_mobile": saved.employee.mobile_number,
                 "employee_whatsapp": saved.employee.whatsapp_number,
                 "employee_profile_picture": request.build_absolute_uri(saved.employee.profile_picture.url) if saved.employee.profile_picture else None,
                 "employee_about": saved.employee.about,
-                
+                "work_schedule": work_schedule_data  # Include work schedule in the response
             })
         return JsonResponse({"saved_employees": employees_list}, status=200)
 
     if request.method == 'POST':
         employee_id = request.data.get('employee_id')
-        print(employee_id)
-        print(request.user)
         if not employee_id:
             return JsonResponse({"error": "Employee ID is required"}, status=400)
 
@@ -363,8 +376,6 @@ def save_employee(request):
 
     else:
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
-
-
 
 
 @api_view(['GET'])

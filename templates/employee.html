@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %}
+
+{% block pageheading %}
+Employees
+{% endblock %}
+
+
+      <!-- Page Sidebar Ends-->
+      <div class="page-body">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="list-product-header">
+                    {% comment %} <div>
+                      <a class="btn"  style="background-color: #1c753a; border-color: #1c753a; color: white;" href="{% url 'siyyana_app:add_services' %}"
+                        ><i class="fa fa-plus"></i>Add Employees</a
+                      >
+                    </div> {% endcomment %}
+                    
+                  <div class="list-product"  style="overflow-x: auto;">
+                      <table class="display" id="row-select-delete">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>WhatsApp Number</th>
+                                <th>Profile Picture</th>
+                                <th>About</th>
+                                <th>Charge</th>
+                                <th>Date of Birth</th>
+                                <th>Country</th>
+                                <th>State</th>
+                                <th>District</th>
+                                <th>Preferred Work Location</th>
+                                <th>ID Card Type</th>
+                                <th>ID Card Number</th>
+                                <th>ID </th>
+                                <th>Action</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ user.name }}</td>
+                              <td>{{ user.mobile_number }}</td>
+                              <td>{{ user.whatsapp_number }}</td>
+                              <td>
+                                {% if user.profile_picture %}
+                                  <img src="{{ user.profile_picture.url }}" style="width:49px;height:50px;">
+                                {% else %}
+                                  None
+                                {% endif %}
+                              </td>
+                              <td>{{ user.about }}</td>
+                              <td>{{ user.get_charge_display }}</td>
+                              <td>{{ user.date_of_birth }}</td>
+                              <td>{{ user.country}}</td>
+                              <td>{{ user.state.name }}</td>
+                              <td>{{ user.district.name }}</td>
+                              <td>{{ user.prefered_work_location.name }}</td>
+                              <td>{{ user.id_card_type }}</td>
+                              <td>{{ user.id_card_number }}</td>
+                              <td>
+                                {% if user.id_card %}
+                                  <a href="{{ user.id_card.url }}">View ID</a>
+                                {% else %}
+                                  N/A
+                                {% endif %}
+                              </td>
+                              <td>
+                                <ul class="action">
+                                  {% comment %} <li class="edit">
+                                    <a href="#">
+                                      <i class="icon-pencil-alt"></i>
+                                    </a>
+                                  </li> {% endcomment %}
+                                  <li class="delete">
+                                    <a onclick="showConfirmation('{% url 'siyyana_app:employee_delete' user.id %}')">
+                                      <i class="icon-trash me-2"></i>
+                                    </a>
+                                  </li>
+                                </ul>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Container-fluid Ends-->
+      </div>
+      <!-- footer start-->
+
+
+{% endblock content %}

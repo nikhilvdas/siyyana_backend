@@ -95,7 +95,7 @@ class EmployeeWorkSchedule(models.Model):
         verbose_name_plural = "EMPLOYEE WORK SCHEDULE"
     def __str__(self):
         return f"Un: {self.user} - Mob: {self.user.mobile_number} - Type: {self.user.user_type} "
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True,related_name='employee_work_schedule')
     sunday_start_time = models.TimeField(blank=True, null=True)
     sunday_end_time = models.TimeField(blank=True, null=True)
     monday_start_time = models.TimeField(blank=True, null=True)

@@ -7,10 +7,11 @@ from employee_api.serializers import *
 
 class UserSerializer(serializers.ModelSerializer):
     employee_wages = EmplpoyeeWagesSerializer(many=True)
+    employee_work_schedule = EmployeeWorkScheduleSerializer(many=True)
 
     class Meta:
         model = CustomUser
-        fields = ['id','name','email', 'mobile_number', 'whatsapp_number', 'profile_picture','employee_wages','charge']
+        fields = ['id','name','email', 'mobile_number', 'whatsapp_number', 'profile_picture','employee_wages','charge','employee_work_schedule']
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
