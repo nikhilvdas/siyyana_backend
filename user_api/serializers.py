@@ -45,12 +45,22 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 
+class TopCategorySerializer(serializers.ModelSerializer):
+    Category = CategoryListSerializer(read_only=True)
+
+    class Meta:
+        model = TopCategory
+        fields = ['id', 'Category']
 
 
 
 
-
-
+class BookingSerializerUser(serializers.ModelSerializer):
+    employee = EmployeeSerializer(read_only=True)
+    service = EmplpoyeeWagesSerializer() 
+    class Meta:
+        model = Booking
+        fields = ['id', 'employee', 'service', 'date', 'start_time', 'end_time', 'status']
 
 
 

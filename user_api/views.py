@@ -10,7 +10,12 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-
+import random
+from django.utils import timezone
+from django.core.mail import send_mail
+from datetime import timedelta
+from django.contrib.auth.hashers import make_password
+from django.views.decorators.csrf import csrf_exempt
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -25,19 +30,19 @@ class UserRegistration(APIView):
             name = request.data.get('name')
             email = request.data.get('email')
             password = request.data.get('password')
-            # country = request.data.get('country')
-            # state = request.data.get('state')
-            # district = request.data.get('district')
+            country = request.data.get('country')
+            state = request.data.get('state')
+            district = request.data.get('district')
             fcm_token = request.data.get('fcm_token')
             mobile_number = request.data.get('mobile_number')
             whatsapp_number = request.data.get('whatsapp_number')
-            # country_instance = Country.objects.get(id=country)
-            # state_instance = State.objects.get(id=state)
-            # district_instance = District.objects.get(id=district)
+            country_instance = Country.objects.get(id=country)
+            state_instance = State.objects.get(id=state)
+            district_instance = District.objects.get(id=district)
             if CustomUser.objects.filter(email=email).exists():
                 return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
             user = CustomUser.objects.create_user(username=email, name=name, email=email, password=password,
-                                                   fcm_token=fcm_token, mobile_number=mobile_number,whatsapp_number=whatsapp_number,user_type="User")
+                                                   fcm_token=fcm_token,country=country_instance,state=state_instance,district=district_instance, mobile_number=mobile_number,whatsapp_number=whatsapp_number,user_type="User")
             access_token = RefreshToken.for_user(user).access_token
 
             return Response({
@@ -74,11 +79,95 @@ class UserLogin(APIView):
 
 
 
+def send_otp(email):
+    return random.randint(100000, 999999)  # Generate a random 6-digit OTP
+
+@csrf_exempt
+def request_otp(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = CustomUser.objects.get(email=email)
+            otp = send_otp(email)
+            user.otp = otp  # Save OTP in the user model
+            user.otp_created_at = timezone.now()
+            user.save()
+            # Send OTP via email
+            send_mail(
+                'Your OTP for Password Reset',
+                f'Your OTP is {otp}.',
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+            return JsonResponse({'message': 'OTP sent successfully.'})
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'Email not found.'}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+def verify_otp(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        otp = request.POST.get('otp')
+        try:
+            user = CustomUser.objects.get(email=email)
+            if user.otp == otp:
+                otp_age = timezone.now() - user.otp_created_at
+                if otp_age <= timedelta(minutes=5):  # Check if OTP is still valid
+                    return JsonResponse({'message': 'OTP verified successfully.'})
+                else:
+                    return JsonResponse({'error': 'OTP has expired.'}, status=400)
+            else:
+                return JsonResponse({'error': 'Invalid OTP.'}, status=400)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'Email not found.'}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+
+
+
+def reset_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        otp = request.POST.get('otp')
+        new_password = request.POST.get('new_password')
+
+        try:
+            user = CustomUser.objects.get(email=email)
+            if user.otp == otp:
+                otp_age = timezone.now() - user.otp_created_at
+                if otp_age <= timedelta(minutes=5):
+                    user.password = make_password(new_password)
+                    user.otp = None  # Clear the OTP
+                    user.save()
+                    return JsonResponse({'message': 'Password reset successfully.'})
+                else:
+                    return JsonResponse({'error': 'OTP has expired.'}, status=400)
+            else:
+                return JsonResponse({'error': 'Invalid OTP.'}, status=400)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'Email not found.'}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+
+
+
+
+
+
+
+
+
+
+
 @api_view(['GET'])
 def category_with_subcategory_and_employees(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True, context={'request': request})
-    return Response(serializer.data)
+    top_categories = TopCategory.objects.all()
+    topcategories_serializer = TopCategorySerializer(top_categories, many=True, context={'request': request})
+
+    return Response({'datas': serializer.data,'top_categories': topcategories_serializer.data}, status=status.HTTP_200_OK)
 
 
 
@@ -196,7 +285,10 @@ def search_by_category(request):
         return JsonResponse({'error': 'Category name is required.'}, status=400)
 
     try:
+        # Get the category that matches the search term
         category = Category.objects.get(name__icontains=category_name)
+        
+        # Fetch users associated with the category
         users = CustomUser.objects.filter(category=category).distinct()
 
         user_data = []
@@ -205,11 +297,15 @@ def search_by_category(request):
                 'name': user.name,
                 'mobile_number': user.mobile_number,
                 'whatsapp_number': user.whatsapp_number,
-                'profile_picture': user.profile_picture.url if user.profile_picture else None,
+                'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
                 'about': user.about,
             })
 
-        return JsonResponse({'users': user_data}, status=200)
+        # Response format includes the searched category and the list of users
+        return JsonResponse({
+            'searched_category': category.name,
+            'users': user_data
+        }, status=200)
 
     except Category.DoesNotExist:
         return JsonResponse({'error': 'Category not found.'}, status=404)
@@ -256,3 +352,32 @@ def save_employee(request):
 
     else:
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
+
+
+
+
+@api_view(['GET'])
+def my_orders_user_api(request):
+    # Ensure the user is authenticated
+    if not request.user.is_authenticated:
+        return Response({'error': 'User not authenticated'}, status=401)
+    
+    # Fetch bookings based on each status for the logged-in user
+    pending_bookings = Booking.objects.filter(status='Pending', user=request.user)
+    accepted_bookings = Booking.objects.filter(status='Accept', user=request.user)
+    completed_bookings = Booking.objects.filter(status='Completed', user=request.user)
+    rejected_bookings = Booking.objects.filter(status='Reject', user=request.user)
+
+    # Serialize the bookings using BookingSerializerUser
+    pending_serializer = BookingSerializerUser(pending_bookings, many=True, context={'request': request})
+    accepted_serializer = BookingSerializerUser(accepted_bookings, many=True, context={'request': request})
+    completed_serializer = BookingSerializerUser(completed_bookings, many=True, context={'request': request})
+    rejected_serializer = BookingSerializerUser(rejected_bookings, many=True, context={'request': request})
+
+    # Return the data in a structured response
+    return Response({
+        'pending_bookings': pending_serializer.data,
+        'accepted_bookings': accepted_serializer.data,
+        'completed_bookings': completed_serializer.data,
+        'rejected_bookings': rejected_serializer.data,
+    })

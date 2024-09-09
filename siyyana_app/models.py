@@ -62,6 +62,15 @@ class RequestedCategory(models.Model):
     
 
 
+class TopCategory(models.Model):
+    class Meta:
+        verbose_name_plural = "TOP CATEGORY"
+    def __str__(self):
+        return self.Category.name
+    Category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
+
 
 STATUS_CHOICES = (
     
@@ -91,6 +100,7 @@ class Booking(models.Model):
 
 
 
+
 class Saved_Employees(models.Model):
     class Meta:
         verbose_name_plural = "SAVED EMPLOYEES"
@@ -98,3 +108,8 @@ class Saved_Employees(models.Model):
         return f'{self.user} - {self.employee}'
     employee = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='saved_employee')
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True,related_name='saved_user')
+
+
+
+
+

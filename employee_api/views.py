@@ -50,6 +50,20 @@ def location_list_api(request):
 
 
 
+@api_view(['GET'])
+def state_list_api(request):
+    states = State.objects.all()
+    
+    state_data = []
+    for state in states:
+        state_data.append({
+            'id': state.id,
+            'name': state.name,
+        })
+    
+    return Response({'states': state_data}, status=200)
+
+
 
 class EmployeeRegistration(APIView):
     def post(self, request):
@@ -204,6 +218,10 @@ def subcategories_by_category(request):
     subcategories = SubCategory.objects.filter(service__id__in=category_ids)
     serializer = SubCategorySerializer(subcategories, many=True)
     return Response(serializer.data)
+
+
+
+
 
 
 

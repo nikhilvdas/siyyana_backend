@@ -44,7 +44,12 @@ class SubCategorySerializer(serializers.ModelSerializer):
         model = SubCategory
         fields = ['id', 'name', 'service']
 
+class TopCategorySerializer(serializers.ModelSerializer):
+    Category = CategoryListSerializer(read_only=True)
 
+    class Meta:
+        model = TopCategory
+        fields = ['id', 'Category']
 
 
 class RequestedCategorySerializer(serializers.ModelSerializer):
@@ -64,9 +69,10 @@ class EmplpoyeeWagesSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
     employee_wages = EmplpoyeeWagesSerializer(many=True)
+    total_orders = serializers.SerializerMethodField()
     class Meta:
         model = CustomUser
-        fields = ['first_name','last_name','profile_picture','about','employee_wages','charge']
+        fields = ['first_name','last_name','profile_picture','mobile_number','whatsapp_number','about','total_orders','employee_wages','charge']
 
     def get_logo(self, obj):
         request = self.context.get('request')
@@ -74,6 +80,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.profile_picture.url)
         return None 
 
+    def get_total_orders(self, obj):
+        return Booking.objects.filter(employee=obj).count()
 
 
 # class BookingSerializer(serializers.ModelSerializer):

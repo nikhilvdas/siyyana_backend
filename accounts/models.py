@@ -76,6 +76,9 @@ class CustomUser(AbstractUser):
     id_card_type = models.CharField(max_length=20, blank=True, null=True)
     id_card_number = models.CharField(max_length=20, blank=True, null=True)
     id_card = models.FileField(upload_to='id_card/', blank=True, null=True)
+    # OTP fields for forgot password functionality
+    otp = models.CharField(max_length=6, blank=True, null=True)  # Store OTP
+    otp_created_at = models.DateTimeField(blank=True, null=True)  # Store OTP creation time
 
     def __str__(self):
         return  str(self.name)
