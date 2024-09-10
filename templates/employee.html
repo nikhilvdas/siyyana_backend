@@ -15,6 +15,64 @@ Employees
             <div class="col-sm-12">
               <div class="card">
                 <div class="card-body">
+                    <form method="get" class="row g-3 mb-2">
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="country" style="margin-right: 1rem;">
+                                <option value="All">Country</option>
+                                {% for country in countries %}
+                                    <option value="{{ country.id }}" {% if country.id|stringformat:"s" == request.GET.country %}selected{% endif %}>{{ country.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                      
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="state" style="margin-right: 1rem;">
+                                <option value="All">State</option>
+                                {% for state in states %}
+                                    <option value="{{ state.id }}" {% if state.id|stringformat:"s" == request.GET.state %}selected{% endif %}>{{ state.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="district" style="margin-right: 1rem;">
+                                <option value="All">District</option>
+                                {% for district in districts %}
+                                    <option value="{{ district.id }}" {% if district.id|stringformat:"s" == request.GET.district %}selected{% endif %}>{{ district.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="category" style="margin-right: 1rem;">
+                                <option value="All">Category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                    
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="subcategory" style="margin-right: 1rem;">
+                                <option value="All">Sub Category</option>
+                                {% for subcategory in subcategories %}
+                                    <option value="{{ subcategory.id }}" {% if subcategory.id|stringformat:"s" == request.GET.subcategory %}selected{% endif %}>{{ subcategory.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <div class="col-md-1">
+                            <input type="submit" class="btn btn-primary" value="Filter">
+                        </div>
+                        {% comment %} <div class="col-md-1">
+                            <button type="submit" class="btn btn-success" name="export_excel" value="1" title="Export to Excel">
+                                <i class="fas fa-file-excel"></i>
+                            </button>
+                        </div> {% endcomment %}
+                    </form>
+                    
                   <div class="list-product-header">
                     {% comment %} <div>
                       <a class="btn"  style="background-color: #2096ad; border-color: #2096ad; color: white;" href="{% url 'siyyana_app:add_services' %}"
@@ -34,6 +92,7 @@ Employees
                                 <th>Country</th>
                                 <th>State</th>
                                 <th>District</th>
+                                <th>Status</th>
                                 <th>Action</th>
                               </tr>
                         </thead>
@@ -65,6 +124,19 @@ Employees
                               <td>{{ user.country}}</td>
                               <td>{{ user.state.name }}</td>
                               <td>{{ user.district.name }}</td>
+                              <td>
+                                {% if user.status == 'Active' %}
+                                <label class="switch">
+                                  <input type="checkbox" class="checkbox-category" data-category-url="{% url 'siyyana_app:staff_status_change' user.id %}" checked>
+                                  <span class="slider round"></span>
+                                </label>
+                                {% else %}
+                                <label class="switch">
+                                  <input type="checkbox" class="checkbox-category" data-category-url="{% url 'siyyana_app:staff_status_change' user.id %}" >
+                                  <span class="slider round"></span>
+                                </label>
+                                {% endif %}
+                              </td>
                               <td>
                                 <ul class="action">
                                   {% comment %} <li class="edit">

@@ -203,11 +203,59 @@ def delete_topservices(request,id):
 
 @login_required(login_url="siyyana_app:login")
 def employee_list(request):
-    data = CustomUser.objects.filter(user_type='Employee').order_by('-id')
-    context = {'users':data}
-    return render(request,'employee.html',context)
+    # Get form inputs
+    country_id = request.GET.get('country')
+    category_id = request.GET.get('category')
+    state_id = request.GET.get('state')
+    district_id = request.GET.get('district')
+    subcategory_id = request.GET.get('subcategory')
+
+    # Start with all employees
+    employees = CustomUser.objects.filter(user_type='Employee').order_by('-id')
+
+    # Apply filters
+    if country_id and country_id != 'All':
+        employees = employees.filter(country__id=country_id)
+
+    if category_id and category_id != 'All':
+        employees = employees.filter(category__id=category_id)
+
+    if state_id and state_id != 'All':
+        employees = employees.filter(state__id=state_id)
+
+    if district_id and district_id != 'All':
+        employees = employees.filter(district__id=district_id)
+
+    if subcategory_id and subcategory_id != 'All':
+        employees = employees.filter(subcategory__id=subcategory_id)
+
+    # Populate dropdown choices
+    countries = Country.objects.all()
+    categories = Category.objects.all()
+    states = State.objects.all()
+    districts = District.objects.all()
+    subcategories = SubCategory.objects.all()
+
+    context = {
+        'users': employees,
+        'countries': countries,
+        'categories': categories,
+        'states': states,
+        'districts': districts,
+        'subcategories': subcategories,
+    }
+
+    return render(request, 'employee.html', context)
 
 
+def staff_status_change(request, id):
+    statuss = CustomUser.objects.filter(id=id).first()
+    if statuss.status == "Active":
+        statuss.status = "Inactive"
+    else:
+        statuss.status = "Active"
+    statuss.save()
+    return redirect("siyyana_app:employee_list")
 
 def view_profile(request,id):
     
@@ -234,10 +282,39 @@ def employee_delete(request,id):
 
 @login_required(login_url="siyyana_app:login")
 def user_list(request):
-    data = CustomUser.objects.filter(user_type='User').order_by('-id')
-    context = {'users':data}
-    return render(request,'users.html',context)
+    # Get form inputs
+    state_id = request.GET.get('state')
+    district_id = request.GET.get('district')
+    subcategory_id = request.GET.get('subcategory')
 
+    # Start with all users
+    data = CustomUser.objects.filter(user_type='User').order_by('-id')
+
+    # Apply filters
+
+
+    if state_id and state_id != 'All':
+        data = data.filter(state__id=state_id)
+
+    if district_id and district_id != 'All':
+        data = data.filter(district__id=district_id)
+
+    if subcategory_id and subcategory_id != 'All':
+        data = data.filter(subcategory__id=subcategory_id)
+
+    # Populate dropdown choices
+    countries = Country.objects.all()
+    states = State.objects.all()
+    districts = District.objects.all()
+
+    context = {
+        'users': data,
+        'countries': countries,
+        'states': states,
+        'districts': districts,
+    }
+
+    return render(request, 'users.html', context)
 
 @login_required(login_url="siyyana_app:login")
 def user_delete(request,id):

@@ -4,8 +4,8 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Per
 
 
 STATUS_CHOICES = (
-    (True,  'Active'),
-    (False, 'Inactive'),
+    ('Active',  'Active'),
+    ('Inactive', 'Inactive'),
 )
 
 APPROVAL_CHOICES = (
@@ -67,6 +67,7 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(max_length=20,null=True,blank=True,choices=USER_TYPE)
     fcm_token = models.CharField(max_length=1000, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=20, blank=True, null=True, choices=STATUS_CHOICES, default="Active")
     gender = models.CharField(max_length=10, blank=True, null=True)
     approval_status = models.CharField(max_length=20, blank=True, null=True, choices=APPROVAL_CHOICES, default="Pending")
     country = models.ForeignKey('siyyana_app.Country', on_delete=models.SET_NULL, null=True, blank=True,related_name='customuser_country')

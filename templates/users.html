@@ -13,6 +13,44 @@ Users
             <div class="col-sm-12">
               <div class="card">
                 <div class="card-body">
+                    <form method="get" class="row g-3 mb-2">
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="country" style="margin-right: 1rem;">
+                                <option value="All">Country</option>
+                                {% for country in countries %}
+                                    <option value="{{ country.id }}" {% if country.id|stringformat:"s" == request.GET.country %}selected{% endif %}>{{ country.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                      
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="state" style="margin-right: 1rem;">
+                                <option value="All">State</option>
+                                {% for state in states %}
+                                    <option value="{{ state.id }}" {% if state.id|stringformat:"s" == request.GET.state %}selected{% endif %}>{{ state.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" name="district" style="margin-right: 1rem;">
+                                <option value="All">District</option>
+                                {% for district in districts %}
+                                    <option value="{{ district.id }}" {% if district.id|stringformat:"s" == request.GET.district %}selected{% endif %}>{{ district.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-1">
+                            <input type="submit" class="btn btn-primary" value="Filter">
+                        </div>
+                        {% comment %} <div class="col-md-1">
+                            <button type="submit" class="btn btn-success" name="export_excel" value="1" title="Export to Excel">
+                                <i class="fas fa-file-excel"></i>
+                            </button>
+                        </div> {% endcomment %}
+                    </form>
                   <div class="list-product-header">
                     {% comment %} <div>
                       <a class="btn"  style="background-color: #2096ad; border-color: #2096ad; color: white;" href="{% url 'siyyana_app:add_services' %}"

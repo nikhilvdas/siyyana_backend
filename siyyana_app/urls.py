@@ -48,7 +48,7 @@ urlpatterns = [
     path('district-delete/<int:id>/', views.district_delete,name='district_delete'),
 
     path('view-profile/<int:id>/', views.view_profile,name='view_profile'),
-
+    path('staff-status-change/<int:id>/', views.staff_status_change, name='staff_status_change'),
     
     
 ]
