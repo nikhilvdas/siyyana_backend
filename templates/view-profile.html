@@ -3,7 +3,7 @@
 {% block content %}
 
 {% block pageheading %}
-Add Top Services
+View Profile
 {% endblock %}
 
 
@@ -19,27 +19,7 @@ Add Top Services
               {% csrf_token %}
             <div class="form theme-form">
               <div class="row">
-                <div class="col-lg-6">
-                  <div class="mb-3">
-                    <label>Service</label>
-                    {{form.Category}}
-                  </div>
-                </div>
-                
-              </div>
-             
-              
-              
-              </div>
-              
-              
-              <div class="row">
-                <div class="col">
-                  <div class="text-end">
-                    <input type='submit' class="btn me-3 custom-submit-btn" value='Submit'>
-                    <a class="btn btn-danger" href="#" onclick="window.history.back(); return false;">Cancel</a>
-                  </div>
-                </div>
+                {{form.as_p}}
               </div>
             </div>
           </form>

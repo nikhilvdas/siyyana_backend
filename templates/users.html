@@ -15,7 +15,7 @@ Users
                 <div class="card-body">
                   <div class="list-product-header">
                     {% comment %} <div>
-                      <a class="btn"  style="background-color: #1c753a; border-color: #1c753a; color: white;" href="{% url 'siyyana_app:add_services' %}"
+                      <a class="btn"  style="background-color: #2096ad; border-color: #2096ad; color: white;" href="{% url 'siyyana_app:add_services' %}"
                         ><i class="fa fa-plus"></i>Add Employees</a
                       >
                     </div> {% endcomment %}
@@ -39,8 +39,19 @@ Users
                             <tr>
                               <td>{{ forloop.counter }}</td>
                               <td>{{ user.name }}</td>
-                              <td>{{ user.mobile_number }}</td>
-                              <td>{{ user.whatsapp_number }}</td>
+                              <td>
+                                <a href="tel:{{ user.mobile_number }}">
+                                    <i class="fas fa-phone"></i> {{ user.mobile_number }}
+                                </a>
+                            </td>
+                    
+                            <!-- Call Dial Pad Link -->
+                            <td>
+                                <a href="https://wa.me/{{ user.whatsapp_number }}" target="_blank">
+                                    <i class="fab fa-whatsapp"></i> {{ user.whatsapp_number }}
+                                </a>
+                               
+                            </td>
                               <td>{{ user.country}}</td>
                               <td>{{ user.state.name }}</td>
                               <td>{{ user.district.name }}</td>
@@ -57,6 +68,7 @@ Users
                                       <i class="icon-trash me-2"></i>
                                     </a>
                                   </li>
+                                 
                                 </ul>
                               </td>
                             </tr>

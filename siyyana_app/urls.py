@@ -46,5 +46,9 @@ urlpatterns = [
     path('add-district', views.add_district,name='add_district'),
     path('edit-district/<int:id>/', views.edit_district,name='edit_district'),
     path('district-delete/<int:id>/', views.district_delete,name='district_delete'),
+
+    path('view-profile/<int:id>/', views.view_profile,name='view_profile'),
+
+    
     
 ]

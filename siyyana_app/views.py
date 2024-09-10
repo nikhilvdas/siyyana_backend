@@ -8,11 +8,35 @@ from django.contrib.auth.models import User,auth
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
+from .utils import top_booked_employees
+from django.db.models import Count
 # Create your views here.
 
 @login_required(login_url="siyyana_app:login")
 def index(request):
-    return render(request,'index.html')
+    employee_count = CustomUser.objects.filter(user_type = 'Employee').count()
+    user_count = CustomUser.objects.filter(user_type = 'User').count()
+    booking_count = Booking.objects.all().count()
+    services_count = Category.objects.all().count()
+    sub_services_count = SubCategory.objects.all().count()
+    top_services_count = TopCategory.objects.all().count()
+    # Get the top booked employees
+    top_booked_employees = CustomUser.objects.filter(user_type = 'Employee')[:5]
+    top_booked_customers = CustomUser.objects.filter(user_type = 'User')[:5]
+
+    context = {
+
+        'employee_count':employee_count,
+        'user_count':user_count,
+        'booking_count':booking_count,
+        'services_count':services_count,
+        'sub_services_count':sub_services_count,
+        'top_services_count':top_services_count,
+        'top_booked_employees': top_booked_employees, 
+        'top_booked_customers': top_booked_customers
+
+    }
+    return render(request,'index.html',context)
 
 
 
@@ -182,6 +206,21 @@ def employee_list(request):
     data = CustomUser.objects.filter(user_type='Employee').order_by('-id')
     context = {'users':data}
     return render(request,'employee.html',context)
+
+
+
+def view_profile(request,id):
+    
+    user = CustomUser.objects.get(id=id)
+    # Initialize the form with the current user's data
+    form = EmployeeViewForm(instance=user)
+
+    # Render the form with disabled fields for view-only access
+    context = {
+        'form': form,
+    }
+    return render(request, 'view-profile.html', context)
+
 
 
 @login_required(login_url="siyyana_app:login")

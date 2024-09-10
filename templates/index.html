@@ -13,7 +13,6 @@
     margin-left: 252px;
   }
 </style>
-
       <!-- Page Body Start-->
 
 
@@ -29,7 +28,7 @@
                     <div class="card pb-4">
                       <div class="card-header card-no-border pb-0">
                         <div class="header-top daily-revenue-card">
-                          <h4>Bookings</h4>
+                          <h4>Employee</h4>
                         </div>
                       </div>
                       <div class="card-body pb-0 total-sells-3">
@@ -42,7 +41,7 @@
                           </div>
                           <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2">
-                              <h2>{{booking_counts}}</h2>
+                              <h2>{{employee_count}}</h2>
                               <div class="d-flex total-icon">
                                
                               </div>
@@ -58,7 +57,7 @@
                     <div class="card pb-4">
                       <div class="card-header card-no-border pb-0">
                         <div class="header-top daily-revenue-card">
-                          <h4>Blogs</h4>
+                          <h4>Customers</h4>
         
                         </div>
                       </div>
@@ -72,7 +71,7 @@
                           </div>
                           <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2">
-                              <h2>{{blogs_count}}</h2>
+                              <h2>{{user_count}}</h2>
                               <div class="d-flex total-icon">
                                 
                               </div>
@@ -88,7 +87,7 @@
                     <div class="card pb-4">
                       <div class="card-header card-no-border pb-0">
                         <div class="header-top daily-revenue-card">
-                          <h4>Enquiry</h4>
+                          <h4>Bookings</h4>
 
                         </div>
                       </div>
@@ -102,7 +101,7 @@
                           </div>
                           <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2">
-                              <h2>{{enquiry_count}}</h2>
+                              <h2>{{booking_count}}</h2>
                               <div class="d-flex total-icon">
                                 
                               </div>
@@ -119,7 +118,7 @@
                     <div class="card pb-4">
                       <div class="card-header card-no-border pb-0">
                         <div class="header-top daily-revenue-card">
-                          <h4 style="font-size: 16px;">Locations</h4>
+                          <h4 style="font-size: 16px;">Services</h4>
 
                         </div>
                       </div>
@@ -133,7 +132,37 @@
                           </div>
                           <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2">
-                              <h2>{{locations_count}}</h2>
+                              <h2>{{services_count}}</h2>
+                              <div class="d-flex total-icon">
+                              
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </div>
+                  <div class="col-xl-3 col-sm-6">
+                    <a href="#">
+                    <div class="card pb-4">
+                      <div class="card-header card-no-border pb-0">
+                        <div class="header-top daily-revenue-card">
+                          <h4 style="font-size: 16px;">Top Services</h4>
+
+                        </div>
+                      </div>
+                      <div class="card-body pb-0 total-sells-4">
+                        <div class="d-flex align-items-center gap-3">
+                          <div class="flex-shrink-0">
+                            <img
+                              src="{% static 'assets/images/dashboard-3/icon/revenue1.png' %}"
+                              alt="icon"
+                            />
+                          </div>
+                          <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                              <h2>{{top_services_count}}</h2>
                               <div class="d-flex total-icon">
                               
                               </div>
@@ -148,7 +177,7 @@
                     <div class="card">
                         <div class="card-header card-no-border pb-0">
                             <div class="header-top">
-                                <h4>Recent Booking List</h4>
+                                <h4>Top Booked Employees</h4>
                                 <div class="dropdown icon-dropdown">
                                     {% comment %} <button class="btn dropdown-toggle" id="userdropdown17" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="icon-more-alt"></i>
@@ -166,33 +195,98 @@
                                         <tr>
                                           <th>SL</th>
                                           <th>Name</th>
-                                          <th>Phone</th>
-                                          <th>Date</th>
-                                          <th>Package</th>
-                                          <th>Children</th>
-                                          <th>Adult</th>
-                                          <th>Grand total</th>
+                                          <th>Whatsapp</th>
+                                          <th>Mobile</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in recent_bookings %}
-                                        <tr>
-                                          <td>{{forloop.counter }}</td>
-                                          <td>{{i.name}}</td>
-                                          <td>{{i.country_code}} {{i.phone}}</td>
-                                          <td>{{i.date}}</td>
-                                          <td>{{i.tour_package}}</td>
-                                          <td>{{i.children}}</td>
-                                          <td>{{i.adult}}</td>
-                                          <td>{{i.total_amount}}</td>
-                                        </tr>
-                                        {% endfor %}
+                                      {% for employee in top_booked_employees %}
+                                      <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                          <td>{{ employee.name }}</td>
+                                          <td>
+                                            <a href="https://wa.me/{{ employee.whatsapp_number }}" target="_blank">
+                                                <i class="fab fa-whatsapp"></i> {{ employee.whatsapp_number }}
+                                            </a>
+                                        </td>
+                                
+                                        <!-- Call Dial Pad Link -->
+                                        <td>
+                                            <a href="tel:{{ employee.mobile_number }}">
+                                                <i class="fas fa-phone"></i> {{ employee.mobile_number }}
+                                            </a>
+                                        </td>
+                                          
+                                      </tr>
+                                      {% empty %}
+                                      <tr>
+                                          <td colspan="5">No bookings found</td>
+                                      </tr>
+                                      {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                   </div>
+
+                  <div class="col-xxl-12 col-xl-12 box-col-6 col-md-12 proorder-4-xl-1 proorder-md-7">
+                    <div class="card">
+                        <div class="card-header card-no-border pb-0">
+                            <div class="header-top">
+                                <h4>Top Booked Customers</h4>
+                                <div class="dropdown icon-dropdown">
+                                    {% comment %} <button class="btn dropdown-toggle" id="userdropdown17" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="icon-more-alt"></i>
+                                    </button> {% endcomment %}
+                                    {% comment %} <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown17">
+                                        <a class="dropdown-item" href="/all-orders">Go To Order Details</a>
+                                    </div> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 featured-table">
+                            <div class="table-responsive theme-scrollbar">
+                                <table class="table display" id="featured-table" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                          <th>SL</th>
+                                          <th>Name</th>
+                                          <th>Whatsapp</th>
+                                          <th>Mobile</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for employee in top_booked_customers %}
+                                      <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                          <td>{{ employee.name }}</td>
+                                          <td>
+                                            <a href="https://wa.me/{{ employee.whatsapp_number }}" target="_blank">
+                                                <i class="fab fa-whatsapp"></i> {{ employee.whatsapp_number }}
+                                            </a>
+                                        </td>
+                                
+                                        <!-- Call Dial Pad Link -->
+                                        <td>
+                                            <a href="tel:{{ employee.mobile_number }}">
+                                                <i class="fas fa-phone"></i> {{ employee.mobile_number }}
+                                            </a>
+                                        </td>
+                                          
+                                      </tr>
+                                      {% empty %}
+                                      <tr>
+                                          <td colspan="5">No bookings found</td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+    
     
 
               

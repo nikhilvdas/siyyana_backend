@@ -1,4 +1,5 @@
 from django import forms
+from accounts.models import CustomUser
 from siyyana_app.models import *
 
 
@@ -84,5 +85,38 @@ class DistrictAddForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
 
         }
+
+
+
+
+class EmployeeViewForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'name', 'mobile_number', 'whatsapp_number', 'profile_picture', 'about', 'category', 
+            'subcategory', 'charge', 'date_of_birth', 'approval_status', 
+            'country', 'state', 'district', 'prefered_work_location', 'id_card_type', 'id_card_number', 'id_card'
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name', 'disabled': True}),
+            'mobile_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Mobile Number', 'disabled': True}),
+            'whatsapp_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'WhatsApp Number', 'disabled': True}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control-file', 'disabled': True}),
+            'about': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Tell us about yourself', 'rows': 5, 'disabled': True}),
+            'category': forms.SelectMultiple(attrs={'class': 'form-control', 'disabled': True}),
+            'subcategory': forms.SelectMultiple(attrs={'class': 'form-control', 'disabled': True}),
+            'charge': forms.Select(attrs={'class': 'form-control', 'disabled': True}),
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'disabled': True}),
+            'approval_status': forms.Select(attrs={'class': 'form-control', 'disabled': True}),
+            'country': forms.Select(attrs={'class': 'form-control', 'disabled': True}),
+            'state': forms.Select(attrs={'class': 'form-control', 'disabled': True}),
+            'district': forms.Select(attrs={'class': 'form-control', 'disabled': True}),
+            'prefered_work_location': forms.Select(attrs={'class': 'form-control', 'disabled': True}),
+            'id_card_type': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'ID Card Type', 'disabled': True}),
+            'id_card_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'ID Card Number', 'disabled': True}),
+            'id_card': forms.ClearableFileInput(attrs={'class': 'form-control-file', 'disabled': True}),
+        }
+
+
 
 
