@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %}
+
+{% block pageheading %}
+State
+{% endblock %}
+
+
+      <!-- Page Sidebar Ends-->
+      <div class="page-body">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="list-product-header">
+                    <div>
+                      <a class="btn"  style="background-color: #1c753a; border-color: #1c753a; color: white;" href="{% url 'siyyana_app:add_state' %}"
+                        ><i class="fa fa-plus"></i>Add State</a
+                      >
+                    </div>
+                    
+                  <div class="list-product">
+                      <table class="display" id="row-select-delete">
+                        <thead>
+                          <tr>
+                            <th>SL</th>
+                            <th>State Name</th>
+                            <th>Country Name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in data %}
+                          <tr>
+                            <td>{{forloop.counter }}</td>
+                            <td>{{i.name}}</td>
+                            <td>{{i.country}}</td>
+                            <td>
+                              <ul class="action">
+                                <li class="edit">
+                                  <a href="{% url 'siyyana_app:edit_state' i.id %}"
+                                    ><i class="icon-pencil-alt"></i
+                                  ></a>
+                                </li>
+                                <li class="delete">
+                                  <a  onclick="showConfirmation('{%  url 'siyyana_app:state_delete' i.id %}')"><i class="icon-trash me-2"></i></a>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Container-fluid Ends-->
+      </div>
+      <!-- footer start-->
+
+
+{% endblock content %}

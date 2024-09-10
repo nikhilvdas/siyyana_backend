@@ -32,5 +32,19 @@ urlpatterns = [
     path('user-list', views.user_list,name='user_list'),
     path('user-delete/<int:id>/', views.user_delete,name='user_delete'),
 
+    path('country', views.country,name='country'),
+    path('add-country', views.add_country,name='add_country'),
+    path('edit-country/<int:id>/', views.edit_country,name='edit_country'),
+    path('country-delete/<int:id>/', views.country_delete,name='country_delete'),
+
+    path('state', views.state,name='state'),
+    path('add-state', views.add_state,name='add_state'),
+    path('edit-state/<int:id>/', views.edit_state,name='edit_state'),
+    path('state-delete/<int:id>/', views.state_delete,name='state_delete'),
+
+    path('district', views.district,name='district'),
+    path('add-district', views.add_district,name='add_district'),
+    path('edit-district/<int:id>/', views.edit_district,name='edit_district'),
+    path('district-delete/<int:id>/', views.district_delete,name='district_delete'),
     
 ]

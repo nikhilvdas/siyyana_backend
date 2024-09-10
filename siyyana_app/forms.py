@@ -44,7 +44,45 @@ class TopServicesAddForm(forms.ModelForm):
         fields = '__all__'
 
         widgets = {
-            
+
             'Category': forms.Select(attrs={'class': 'form-control','required':True}),
         }
+
+
+class CountryAddForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = '__all__'
+
+        widgets = {
+            
+            'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+        }
+
+
+
+class StateAddForm(forms.ModelForm):
+    class Meta:
+        model = State
+        fields = '__all__'
+
+        widgets = {
+            'country': forms.Select(attrs={'class': 'form-control','required':True}),
+            'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+        }
+
+
+
+
+class DistrictAddForm(forms.ModelForm):
+    class Meta:
+        model = District
+        fields = '__all__'
+
+        widgets = {
+            'state': forms.Select(attrs={'class': 'form-control','required':True}),
+            'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+
+        }
+
 

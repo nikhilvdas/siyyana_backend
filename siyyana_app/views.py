@@ -206,3 +206,164 @@ def user_delete(request,id):
     data.delete()
     messages.success(request,'Deleted successfully')
     return redirect('siyyana_app:user_list')
+
+
+
+
+@login_required(login_url="siyyana_app:login")
+def country(request):
+    data = Country.objects.all().order_by('-id')
+    context = {'data':data}
+    return render(request,'country.html',context)
+
+
+
+
+@login_required(login_url="siyyana_app:login")
+def add_country(request):
+    if request.method == 'POST':
+        form = CountryAddForm(request.POST,request.FILES)
+        name  = request.POST.get('name')
+        if Country.objects.filter(name=name).exists():
+            messages.error(request,'Already Exists')
+            return redirect('siyyana_app:country')
+        if form.is_valid():
+            form.save()
+            messages.success(request,'added successfully')
+            return redirect('siyyana_app:country')
+    else:
+        form = CountryAddForm()
+    context = {'form':form}
+    return render(request,'add-country.html',context)
+
+
+
+
+
+@login_required(login_url="siyyana_app:login")
+def edit_country(request,id):
+    update = Country.objects.get(id=id)
+    if request.method == 'POST':
+        form = CountryAddForm(request.POST,request.FILES,instance=update)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Updated successfully')
+            return redirect('siyyana_app:country')
+    else:
+        form = CountryAddForm(instance=update)
+    context = {'form':form}
+    return render(request,'add-country.html',context)
+
+
+
+@login_required(login_url="siyyana_app:login")
+def country_delete(request,id):
+    data = Country.objects.get(id=id)
+    data.delete()
+    messages.success(request,'Deleted successfully')
+    return redirect('siyyana_app:country')
+
+
+
+
+@login_required(login_url="siyyana_app:login")
+def state(request):
+    data = State.objects.all().order_by('-id')
+    context = {'data':data}
+    return render(request,'sate.html',context)
+
+@login_required(login_url="siyyana_app:login")
+def add_state(request):
+    if request.method == 'POST':
+        form = StateAddForm(request.POST,request.FILES)
+        name  = request.POST.get('name')
+        if State.objects.filter(name=name).exists():
+            messages.error(request,'Already Exists')
+            return redirect('siyyana_app:state')
+        if form.is_valid():
+            form.save()
+            messages.success(request,'added successfully')
+            return redirect('siyyana_app:state')
+    else:
+        form = StateAddForm()
+    context = {'form':form}
+    return render(request,'add-state.html',context)
+
+
+@login_required(login_url="siyyana_app:login")
+def edit_state(request,id):
+    update = State.objects.get(id=id)
+    if request.method == 'POST':
+        form = StateAddForm(request.POST,request.FILES,instance=update)        
+        if form.is_valid():
+            form.save()
+            messages.success(request,'updated successfully')
+            return redirect('siyyana_app:state')
+    else:
+        form = StateAddForm(instance=update)
+    context = {'form':form}
+    return render(request,'add-state.html',context)
+
+
+
+@login_required(login_url="siyyana_app:login")
+def state_delete(request,id):
+    data = State.objects.get(id=id)
+    data.delete()
+    messages.success(request,'Deleted successfully')
+    return redirect('siyyana_app:state')
+
+
+
+@login_required(login_url="siyyana_app:login")
+def district(request):
+    data = District.objects.all().order_by('-id')
+    context = {'data':data}
+    return render(request,'district.html',context)
+
+
+
+@login_required(login_url="siyyana_app:login")
+def add_district(request):
+    if request.method == 'POST':
+        form = DistrictAddForm(request.POST,request.FILES)
+        name  = request.POST.get('name')
+        if District.objects.filter(name=name).exists():
+            messages.error(request,'Already Exists')
+            return redirect('siyyana_app:district')
+        if form.is_valid():
+            form.save()
+            messages.success(request,'added successfully')
+            return redirect('siyyana_app:district')
+    else:
+        form = DistrictAddForm()
+    context = {'form':form}
+    return render(request,'add-district.html',context)
+
+
+
+@login_required(login_url="siyyana_app:login")
+def edit_district(request,id):
+    update = District.objects.get(id=id)
+    if request.method == 'POST':
+        form = DistrictAddForm(request.POST,request.FILES,instance=update)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Updated successfully')
+            return redirect('siyyana_app:district')
+    else:
+        form = DistrictAddForm(instance=update)
+    context = {'form':form}
+    return render(request,'add-district.html',context)
+
+
+
+
+
+@login_required(login_url="siyyana_app:login")
+def district_delete(request,id):
+    data = District.objects.get(id=id)
+    data.delete()
+    messages.success(request,'Deleted successfully')
+    return redirect('siyyana_app:district')
+
