@@ -33,7 +33,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name','logo','count','subcategories']
+        fields = ['id', 'name','logo','color','count','subcategories']
 
     def get_subcategories(self, obj):
         subcategories = SubCategory.objects.filter(service=obj)
@@ -69,3 +69,7 @@ class BookingSerializerUser(serializers.ModelSerializer):
 
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['booking', 'employee', 'timing', 'service_quality', 'behavior', 'service_summary', 'review']

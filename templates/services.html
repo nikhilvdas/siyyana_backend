@@ -29,6 +29,7 @@ Services
                             <th>SL</th>
                             <th>Service name</th>
                             <th>Logo</th>
+                            <th>Color</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -38,6 +39,7 @@ Services
                             <td>{{forloop.counter }}</td>
                             <td>{{i.name}}</td>
                             <td><img src="{{i.logo.url}}" style="width:49px;height:50px;"></td>
+                            <td><span style="background-color: {{ i.color }}; padding: 5px 10px; color: white;"></td>
                             <td>
                               <ul class="action">
                                 <li class="edit">

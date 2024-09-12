@@ -10,6 +10,8 @@ urlpatterns = [
     path('employee-registration', EmployeeRegistration.as_view(), name='employee-registration'),
     path('employee-login', EmployeeLogin.as_view(), name='employee-login'),
     path('employee-detail-api', employee_detail_api, name='employee-detail-api'),
+    path('get-time-slots', get_time_slots, name='get-time-slots'),
+    
 
     path('category-list', views.category_list, name='category-list'),
     path('subcategories-by-category', views.subcategories_by_category, name='subcategories-by-category'),

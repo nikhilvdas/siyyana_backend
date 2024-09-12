@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
+import json
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -178,7 +179,9 @@ def category_with_subcategory_and_employees(request):
 
 @api_view(['POST'])
 def booking_api(request):
+    print('=======')
     if request.method == 'POST':
+        
         employee_id = request.data.get('employee_id')
         employee = CustomUser.objects.get(id=employee_id)
         # user_id = request.data.get('user_id')
@@ -403,3 +406,52 @@ def my_orders_user_api(request):
         'completed_bookings': completed_serializer.data,
         'rejected_bookings': rejected_serializer.data,
     })
+
+
+
+
+
+
+
+@api_view(['POST'])
+def post_review(request):
+    try:
+        # Load JSON data from request body
+        data = request.data
+        
+        # Extract fields from the request
+        booking_id = data.get('booking_id')
+        timing = data.get('timing')
+        service_quality = data.get('service_quality')
+        behavior = data.get('behavior')
+        service_summary = data.get('service_summary', '')
+        review_text = data.get('review', '')
+        
+        # Validate required fields
+        if not all([booking_id, timing, service_quality, behavior]):
+            return JsonResponse({'error': 'All required fields are missing'}, status=400)
+        
+        # Check if the booking exists
+        try:
+            booking = Booking.objects.get(id=booking_id)
+        except Booking.DoesNotExist:
+            return JsonResponse({'error': 'Invalid booking ID'}, status=400)
+        
+        # Create the review
+        review = Review.objects.create(
+            booking=booking,
+            employee=booking.employee,
+            timing=timing,
+            service_quality=service_quality,
+            behavior=behavior,
+            service_summary=service_summary,
+            review=review_text
+        )
+        
+        # Return success response
+        return JsonResponse({'message': 'Review posted successfully'}, status=201)
+    
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

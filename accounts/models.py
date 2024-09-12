@@ -122,3 +122,17 @@ class EmployyeWages(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True,related_name='employee_wages')
     subcategory = models.ForeignKey('siyyana_app.SubCategory', on_delete=models.CASCADE,blank=True,null=True)
     wages = models.IntegerField(blank=True,null=True)
+
+
+
+class EmployeeWorkTimeSlot(models.Model):
+    class Meta:
+        verbose_name_plural = "EMPLOYEE WORK TIME SLOTS"
+        
+    def __str__(self):
+        return f"{self.user.name} - {self.day} - {self.start_time} to {self.end_time}"
+    
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='work_time_slots')
+    day = models.CharField(max_length=20)  # Day of the week, e.g., 'Monday'
+    start_time = models.TimeField()
+    end_time = models.TimeField()

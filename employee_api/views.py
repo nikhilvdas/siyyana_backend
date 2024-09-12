@@ -14,7 +14,7 @@ import json
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-
+from datetime import timedelta
 
 
 
@@ -63,9 +63,42 @@ def state_list_api(request):
     
     return Response({'states': state_data}, status=200)
 
+from datetime import datetime, timedelta, date
+# Setup logging
 
+def create_time_slots(user, day, start_time, end_time):
+    """Utility function to create 1-hour time slots."""
+    if isinstance(start_time, str):
+        start_time = datetime.strptime(start_time, '%H:%M').time()
+    if isinstance(end_time, str):
+        end_time = datetime.strptime(end_time, '%H:%M').time()
+    
+    current_time = start_time
+    print('Entered create_time_slots function')
 
+    while current_time < end_time:
+        next_time = (datetime.combine(date.today(), current_time) + timedelta(hours=1)).time()
+        print(f'Current time: {current_time}, Next time: {next_time}')
+        
+        # Ensure that the next time does not exceed the end time
+        if next_time > end_time:
+            next_time = end_time
+        
+        # Create the time slot for this interval
+        EmployeeWorkTimeSlot.objects.create(
+            user=user,
+            day=day,
+            start_time=current_time,
+            end_time=next_time
+        )
+        
+        # Move to the next 1-hour slot
+        current_time = next_time
+    
+    print('Time slots created successfully')
+            
 class EmployeeRegistration(APIView):
+    
     def post(self, request):
         try:
             name = request.data.get('name')
@@ -121,6 +154,7 @@ class EmployeeRegistration(APIView):
                                                   profile_picture=profile_picture,charge=charge_type,first_name=first_name,last_name=last_name,prefered_work_location=prefered_work_location_instance,
                                                   id_card_type=id_card_type,id_card_number=id_card_number,id_card=id_card)
 
+            print("customer creation")
             category_ids = request.data.get("category", "")
             category_ids = [int(id.strip()) for id in category_ids.split(",") if id.strip().isdigit()]
 
@@ -129,6 +163,7 @@ class EmployeeRegistration(APIView):
 
             wages = request.data.get("wages", "")
             wages = [int(id.strip()) for id in wages.split(",") if id.strip().isdigit()]
+            print("customer creation 2")
 
             for subcategory_id, wage in zip(subcategory_ids, wages):
                 EmployyeWages.objects.create(
@@ -136,7 +171,8 @@ class EmployeeRegistration(APIView):
                     subcategory_id=subcategory_id,
                     wages=wage
                 )
-
+            print("customer creation 3")
+ 
 
             if category_ids:
                 category = []
@@ -153,7 +189,8 @@ class EmployeeRegistration(APIView):
                 user.subcategory.set(subcategory)
             access_token = RefreshToken.for_user(user).access_token
 
-          
+            print("customer creation 4")
+
 
             EmployeeWorkSchedule.objects.create(user=user,sunday_start_time=sunday_start_time,sunday_end_time=sunday_end_time,
                                                 monday_start_time=monday_start_time,monday_end_time=monday_end_time,
@@ -163,6 +200,26 @@ class EmployeeRegistration(APIView):
                                                 thursday_end_time=thursday_end_time,friday_start_time=friday_start_time,
                                                 friday_end_time=friday_end_time,saturday_start_time=saturday_start_time,
                                                 saturday_end_time=saturday_end_time)
+            print("customer creation 5")
+
+            # Call the utility function to create time slots for each day
+            if sunday_start_time and sunday_end_time:
+                create_time_slots(user, "Sunday", sunday_start_time, sunday_end_time)
+            if monday_start_time and monday_end_time:
+                create_time_slots(user, "Monday", monday_start_time, monday_end_time)
+            if tuesday_start_time and tuesday_end_time:
+                create_time_slots(user, "Tuesday", tuesday_start_time, tuesday_end_time)
+            if wednesday_start_time and wednesday_end_time:
+                create_time_slots(user, "Wednesday", wednesday_start_time, wednesday_end_time)
+            if thursday_start_time and thursday_end_time:
+                create_time_slots(user, "Thursday", thursday_start_time, thursday_end_time)
+            if friday_start_time and friday_end_time:
+                create_time_slots(user, "Friday", friday_start_time, friday_end_time)
+            if saturday_start_time and saturday_end_time:
+                create_time_slots(user, "Saturday", saturday_start_time, saturday_end_time)
+
+            print("Time slots created")
+
             return Response({
                 'message': 'Employee created successfully',
                 'access_token': str(access_token),
@@ -172,6 +229,10 @@ class EmployeeRegistration(APIView):
 
         except Exception as e:
             return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 
 
@@ -443,3 +504,31 @@ def my_orders(request):
         'completed_bookings': completed_serializer.data,
         'rejected_bookings': rejected_serializer.data,
     })
+
+
+
+
+
+
+
+@api_view(['POST'])
+def get_time_slots(request):
+    try:
+        # Parse the request data
+        data = request.data
+        user_id = data.get('employee_id')
+        day = data.get('day')
+
+        if not user_id or not day:
+            return JsonResponse({'error': 'user_id and day are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the time slots based on user_id and day
+        time_slots = EmployeeWorkTimeSlot.objects.filter(user_id=user_id, day=day)
+
+        # Serialize the time slots data
+        serializer = EmployeeWorkTimeSlotSerializer(time_slots, many=True)
+
+        return JsonResponse({'time_slots': serializer.data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

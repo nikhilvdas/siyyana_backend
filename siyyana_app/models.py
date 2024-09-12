@@ -34,6 +34,7 @@ class District(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=100)
     logo = models.ImageField(upload_to='category')
+    color = models.CharField(max_length=7,blank=True,null=True)
     class Meta:
         verbose_name_plural = "CATEGORY"
     def __str__(self):
@@ -98,7 +99,20 @@ class Booking(models.Model):
 
 
 
+class Review(models.Model):
+    class Meta:
+        verbose_name_plural = "REVIEWS"
+    booking = models.ForeignKey('Booking', on_delete=models.CASCADE, related_name='reviews')
+    employee = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='employee_reviews')  # Employee being reviewed
+    timing = models.IntegerField()  # Ratings will be from 1 to 5
+    service_quality = models.IntegerField()
+    behavior = models.IntegerField()
+    service_summary = models.CharField(max_length=200,blank=True, null=True)  # Optional comments from the user
+    review = models.TextField(blank=True,null=True)
+    review_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Review for {self.employee.name} in Booking {self.booking.id}"
 
 
 class Saved_Employees(models.Model):

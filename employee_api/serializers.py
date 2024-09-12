@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import CustomUser, EmployeeWorkSchedule, EmployyeWages
+from accounts.models import CustomUser, EmployeeWorkSchedule, EmployeeWorkTimeSlot, EmployyeWages
 from siyyana_app.models import *
 
 
@@ -30,7 +30,7 @@ class DistrictSerializer(serializers.ModelSerializer):
 class CategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'logo']
+        fields = ['id', 'name', 'logo','color']
 
 
     def get_logo(self, obj):
@@ -81,7 +81,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
     employee_work_schedule = EmployeeWorkScheduleSerializer(many=True)
     class Meta:
         model = CustomUser
-        fields = ['id','first_name','last_name','profile_picture','mobile_number','whatsapp_number','about','total_orders','employee_wages','charge','employee_work_schedule']
+        # fields = ['id','first_name','last_name','profile_picture','mobile_number','whatsapp_number','about','total_orders','employee_wages','charge','employee_work_schedule_new']
+        fields = "__all__"
 
     def get_logo(self, obj):
         request = self.context.get('request')
@@ -105,7 +106,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class UserSerializerForBookingDetails(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','name','email', 'mobile_number', 'whatsapp_number', 'profile_picture']
+        # fields = ['id','name','email', 'mobile_number', 'whatsapp_number', 'profile_picture']
+        fields = "__all__"
 
 
 
@@ -125,3 +127,12 @@ class BookingSerializer(serializers.ModelSerializer):
             logo_url = obj.service.subcategory.service.logo.url
             return request.build_absolute_uri(logo_url) if request else logo_url
         return None
+    
+
+
+
+
+class EmployeeWorkTimeSlotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeeWorkTimeSlot
+        fields = ['day', 'start_time', 'end_time']

@@ -15,6 +15,7 @@ class ServicesAddForm(forms.ModelForm):
 
             'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
             'logo': forms.ClearableFileInput(attrs={'class': 'form-control','required':True}),
+            'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control', 'required': True}),
         }
 
     def __init__(self, *args, **kwargs):

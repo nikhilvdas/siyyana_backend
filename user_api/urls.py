@@ -21,6 +21,7 @@ urlpatterns = [
     path('reschedule-booking', reschedule_booking, name='reschedule-booking'),
 
     path('my-orders-user-api', my_orders_user_api, name='my-orders-user-api'),
+    path('post-review', post_review, name='post-review'),
 
 
 ]
