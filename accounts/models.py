@@ -82,7 +82,7 @@ class CustomUser(AbstractUser):
     otp_created_at = models.DateTimeField(blank=True, null=True)  # Store OTP creation time
 
     def __str__(self):
-        return  f'{str(self.name)} - {str(self.user_type)}'
+        return  f'{str(self.name)}'
     
 
 

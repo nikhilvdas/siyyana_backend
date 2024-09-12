@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from accounts.models import CustomUser, EmployeeWorkSchedule, EmployeeWorkTimeSlot, EmployyeWages
 from siyyana_app.models import *
+from django.db.models import Avg
 
 
 
@@ -73,12 +74,19 @@ class EmployeeWorkScheduleSerializer(serializers.ModelSerializer):
         exclude = ['user']
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    class Meta:
+        model = Review
+        fields = ['user', 'review_date', 'average_rating', 'service_summary', 'review']
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     employee_wages = EmplpoyeeWagesSerializer(many=True)
     total_orders = serializers.SerializerMethodField()
     employee_work_schedule = EmployeeWorkScheduleSerializer(many=True)
+    reviews = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
         # fields = ['id','first_name','last_name','profile_picture','mobile_number','whatsapp_number','about','total_orders','employee_wages','charge','employee_work_schedule_new']
@@ -92,15 +100,37 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def get_total_orders(self, obj):
         return Booking.objects.filter(employee=obj).count()
+    
+    
+    def get_reviews(self, obj):
+        # Get all reviews related to the employee
+        reviews = Review.objects.filter(employee=obj)
+        serialized_reviews = ReviewSerializer(reviews, many=True).data
+        # Calculate the average of average_rating field for all reviews of the employee
+        average_rating = Review.objects.filter(employee=obj).aggregate(Avg('average_rating'))['average_rating__avg']
+        # If there are no reviews, return 0 as the average rating
+        average_rating = round(average_rating, 1) if average_rating else 0
+        # Return a dictionary with overall average rating, count, and the reviews
+        return {
+            "overall_average_rating": average_rating,
+            "overall_rating_count": reviews.count(),
+            "review_list": serialized_reviews
+        }
+    
+    def get_overall_rating_count(self, obj):
+        # Return the count of reviews related to the employee
+        return Review.objects.filter(employee=obj).count()
 
 
-# class BookingSerializer(serializers.ModelSerializer):
-#     service = EmplpoyeeWagesSerializer(many=True)
-#     employee = serializers.StringRelatedField()
-#     user = serializers.StringRelatedField()
-#     class Meta:
-#         model = Booking
-#         fields = '__all__'
+
+
+
+
+
+
+
+
+
 
 
 class UserSerializerForBookingDetails(serializers.ModelSerializer):

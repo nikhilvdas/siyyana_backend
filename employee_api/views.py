@@ -532,3 +532,64 @@ def get_time_slots(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+
+
+
+
+@api_view(['POST'])
+def employee_all_reviews(request):
+    # Fetch the employee by ID from POST data
+    employee_id = request.data.get('employee_id')
+    
+    # Validate employee existence
+    employee = get_object_or_404(CustomUser, id=employee_id)
+    
+    # Fetch all reviews for the employee and order by the latest review date
+    reviews = Review.objects.filter(employee=employee).order_by('-review_date')
+    
+    # Create a list of reviews with required fields
+    reviews_list = [
+        {
+            'user_name': review.user.name if review.user else "Anonymous",
+            'review_date': review.review_date.strftime("%b %Y"),
+            'average_rating': review.average_rating,
+            'service_summary': review.service_summary,
+            'review': review.review,
+        }
+        for review in reviews
+    ]
+    
+    # Calculate overall rating summary using aggregation
+    rating_summary = {
+        'total_reviews': reviews.count(),
+        'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+        'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+        'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+        'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+        'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+    }
+
+    # Calculate the count of reviews for each star rating (1 to 5)
+    rating_distribution = {
+        
+        '5_star': reviews.filter(average_rating__gte=4.9).count(),  # 4.9 to 5.0
+        '4_star': reviews.filter(average_rating__gte=3.9, average_rating__lt=4.9).count(),  # 3.9 to <4.9
+        '3_star': reviews.filter(average_rating__gte=2.9, average_rating__lt=3.9).count(),  # 2.9 to <3.9
+        '2_star': reviews.filter(average_rating__gte=1.9, average_rating__lt=2.9).count(),  # 1.9 to <2.9
+        '1_star': reviews.filter(average_rating__lt=1.9).count()# less than 1.9
+    }
+
+    # Prepare the final response data
+    response_data = {
+        'employee': employee.name,
+        'rating_summary': rating_summary,
+        'rating_distribution': rating_distribution,
+        'reviews': reviews_list,
+    }
+    
+    # Return the response as JSON
+    return Response(response_data)

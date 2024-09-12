@@ -104,15 +104,23 @@ class Review(models.Model):
         verbose_name_plural = "REVIEWS"
     booking = models.ForeignKey('Booking', on_delete=models.CASCADE, related_name='reviews')
     employee = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='employee_reviews')  # Employee being reviewed
+    user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='user_reviews',blank=True,null=True)  # Employee being reviewed
     timing = models.IntegerField()  # Ratings will be from 1 to 5
     service_quality = models.IntegerField()
+    price = models.IntegerField()
     behavior = models.IntegerField()
     service_summary = models.CharField(max_length=200,blank=True, null=True)  # Optional comments from the user
     review = models.TextField(blank=True,null=True)
     review_date = models.DateTimeField(auto_now_add=True)
+    average_rating = models.FloatField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Calculate and round the average rating to one decimal place
+        self.average_rating = round((int(self.timing) + int(self.service_quality) + int(self.behavior)) / 3, 1)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Review for {self.employee.name} in Booking {self.booking.id}"
+        return f"Review for {self.employee.name}"
 
 
 class Saved_Employees(models.Model):

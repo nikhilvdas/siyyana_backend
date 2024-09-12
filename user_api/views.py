@@ -179,21 +179,20 @@ def category_with_subcategory_and_employees(request):
 
 @api_view(['POST'])
 def booking_api(request):
-    print('=======')
     if request.method == 'POST':
-        
+        print(request.data)
         employee_id = request.data.get('employee_id')
         employee = CustomUser.objects.get(id=employee_id)
-        # user_id = request.data.get('user_id')
-        # user = CustomUser.objects.get(id=user_id)
         service_id = request.data.get("service_id", "")
         booking_date = request.data.get('booking_date')
         start_time = request.data.get('start_time')
         end_time = request.data.get('end_time')
 
         service_id = [int(id.strip()) for id in service_id.split(",") if id.strip().isdigit()]
+        print("===",service_id)
         # service = []
         for i in service_id:
+            print("------",i)
             services = EmployyeWages.objects.get(id=i)
             Booking.objects.create(employee=employee, user=request.user, date=booking_date, start_time=start_time, end_time=end_time, service=services)
     return Response({'message': 'Booking created successfully'},status=status.HTTP_200_OK)
@@ -418,11 +417,12 @@ def post_review(request):
     try:
         # Load JSON data from request body
         data = request.data
-        
+        user = request.user
         # Extract fields from the request
         booking_id = data.get('booking_id')
         timing = data.get('timing')
         service_quality = data.get('service_quality')
+        price = data.get('price')
         behavior = data.get('behavior')
         service_summary = data.get('service_summary', '')
         review_text = data.get('review', '')
@@ -442,7 +442,9 @@ def post_review(request):
             booking=booking,
             employee=booking.employee,
             timing=timing,
+            user = user,
             service_quality=service_quality,
+            price=price,
             behavior=behavior,
             service_summary=service_summary,
             review=review_text

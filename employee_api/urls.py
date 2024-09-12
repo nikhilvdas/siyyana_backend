@@ -25,6 +25,7 @@ urlpatterns = [
 
     path('my-orders', views.my_orders, name='my-orders'),
 
+    path('employee-all-reviews', views.employee_all_reviews, name='employee_all_reviews'),
 
     
 

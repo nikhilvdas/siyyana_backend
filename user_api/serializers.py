@@ -5,6 +5,7 @@ from siyyana_app.models import *
 from employee_api.serializers import *
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     employee_wages = EmplpoyeeWagesSerializer(many=True)
     employee_work_schedule = EmployeeWorkScheduleSerializer(many=True)
@@ -68,8 +69,3 @@ class BookingSerializerUser(serializers.ModelSerializer):
 
 
 
-
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ['booking', 'employee', 'timing', 'service_quality', 'behavior', 'service_summary', 'review']
