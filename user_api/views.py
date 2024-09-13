@@ -380,17 +380,56 @@ def save_employee(request):
         return JsonResponse({"error": "Invalid HTTP method"}, status=405)
 
 
+
+import calendar
+from django.db.models import Q
+
 @api_view(['GET'])
 def my_orders_user_api(request):
     # Ensure the user is authenticated
     if not request.user.is_authenticated:
         return Response({'error': 'User not authenticated'}, status=401)
+
+    # Get the filter option from query parameters
+    date_filter = request.data.get('filter', 'All')
+
+    # Define date ranges based on the filter option
+    today = timezone.now().date()
+    print(f"Filter selected: {date_filter}")
+    if date_filter == 'Today':
+        date_range = (today, today)
+        print(f"Filtering for today: {date_range}")
+    elif date_filter == 'This Week':
+        start_date = today - timedelta(days=today.weekday())  # Start of the week
+        end_date = start_date + timedelta(days=6)  # End of the week
+        date_range = (start_date, end_date)
+        print(f"Filtering for this week: {start_date} to {end_date}")
+    elif date_filter == 'This Month':
+        start_date = today.replace(day=1)  # Start of the month
+        _, last_day_of_month = calendar.monthrange(today.year, today.month)  # Get last day of the month
+        end_date = today.replace(day=last_day_of_month)  # End of the month
+        date_range = (start_date, end_date)
+        print(f"Filtering for this month: {start_date} to {end_date}")
+    else:
+        date_range = None
+        print("No date range filtering applied")
+
+    # Apply the filters using Q objects
+    query = Q(user=request.user)
     
-    # Fetch bookings based on each status for the logged-in user
-    pending_bookings = Booking.objects.filter(status='Pending', user=request.user)
-    accepted_bookings = Booking.objects.filter(status='Accept', user=request.user)
-    completed_bookings = Booking.objects.filter(status='Completed', user=request.user)
-    rejected_bookings = Booking.objects.filter(status='Reject', user=request.user)
+    if date_range:
+        query &= Q(date__range=date_range)
+    
+    # Fetch and filter bookings based on each status for the logged-in user
+    pending_bookings = Booking.objects.filter(query & Q(status='Pending'))
+    accepted_bookings = Booking.objects.filter(query & Q(status='Accept'))
+    completed_bookings = Booking.objects.filter(query & Q(status='Completed'))
+    rejected_bookings = Booking.objects.filter(query & Q(status='Reject'))
+
+    print(f"Pending bookings: {pending_bookings}")
+    print(f"Accepted bookings: {accepted_bookings}")
+    print(f"Completed bookings: {completed_bookings}")
+    print(f"Rejected bookings: {rejected_bookings}")
 
     # Serialize the bookings using BookingSerializerUser
     pending_serializer = BookingSerializerUser(pending_bookings, many=True, context={'request': request})
@@ -405,9 +444,6 @@ def my_orders_user_api(request):
         'completed_bookings': completed_serializer.data,
         'rejected_bookings': rejected_serializer.data,
     })
-
-
-
 
 
 

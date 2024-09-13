@@ -480,21 +480,57 @@ def edit_employee_profile(request):
 
 
 
-
+import calendar
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Q
 
 
 @api_view(['GET'])
 def my_orders(request):
-    # Fetch bookings based on each status
-    pending_bookings = Booking.objects.filter(status='Pending',employee=request.user)
-    accepted_bookings = Booking.objects.filter(status='Accept',employee=request.user)
-    completed_bookings = Booking.objects.filter(status='Completed',employee=request.user)
-    rejected_bookings = Booking.objects.filter(status='Reject',employee=request.user)
+    # Ensure the user is authenticated
+    if not request.user.is_authenticated:
+        return Response({'error': 'User not authenticated'}, status=401)
+
+    # Get the filter option from query parameters
+    date_filter = request.GET.get('filter', 'All')
+
+    # Define date ranges based on the filter option
+    today = timezone.now().date()
+    print(f"Filter selected: {date_filter}")
+    if date_filter == 'Today':
+        date_range = (today, today)
+        print(f"Filtering for today: {date_range}")
+    elif date_filter == 'This Week':
+        start_date = today - timedelta(days=today.weekday())  # Start of the week
+        end_date = start_date + timedelta(days=6)  # End of the week
+        date_range = (start_date, end_date)
+        print(f"Filtering for this week: {start_date} to {end_date}")
+    elif date_filter == 'This Month':
+        start_date = today.replace(day=1)  # Start of the month
+        _, last_day_of_month = calendar.monthrange(today.year, today.month)  # Get last day of the month
+        end_date = today.replace(day=last_day_of_month)  # End of the month
+        date_range = (start_date, end_date)
+        print(f"Filtering for this month: {start_date} to {end_date}")
+    else:
+        date_range = None
+        print("No date range filtering applied")
+
+    # Apply the date filter if provided
+    query = Q(employee=request.user)
+    if date_range:
+        query &= Q(date__range=date_range)
+
+    # Fetch bookings based on each status and apply the date filter
+    pending_bookings = Booking.objects.filter(query & Q(status='Pending'))
+    accepted_bookings = Booking.objects.filter(query & Q(status='Accept'))
+    completed_bookings = Booking.objects.filter(query & Q(status='Completed'))
+    rejected_bookings = Booking.objects.filter(query & Q(status='Reject'))
 
     # Serialize the bookings
-    completed_serializer = BookingSerializer(completed_bookings, many=True, context={'request': request})
     pending_serializer = BookingSerializer(pending_bookings, many=True, context={'request': request})
     accepted_serializer = BookingSerializer(accepted_bookings, many=True, context={'request': request})
+    completed_serializer = BookingSerializer(completed_bookings, many=True, context={'request': request})
     rejected_serializer = BookingSerializer(rejected_bookings, many=True, context={'request': request})
 
     # Return the data in a structured response
@@ -504,9 +540,6 @@ def my_orders(request):
         'completed_bookings': completed_serializer.data,
         'rejected_bookings': rejected_serializer.data,
     })
-
-
-
 
 
 
@@ -550,6 +583,21 @@ def employee_all_reviews(request):
     
     # Fetch all reviews for the employee and order by the latest review date
     reviews = Review.objects.filter(employee=employee).order_by('-review_date')
+
+    # Fetch the filter parameter from the request
+    filter_type = request.data.get('filter', 'all')
+
+    # Apply filters based on the parameter received
+    if filter_type == 'timing':
+        reviews = Review.objects.filter(employee=employee).order_by('-timing')
+    elif filter_type == 'price':
+        reviews = Review.objects.filter(employee=employee).order_by('-price')
+    elif filter_type == 'quality':
+        reviews = Review.objects.filter(employee=employee).order_by('-service_quality')
+    elif filter_type == 'behavior':
+        reviews = Review.objects.filter(employee=employee).order_by('-behavior')
+    else:  # Default case: 'all' or no filter
+        reviews = Review.objects.filter(employee=employee).order_by('-review_date')
     
     # Create a list of reviews with required fields
     reviews_list = [
@@ -575,7 +623,7 @@ def employee_all_reviews(request):
 
     # Calculate the count of reviews for each star rating (1 to 5)
     rating_distribution = {
-        
+
         '5_star': reviews.filter(average_rating__gte=4.9).count(),  # 4.9 to 5.0
         '4_star': reviews.filter(average_rating__gte=3.9, average_rating__lt=4.9).count(),  # 3.9 to <4.9
         '3_star': reviews.filter(average_rating__gte=2.9, average_rating__lt=3.9).count(),  # 2.9 to <3.9
