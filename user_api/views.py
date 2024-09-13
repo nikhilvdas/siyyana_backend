@@ -81,7 +81,7 @@ class UserLogin(APIView):
 
 
 def send_otp(email):
-    return random.randint(100000, 999999)  # Generate a random 6-digit OTP
+    return random.randint(1000, 9999)  # Generate a random 6-digit OTP
 
 @csrf_exempt
 def request_otp(request):
