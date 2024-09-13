@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import *
 from .utils import top_booked_employees
 from django.db.models import Count
+import openpyxl
+from io import BytesIO
 # Create your views here.
 
 @login_required(login_url="siyyana_app:login")
@@ -209,6 +211,7 @@ def employee_list(request):
     state_id = request.GET.get('state')
     district_id = request.GET.get('district')
     subcategory_id = request.GET.get('subcategory')
+    export_excel = request.GET.get('export_excel')
 
     # Start with all employees
     employees = CustomUser.objects.filter(user_type='Employee').order_by('-id')
@@ -236,6 +239,10 @@ def employee_list(request):
     districts = District.objects.all()
     subcategories = SubCategory.objects.all()
 
+
+    if export_excel:
+        return export_employees_to_excel(employees)
+
     context = {
         'users': employees,
         'countries': countries,
@@ -246,6 +253,72 @@ def employee_list(request):
     }
 
     return render(request, 'employee.html', context)
+
+
+def export_employees_to_excel(employees):
+    # Create an in-memory output file for the Excel file
+    output = BytesIO()
+
+    # Create a workbook and add a worksheet
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = 'Employees'
+
+    # Define the column headers for employees
+    headers = [
+        'Name', 'Mobile Number', 'WhatsApp Number', 'Profile Picture', 'About', 'Category', 'Subcategory', 
+        'Charge', 'Is Active', 'User Type', 'FCM Token', 'Date of Birth', 'Status', 'Gender', 'Approval Status',
+        'Country', 'State', 'District', 'Preferred Work Location', 'ID Card Type', 'ID Card Number', 'OTP',
+        'OTP Created At'
+    ]
+
+    # Write the headers to the first row
+    for col_num, header in enumerate(headers, 1):
+        sheet.cell(row=1, column=col_num, value=header)
+
+    # Write the employee data to the Excel file
+    for row_num, employee in enumerate(employees, 2):
+        sheet.cell(row=row_num, column=1, value=employee.name)
+        sheet.cell(row=row_num, column=2, value=employee.mobile_number)
+        sheet.cell(row=row_num, column=3, value=employee.whatsapp_number)
+        sheet.cell(row=row_num, column=4, value=employee.profile_picture.url if employee.profile_picture else 'No picture')
+        sheet.cell(row=row_num, column=5, value=employee.about)
+        
+        # Get Categories and Subcategories as comma-separated values
+        categories = ", ".join([category.name for category in employee.category.all()])
+        subcategories = ", ".join([subcategory.name for subcategory in employee.subcategory.all()])
+        
+        sheet.cell(row=row_num, column=6, value=categories)
+        sheet.cell(row=row_num, column=7, value=subcategories)
+        
+        sheet.cell(row=row_num, column=8, value=employee.charge)
+        sheet.cell(row=row_num, column=9, value=employee.is_active)
+        sheet.cell(row=row_num, column=10, value=employee.user_type)
+        sheet.cell(row=row_num, column=11, value=employee.fcm_token)
+        sheet.cell(row=row_num, column=12, value=employee.date_of_birth)
+        sheet.cell(row=row_num, column=13, value=employee.status)
+        sheet.cell(row=row_num, column=14, value=employee.gender)
+        sheet.cell(row=row_num, column=15, value=employee.approval_status)
+        sheet.cell(row=row_num, column=16, value=employee.country.name if employee.country else 'No Country')
+        sheet.cell(row=row_num, column=17, value=employee.state.name if employee.state else 'No State')
+        sheet.cell(row=row_num, column=18, value=employee.district.name if employee.district else 'No District')
+        sheet.cell(row=row_num, column=19, value=employee.prefered_work_location.name if employee.prefered_work_location else 'No Preferred Location')
+        sheet.cell(row=row_num, column=20, value=employee.id_card_type)
+        sheet.cell(row=row_num, column=21, value=employee.id_card_number)
+        sheet.cell(row=row_num, column=22, value=employee.otp)
+        sheet.cell(row=row_num, column=23, value=employee.otp_created_at)
+
+    # Save the workbook to the BytesIO object
+    workbook.save(output)
+    output.seek(0)
+
+    # Create an HTTP response with the Excel file
+    response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=employees.xlsx'
+    return response
+
+
+
 
 
 def staff_status_change(request, id):

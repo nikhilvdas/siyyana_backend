@@ -35017,7 +35017,7 @@ body.dark-only a:hover {
   color: #7A70BA;
 }
 body.dark-only .page-body .bg-light {
-  background-color: #2096ad !important;
+  background-color: #e5e5e5 !important;
 }
 body.dark-only .card .card-header p {
   color: rgba(255, 255, 255, 0.7);
@@ -36050,7 +36050,7 @@ body.dark-only .email-wrap .email-app-sidebar ul li a > .title {
   color: rgba(255, 255, 255, 0.6);
 }
 body.dark-only .email-wrap .email-app-sidebar .main-menu > li a:hover {
-  background-color: #2096ad;
+  background-color: #e5e5e5;
 }
 body.dark-only .email-wrap .email-app-sidebar .main-menu > li a:hover span {
   color: #7A70BA;
@@ -43587,7 +43587,7 @@ table.table-bordered thead tr th p {
   border-radius: 10px;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li.sidebar-list:hover > a:hover {
-  background-color: #2096ad;
+  background-color: #e5e5e5;
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
 }
@@ -43817,7 +43817,7 @@ table.table-bordered thead tr th p {
   transition: all 0.5s ease;
   position: relative;
   margin-bottom: 10px;
-  background-color: #2096ad;
+  background-color: #e5e5e5;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li .sidebar-link.active::after {
   opacity: 1;

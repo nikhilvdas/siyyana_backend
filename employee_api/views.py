@@ -603,6 +603,7 @@ def employee_all_reviews(request):
     reviews_list = [
         {
             'user_name': review.user.name if review.user else "Anonymous",
+            'profile_pic': request.build_absolute_uri(review.user.profile_picture.url),
             'review_date': review.review_date.strftime("%b %Y"),
             'average_rating': review.average_rating,
             'service_summary': review.service_summary,
