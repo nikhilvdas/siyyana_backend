@@ -15,7 +15,17 @@ Country
             <div class="col-sm-12">
               <div class="card">
                 <div class="card-body">
+                  {% comment %} <form method="post" action="{% url 'siyyana_app:import_excel_country' %}" class="row g-3 mb-2">
+                    {% csrf_token %}
+                    <div class="col-md-2">
+                      <input type="file" class="form-control form-control-sm" name="excel_file" required>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" class="btn btn-primary" value="Import excel">
+                    </div>
+                </form> {% endcomment %}
                   <div class="list-product-header">
+                    
                     <div>
                       <a class="btn"  style="background-color: #2096ad; border-color: #2096ad; color: white;" href="{% url 'siyyana_app:add_country' %}"
                         ><i class="fa fa-plus"></i>Add Country</a

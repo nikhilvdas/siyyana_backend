@@ -12,6 +12,7 @@ from .utils import top_booked_employees
 from django.db.models import Count
 import openpyxl
 from io import BytesIO
+import pandas as pd
 # Create your views here.
 
 @login_required(login_url="siyyana_app:login")
@@ -266,10 +267,9 @@ def export_employees_to_excel(employees):
 
     # Define the column headers for employees
     headers = [
-        'Name', 'Mobile Number', 'WhatsApp Number', 'Profile Picture', 'About', 'Category', 'Subcategory', 
-        'Charge', 'Is Active', 'User Type', 'FCM Token', 'Date of Birth', 'Status', 'Gender', 'Approval Status',
-        'Country', 'State', 'District', 'Preferred Work Location', 'ID Card Type', 'ID Card Number', 'OTP',
-        'OTP Created At'
+        'Name', 'Mobile Number', 'WhatsApp Number', 'About', 'Category', 'Subcategory', 
+        'Charge', 'User Type', 'Date of Birth', 'Status',
+        'Country', 'State', 'District', 'Preferred Work Location', 'ID Card Type', 'ID Card Number'
     ]
 
     # Write the headers to the first row
@@ -281,32 +281,25 @@ def export_employees_to_excel(employees):
         sheet.cell(row=row_num, column=1, value=employee.name)
         sheet.cell(row=row_num, column=2, value=employee.mobile_number)
         sheet.cell(row=row_num, column=3, value=employee.whatsapp_number)
-        sheet.cell(row=row_num, column=4, value=employee.profile_picture.url if employee.profile_picture else 'No picture')
-        sheet.cell(row=row_num, column=5, value=employee.about)
+        sheet.cell(row=row_num, column=4, value=employee.about)
         
         # Get Categories and Subcategories as comma-separated values
         categories = ", ".join([category.name for category in employee.category.all()])
         subcategories = ", ".join([subcategory.name for subcategory in employee.subcategory.all()])
         
-        sheet.cell(row=row_num, column=6, value=categories)
-        sheet.cell(row=row_num, column=7, value=subcategories)
+        sheet.cell(row=row_num, column=5, value=categories)
+        sheet.cell(row=row_num, column=6, value=subcategories)
         
-        sheet.cell(row=row_num, column=8, value=employee.charge)
-        sheet.cell(row=row_num, column=9, value=employee.is_active)
-        sheet.cell(row=row_num, column=10, value=employee.user_type)
-        sheet.cell(row=row_num, column=11, value=employee.fcm_token)
-        sheet.cell(row=row_num, column=12, value=employee.date_of_birth)
-        sheet.cell(row=row_num, column=13, value=employee.status)
-        sheet.cell(row=row_num, column=14, value=employee.gender)
-        sheet.cell(row=row_num, column=15, value=employee.approval_status)
-        sheet.cell(row=row_num, column=16, value=employee.country.name if employee.country else 'No Country')
-        sheet.cell(row=row_num, column=17, value=employee.state.name if employee.state else 'No State')
-        sheet.cell(row=row_num, column=18, value=employee.district.name if employee.district else 'No District')
-        sheet.cell(row=row_num, column=19, value=employee.prefered_work_location.name if employee.prefered_work_location else 'No Preferred Location')
-        sheet.cell(row=row_num, column=20, value=employee.id_card_type)
-        sheet.cell(row=row_num, column=21, value=employee.id_card_number)
-        sheet.cell(row=row_num, column=22, value=employee.otp)
-        sheet.cell(row=row_num, column=23, value=employee.otp_created_at)
+        sheet.cell(row=row_num, column=7, value=employee.charge)
+        sheet.cell(row=row_num, column=8, value=employee.user_type)
+        sheet.cell(row=row_num, column=9, value=employee.date_of_birth)
+        sheet.cell(row=row_num, column=10, value=employee.status)
+        sheet.cell(row=row_num, column=11, value=employee.country.name if employee.country else 'No Country')
+        sheet.cell(row=row_num, column=12, value=employee.state.name if employee.state else 'No State')
+        sheet.cell(row=row_num, column=13, value=employee.district.name if employee.district else 'No District')
+        sheet.cell(row=row_num, column=14, value=employee.prefered_work_location.name if employee.prefered_work_location else 'No Preferred Location')
+        sheet.cell(row=row_num, column=15, value=employee.id_card_type)
+        sheet.cell(row=row_num, column=16, value=employee.id_card_number)
 
     # Save the workbook to the BytesIO object
     workbook.save(output)
@@ -359,6 +352,8 @@ def user_list(request):
     state_id = request.GET.get('state')
     district_id = request.GET.get('district')
     subcategory_id = request.GET.get('subcategory')
+    export_excel = request.GET.get('export_excel')
+
 
     # Start with all users
     data = CustomUser.objects.filter(user_type='User').order_by('-id')
@@ -380,6 +375,10 @@ def user_list(request):
     states = State.objects.all()
     districts = District.objects.all()
 
+    if export_excel:
+        return export_users_to_excel(data)
+
+
     context = {
         'users': data,
         'countries': countries,
@@ -388,6 +387,55 @@ def user_list(request):
     }
 
     return render(request, 'users.html', context)
+
+
+
+
+
+
+
+def export_users_to_excel(employees):
+    # Create an in-memory output file for the Excel file
+    output = BytesIO()
+
+    # Create a workbook and add a worksheet
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = 'Users'
+
+    # Define the column headers for employees
+    headers = [
+        'Name', 'Mobile Number', 'WhatsApp Number',
+        'Country', 'State', 'District','Status'
+    ]
+
+    # Write the headers to the first row
+    for col_num, header in enumerate(headers, 1):
+        sheet.cell(row=1, column=col_num, value=header)
+
+    # Write the employee data to the Excel file
+    for row_num, employee in enumerate(employees, 2):
+        sheet.cell(row=row_num, column=1, value=employee.name)
+        sheet.cell(row=row_num, column=2, value=employee.mobile_number)
+        sheet.cell(row=row_num, column=3, value=employee.whatsapp_number)
+        sheet.cell(row=row_num, column=4, value=employee.country.name if employee.country else 'No Country')
+        sheet.cell(row=row_num, column=5, value=employee.state.name if employee.state else 'No State')
+        sheet.cell(row=row_num, column=6, value=employee.district.name if employee.district else 'No District')
+        sheet.cell(row=row_num, column=7, value=employee.status)
+
+
+    # Save the workbook to the BytesIO object
+    workbook.save(output)
+    output.seek(0)
+
+    # Create an HTTP response with the Excel file
+    response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=users.xlsx'
+    return response
+
+
+
+
 
 @login_required(login_url="siyyana_app:login")
 def user_delete(request,id):
@@ -451,6 +499,44 @@ def country_delete(request,id):
     data.delete()
     messages.success(request,'Deleted successfully')
     return redirect('siyyana_app:country')
+
+
+
+# def import_excel_country(request):
+#     if request.method == "POST":
+        
+#         if "excel_file" not in request.FILES:
+#             print(request.POST)
+#             messages.error(request, 'No file uploaded or incorrect file field name')
+#             return redirect("siyyana_app:country")
+
+#         excel_file = request.FILES["excel_file"]
+
+#         try:
+#             df = pd.read_excel(excel_file)
+
+#             # Ensure that the DataFrame has the expected column
+#             if "country" not in df.columns:
+#                 messages.error(request, 'Excel file must contain a "country" column')
+#                 return redirect("siyyana_app:country")
+
+#             for index, row in df.iterrows():
+#                 country_name = row["country"].strip()  # Ensure to strip any extra spaces
+#                 Country.objects.update_or_create(
+#                     name=country_name,
+#                     defaults={"name": country_name},
+#                 )
+                
+#             messages.success(request, "Successfully imported")
+#         except Exception as e:
+#             messages.error(request, f'Error processing the file: {e}')
+        
+#         return redirect("siyyana_app:country")
+
+
+
+
+
 
 
 

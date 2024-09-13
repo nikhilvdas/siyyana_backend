@@ -36,6 +36,9 @@ urlpatterns = [
     path('add-country', views.add_country,name='add_country'),
     path('edit-country/<int:id>/', views.edit_country,name='edit_country'),
     path('country-delete/<int:id>/', views.country_delete,name='country_delete'),
+    # path('import-excel-country', views.import_excel_country,name='import_excel_country'),
+
+    
 
     path('state', views.state,name='state'),
     path('add-state', views.add_state,name='add_state'),
