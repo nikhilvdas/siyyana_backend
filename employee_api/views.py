@@ -419,25 +419,55 @@ def employee_profile_api(request):
 @permission_classes([IsAuthenticated])
 def edit_employee_profile(request):
     user = request.user
-    first_name = user.first_name
     
     # Update CustomUser fields
-    user.first_name = request.POST.get('first_name', first_name)
-    user.last_name = request.POST.get('last_name', user.last_name)
-    user.mobile_number = request.POST.get('mobile_number', user.mobile_number)
-    user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
-    user.email = request.POST.get('email', user.email)
-    user.about = request.POST.get('about', user.about)
-    user.charge = request.POST.get('charge', user.charge)
-    user.date_of_birth = request.POST.get('date_of_birth', user.date_of_birth)
-    user.gender = request.POST.get('gender', user.gender)
-    user.approval_status = request.POST.get('approval_status', user.approval_status)
-    user.country_id = request.POST.get('country_id', user.country_id)
-    user.state_id = request.POST.get('state_id', user.state_id)
-    user.district_id = request.POST.get('district_id', user.district_id)
-    user.prefered_work_location_id = request.POST.get('prefered_work_location_id', user.prefered_work_location_id)
-    user.id_card_type = request.POST.get('id_card_type', user.id_card_type)
-    user.id_card_number = request.POST.get('id_card_number', user.id_card_number)
+    if request.POST.get('first_name') != '':
+        user.first_name = request.POST.get('first_name', user.first_name)
+        
+    if request.POST.get('last_name') != '':
+        user.last_name = request.POST.get('last_name', user.last_name)
+        
+    if request.POST.get('mobile_number') != '':
+        user.mobile_number = request.POST.get('mobile_number', user.mobile_number)
+        
+    if request.POST.get('whatsapp_number') != '':
+        user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
+        
+    if request.POST.get('email') != '':
+        user.email = request.POST.get('email', user.email)
+        
+    if request.POST.get('about') != '':
+        user.about = request.POST.get('about', user.about)
+        
+    if request.POST.get('charge') != '':
+        user.charge = request.POST.get('charge', user.charge)
+        
+    if request.POST.get('date_of_birth') != '':
+        user.date_of_birth = request.POST.get('date_of_birth', user.date_of_birth)
+        
+    if request.POST.get('gender') != '':
+        user.gender = request.POST.get('gender', user.gender)
+        
+    if request.POST.get('approval_status') != '':
+        user.approval_status = request.POST.get('approval_status', user.approval_status)
+        
+    if request.POST.get('country_id') != '':
+        user.country_id = request.POST.get('country_id', user.country_id)
+        
+    if request.POST.get('state_id') != '':
+        user.state_id = request.POST.get('state_id', user.state_id)
+        
+    if request.POST.get('district_id') != '':
+        user.district_id = request.POST.get('district_id', user.district_id)
+        
+    if request.POST.get('prefered_work_location_id') != '':
+        user.prefered_work_location_id = request.POST.get('prefered_work_location_id', user.prefered_work_location_id)
+        
+    if request.POST.get('id_card_type') != '':
+        user.id_card_type = request.POST.get('id_card_type', user.id_card_type)
+        
+    if request.POST.get('id_card_number') != '':
+        user.id_card_number = request.POST.get('id_card_number', user.id_card_number)
     
     if 'profile_picture' in request.FILES:
         user.profile_picture = request.FILES['profile_picture']
@@ -450,20 +480,48 @@ def edit_employee_profile(request):
 
     # Update EmployeeWorkSchedule fields
     work_schedule, created = EmployeeWorkSchedule.objects.get_or_create(user=user)
-    work_schedule.sunday_start_time = request.POST.get('sunday_start_time', work_schedule.sunday_start_time)
-    work_schedule.sunday_end_time = request.POST.get('sunday_end_time', work_schedule.sunday_end_time)
-    work_schedule.monday_start_time = request.POST.get('monday_start_time', work_schedule.monday_start_time)
-    work_schedule.monday_end_time = request.POST.get('monday_end_time', work_schedule.monday_end_time)
-    work_schedule.tuesday_start_time = request.POST.get('tuesday_start_time', work_schedule.tuesday_start_time)
-    work_schedule.tuesday_end_time = request.POST.get('tuesday_end_time', work_schedule.tuesday_end_time)
-    work_schedule.wednesday_start_time = request.POST.get('wednesday_start_time', work_schedule.wednesday_start_time)
-    work_schedule.wednesday_end_time = request.POST.get('wednesday_end_time', work_schedule.wednesday_end_time)
-    work_schedule.thursday_start_time = request.POST.get('thursday_start_time', work_schedule.thursday_start_time)
-    work_schedule.thursday_end_time = request.POST.get('thursday_end_time', work_schedule.thursday_end_time)
-    work_schedule.friday_start_time = request.POST.get('friday_start_time', work_schedule.friday_start_time)
-    work_schedule.friday_end_time = request.POST.get('friday_end_time', work_schedule.friday_end_time)
-    work_schedule.saturday_start_time = request.POST.get('saturday_start_time', work_schedule.saturday_start_time)
-    work_schedule.saturday_end_time = request.POST.get('saturday_end_time', work_schedule.saturday_end_time)
+
+    if request.POST.get('sunday_start_time') != '':
+        work_schedule.sunday_start_time = request.POST.get('sunday_start_time', work_schedule.sunday_start_time)
+        
+    if request.POST.get('sunday_end_time') != '':
+        work_schedule.sunday_end_time = request.POST.get('sunday_end_time', work_schedule.sunday_end_time)
+
+    if request.POST.get('monday_start_time') != '':
+        work_schedule.monday_start_time = request.POST.get('monday_start_time', work_schedule.monday_start_time)
+
+    if request.POST.get('monday_end_time') != '':
+        work_schedule.monday_end_time = request.POST.get('monday_end_time', work_schedule.monday_end_time)
+
+    if request.POST.get('tuesday_start_time') != '':
+        work_schedule.tuesday_start_time = request.POST.get('tuesday_start_time', work_schedule.tuesday_start_time)
+
+    if request.POST.get('tuesday_end_time') != '':
+        work_schedule.tuesday_end_time = request.POST.get('tuesday_end_time', work_schedule.tuesday_end_time)
+
+    if request.POST.get('wednesday_start_time') != '':
+        work_schedule.wednesday_start_time = request.POST.get('wednesday_start_time', work_schedule.wednesday_start_time)
+
+    if request.POST.get('wednesday_end_time') != '':
+        work_schedule.wednesday_end_time = request.POST.get('wednesday_end_time', work_schedule.wednesday_end_time)
+
+    if request.POST.get('thursday_start_time') != '':
+        work_schedule.thursday_start_time = request.POST.get('thursday_start_time', work_schedule.thursday_start_time)
+
+    if request.POST.get('thursday_end_time') != '':
+        work_schedule.thursday_end_time = request.POST.get('thursday_end_time', work_schedule.thursday_end_time)
+
+    if request.POST.get('friday_start_time') != '':
+        work_schedule.friday_start_time = request.POST.get('friday_start_time', work_schedule.friday_start_time)
+
+    if request.POST.get('friday_end_time') != '':
+        work_schedule.friday_end_time = request.POST.get('friday_end_time', work_schedule.friday_end_time)
+
+    if request.POST.get('saturday_start_time') != '':
+        work_schedule.saturday_start_time = request.POST.get('saturday_start_time', work_schedule.saturday_start_time)
+
+    if request.POST.get('saturday_end_time') != '':
+        work_schedule.saturday_end_time = request.POST.get('saturday_end_time', work_schedule.saturday_end_time)
 
     # Save the updated EmployeeWorkSchedule model
     work_schedule.save()
@@ -474,7 +532,7 @@ def edit_employee_profile(request):
         subcategory_id = wage_data.get('subcategory_id')
         wages_amount = wage_data.get('wages')
 
-        if subcategory_id and wages_amount:
+        if subcategory_id and wages_amount != '':
             wages, created = EmployyeWages.objects.get_or_create(user=user, subcategory_id=subcategory_id)
             wages.wages = wages_amount
             # Save the updated EmployyeWages model
