@@ -420,8 +420,9 @@ def employee_profile_api(request):
 def edit_employee_profile(request):
     user = request.user
     first_name = user.first_name
+    
     # Update CustomUser fields
-    user.first_name = request.POST.get('first_name',first_name)
+    user.first_name = request.POST.get('first_name', first_name)
     user.last_name = request.POST.get('last_name', user.last_name)
     user.mobile_number = request.POST.get('mobile_number', user.mobile_number)
     user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
@@ -444,7 +445,8 @@ def edit_employee_profile(request):
     if 'id_card' in request.FILES:
         user.id_card = request.FILES['id_card']
 
-    # user.save()
+    # Save the updated CustomUser model
+    user.save()
 
     # Update EmployeeWorkSchedule fields
     work_schedule, created = EmployeeWorkSchedule.objects.get_or_create(user=user)
@@ -463,7 +465,8 @@ def edit_employee_profile(request):
     work_schedule.saturday_start_time = request.POST.get('saturday_start_time', work_schedule.saturday_start_time)
     work_schedule.saturday_end_time = request.POST.get('saturday_end_time', work_schedule.saturday_end_time)
 
-    # work_schedule.save()
+    # Save the updated EmployeeWorkSchedule model
+    work_schedule.save()
 
     # Update EmployyeWages fields
     wages_data = request.POST.getlist('wages_data[]', [])
@@ -474,7 +477,8 @@ def edit_employee_profile(request):
         if subcategory_id and wages_amount:
             wages, created = EmployyeWages.objects.get_or_create(user=user, subcategory_id=subcategory_id)
             wages.wages = wages_amount
-            # wages.save()
+            # Save the updated EmployyeWages model
+            wages.save()
 
     return JsonResponse({'status': 'success', 'message': 'Profile and related data updated successfully'})
 
