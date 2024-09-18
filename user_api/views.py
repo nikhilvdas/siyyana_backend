@@ -112,8 +112,10 @@ def request_otp(request):
 def verify_otp(request):
     if request.method == 'POST':
         otp = request.POST.get('otp')
+        email = request.POST.get('email')
+        print(type(otp))
         try:
-            user = CustomUser.objects.get(email=request.session['email'])
+            user = CustomUser.objects.get(email=email)
             if user.otp == otp:
                 otp_age = timezone.now() - user.otp_created_at
                 if otp_age <= timedelta(minutes=5):  # Check if OTP is still valid
@@ -132,12 +134,12 @@ def verify_otp(request):
 def reset_password(request):
     print(request.session['otp'])
     if request.method == 'POST':
-        otp = request.session['otp']
-        print(otp)
+        otp = request.POST.get('otp')
+        email = request.POST.get('email')
         new_password = request.POST.get('new_password')
 
         try:
-            user = CustomUser.objects.get(email=request.session['email'])
+            user = CustomUser.objects.get(email=email)
             print(user)
             print('user.otp',user.otp)
             print(otp)
@@ -315,6 +317,7 @@ def search_by_category(request):
             employee_wages = EmployyeWages.objects.filter(user=user)
             for wage in employee_wages:
                 wages_list.append({
+                    "id": wage.id,
                     "subcategory": wage.subcategory.name if wage.subcategory else None,
                     "wages": wage.wages
                 })
@@ -364,6 +367,7 @@ def save_employee(request):
             employee_wages = EmployyeWages.objects.filter(user=saved.employee)
             for wage in employee_wages:
                 wages_list.append({
+                    "id": wage.id,
                     "subcategory": wage.subcategory.name if wage.subcategory else None,
                     "wages": wage.wages
                 })
