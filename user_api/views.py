@@ -39,12 +39,32 @@ class UserRegistration(APIView):
             mobile_number = request.data.get('mobile_number')
             whatsapp_number = request.data.get('whatsapp_number')
             country_instance = Country.objects.get(id=country)
-            state_instance = State.objects.get(id=state)
-            district_instance = District.objects.get(id=district)
             if CustomUser.objects.filter(email=email).exists():
                 return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
             user = CustomUser.objects.create_user(username=email, name=name, email=email, password=password,
-                                                   fcm_token=fcm_token,country=country_instance,state=state_instance,district=district_instance, mobile_number=mobile_number,whatsapp_number=whatsapp_number,user_type="User")
+                                                   fcm_token=fcm_token,country=country_instance, mobile_number=mobile_number,whatsapp_number=whatsapp_number,user_type="User")
+            
+            state_ids = request.data.get("state", "")
+            state_ids = [int(id.strip()) for id in state_ids.split(",") if id.strip().isdigit()]
+
+            if state_ids:
+                state = []
+                for i in state_ids:
+                    statee = State.objects.get(id=i)
+                    state.append(statee)
+                user.state.set(state)
+
+            district_ids = request.data.get("district", "")
+            district_ids = [int(id.strip()) for id in district_ids.split(",") if id.strip().isdigit()]
+
+            if district_ids:
+                district = []
+                for i in district_ids:
+                    districtt = District.objects.get(id=i)
+                    district.append(districtt)
+                user.district.set(district)
+
+
             access_token = RefreshToken.for_user(user).access_token
 
             return Response({
@@ -274,8 +294,6 @@ def user_profile_api(request):
 
     # Serialize the foreign key fields
     country = user.country.name if user.country else None
-    state = user.state.name if user.state else None
-    district = user.district.name if user.district else None
 
     # CustomUser data
     user_data = {
@@ -285,8 +303,14 @@ def user_profile_api(request):
         'whatsapp_number': user.whatsapp_number,
         'email': user.email,
         'country': country,  # Serializing the country name
-        'state': state,      # Serializing the state name
-        'district': district # Serializing the district name
+        'state': [
+            {'id': state.id, 'name': state.name}
+            for state in user.state.all()
+        ],
+        'district': [
+            {'id': district.id, 'name': district.name}
+            for district in user.district.all()
+        ],
     }
     
     return JsonResponse(user_data)
@@ -555,17 +579,32 @@ def edit_user_profile(request):
     if request.POST.get('country_id') != '':
         user.country_id = request.POST.get('country_id', user.country_id)
 
-    if request.POST.get('state_id') != '':
-        user.state_id = request.POST.get('state_id', user.state_id)
-
-    if request.POST.get('district_id') != '':
-        user.district_id = request.POST.get('district_id', user.district_id)
 
     if 'profile_picture' in request.FILES:
         user.profile_picture = request.FILES['profile_picture']
 
     # Save the updated CustomUser model
     user.save()
+
+    state_ids = request.data.get("state", "")
+    state_ids = [int(id.strip()) for id in state_ids.split(",") if id.strip().isdigit()]
+
+    if state_ids:
+        state = []
+        for i in state_ids:
+            statee = State.objects.get(id=i)
+            state.append(statee)
+        user.state.set(state)
+
+    district_ids = request.data.get("district", "")
+    district_ids = [int(id.strip()) for id in district_ids.split(",") if id.strip().isdigit()]
+
+    if district_ids:
+        district = []
+        for i in district_ids:
+            districtt = District.objects.get(id=i)
+            district.append(districtt)
+        user.district.set(district)
 
     return JsonResponse({'status': 'success', 'message': 'User profile updated successfully'})
 

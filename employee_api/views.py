@@ -388,8 +388,14 @@ def employee_profile_api(request):
         'gender': user.gender,
         'approval_status': user.approval_status,
         'country': user.country.name if user.country else None,
-        'state': user.state.name if user.state else None,
-        'district': user.district.name if user.district else None,
+        'state': [
+            {'id': state.id, 'name': state.name}
+            for state in user.state.all()
+        ],
+        'district': [
+            {'id': district.id, 'name': district.name}
+            for district in user.district.all()
+        ],
         'prefered_work_location': user.prefered_work_location.name if user.prefered_work_location else None,
         'id_card_type': user.id_card_type,
         'id_card_number': user.id_card_number,
