@@ -59,6 +59,7 @@ class CountryAddForm(forms.ModelForm):
         widgets = {
             
             'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+            'flag' : forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
 

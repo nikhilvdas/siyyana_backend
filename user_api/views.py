@@ -517,3 +517,45 @@ def post_review(request):
         return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def edit_user_profile(request):
+    user = request.user
+
+    # Update the allowed CustomUser fields
+
+    if request.POST.get('name') != '':
+        user.name = request.POST.get('name', user.name)
+
+    if request.POST.get('email') != '':
+        user.email = request.POST.get('email', user.email)
+
+    if request.POST.get('whatsapp_number') != '':
+        user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
+
+    if request.POST.get('mobile_number') != '':
+        user.mobile_number = request.POST.get('mobile_number', user.mobile_number)
+
+    if request.POST.get('country_id') != '':
+        user.country_id = request.POST.get('country_id', user.country_id)
+
+    if request.POST.get('state_id') != '':
+        user.state_id = request.POST.get('state_id', user.state_id)
+
+    if request.POST.get('district_id') != '':
+        user.district_id = request.POST.get('district_id', user.district_id)
+
+    if 'profile_picture' in request.FILES:
+        user.profile_picture = request.FILES['profile_picture']
+
+    # Save the updated CustomUser model
+    user.save()
+
+    return JsonResponse({'status': 'success', 'message': 'User profile updated successfully'})

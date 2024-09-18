@@ -14,7 +14,8 @@ urlpatterns = [
     path('category-with-subcategory-and-employees', category_with_subcategory_and_employees, name='category-with-subcategory-and-employees'),
     path('all-categories', all_categories, name='all-categories'), 
     
-    path('user-profile-api', user_profile_api, name='user-profile-api'), 
+    path('user-profile-api', user_profile_api, name='user-profile-api'),
+    path('edit-user-profile', edit_user_profile, name='edit-user-profile'),
     path('search-by-category', search_by_category, name='search-by-category'), 
     path('save-employee', save_employee, name='save-employee'),
     path('booking-api', booking_api, name='booking-api'),

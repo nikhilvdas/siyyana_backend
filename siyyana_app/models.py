@@ -5,6 +5,7 @@ from django.db import models
 
 class Country(models.Model):
     name = models.CharField(max_length=100)
+    flag = models.ImageField(upload_to='country_flag',blank=True,null=True)
     class Meta:
         verbose_name_plural = "COUNTRIES"
     def __str__(self):

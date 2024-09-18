@@ -38,6 +38,7 @@ Country
                           <tr>
                             <th>SL</th>
                             <th>Country Name</th>
+                            <th>Flag</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -46,6 +47,11 @@ Country
                           <tr>
                             <td>{{forloop.counter }}</td>
                             <td>{{i.name}}</td>
+                            {% if i.flag %}
+                            <td><img src='{{i.flag.url}}' style="width:30px;height:30px;"></td>
+                            {% else %}
+                            <td>None</td>
+                            {% endif %}
                             <td>
                               <ul class="action">
                                 <li class="edit">
