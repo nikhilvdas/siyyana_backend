@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %}
+
+{% block pageheading %}
+Requested Services
+{% endblock %}
+
+
+      <!-- Page Sidebar Ends-->
+      <div class="page-body">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  {% comment %} <form method="post" action="{% url 'siyyana_app:import_excel_country' %}" class="row g-3 mb-2">
+                    {% csrf_token %}
+                    <div class="col-md-2">
+                      <input type="file" class="form-control form-control-sm" name="excel_file" required>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" class="btn btn-primary" value="Import excel">
+                    </div>
+                </form> {% endcomment %}
+                  <div class="list-product-header">
+                    
+                    {% comment %} <div>
+                      <a class="btn"  style="background-color: #2096ad; border-color: #2096ad; color: white;" href="{% url 'siyyana_app:add_country' %}"
+                        ><i class="fa fa-plus"></i>Add Country</a
+                      >
+                    </div>
+                     {% endcomment %}
+                  <div class="list-product">
+                      <table class="display" id="row-select-delete">
+                        <thead>
+                          <tr>
+                            <th>SL</th>
+                            <th>Service</th>
+                            <th>Sub Services</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in requested_services %}
+                          <tr>
+                            <td>{{forloop.counter }}</td>
+                            <td>{{i.name}}</td>
+                            <td>{{i.subcategory}}</td>
+                            <td>
+                              <ul class="action">
+                              
+                                <li class="delete">
+                                  <a  onclick="showConfirmation('{%  url 'siyyana_app:delete_requested_services' i.id %}')"><i class="icon-trash me-2"></i></a>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Container-fluid Ends-->
+      </div>
+      <!-- footer start-->
+
+
+{% endblock content %}

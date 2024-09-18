@@ -28,6 +28,9 @@ urlpatterns = [
     path('employee-list', views.employee_list,name='employee_list'),
     path('employee-delete/<int:id>/', views.employee_delete,name='employee_delete'),
     
+    path('requested-services', views.requested_services,name='requested_services'),
+    path('delete-requested-services/<int:id>/', views.delete_requested_services,name='delete_requested_services'),
+    
 
     path('user-list', views.user_list,name='user_list'),
     path('user-delete/<int:id>/', views.user_delete,name='user_delete'),

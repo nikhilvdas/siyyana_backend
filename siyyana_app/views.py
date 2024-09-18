@@ -8,7 +8,6 @@ from django.contrib.auth.models import User,auth
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
-from .utils import top_booked_employees
 from django.db.models import Count
 import openpyxl
 from io import BytesIO
@@ -642,3 +641,19 @@ def district_delete(request,id):
     messages.success(request,'Deleted successfully')
     return redirect('siyyana_app:district')
 
+
+
+
+
+
+def requested_services(request):
+    requested_services = RequestedCategory.objects.all()
+    context = {'requested_services':requested_services}
+    return render(request,'requested-services.html',context)
+
+
+def delete_requested_services(request,id):
+    data = RequestedCategory.objects.get(id=id)
+    data.delete()
+    messages.success(request,'Deleted successfully')
+    return redirect('siyyana_app:requested_services')
