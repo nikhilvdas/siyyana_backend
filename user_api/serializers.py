@@ -31,10 +31,12 @@ class SubCategorySerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
+    all_employees= serializers.SerializerMethodField()
+
 
     class Meta:
         model = Category
-        fields = ['id', 'name','logo','color','count','subcategories']
+        fields = ['id', 'name','logo','color','count','all_employees','subcategories']
 
     def get_subcategories(self, obj):
         subcategories = SubCategory.objects.filter(service=obj)
@@ -43,6 +45,10 @@ class CategorySerializer(serializers.ModelSerializer):
     def get_count(self, obj):
         subcategories = SubCategory.objects.filter(service=obj).count()
         return subcategories
+    
+    def get_all_employees(self, obj):
+        users = CustomUser.objects.filter(category=obj,user_type="Employee")
+        return UserSerializer(users, many=True).data
 
 
 

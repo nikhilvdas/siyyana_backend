@@ -193,10 +193,8 @@ def category_with_subcategory_and_employees(request):
     serializer = CategorySerializer(categories, many=True, context={'request': request})
     top_categories = TopCategory.objects.all()
     topcategories_serializer = TopCategorySerializer(top_categories, many=True, context={'request': request})
+
     return Response({'datas': serializer.data,'top_categories': topcategories_serializer.data}, status=status.HTTP_200_OK)
-
-
-
 
 
 @api_view(['POST'])
