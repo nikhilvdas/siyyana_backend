@@ -14,7 +14,7 @@ class Country(models.Model):
 
 class State(models.Model):
     name = models.CharField(max_length=100)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE,related_name='country')
     class Meta:
         verbose_name_plural = "STATE"
     def __str__(self):

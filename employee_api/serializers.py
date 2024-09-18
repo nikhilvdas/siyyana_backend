@@ -13,7 +13,7 @@ class CountrySerializer(serializers.ModelSerializer):
 
 
 class StateSerializer(serializers.ModelSerializer):
-    country = serializers.StringRelatedField()
+    country = CountrySerializer(read_only=True)
     class Meta:
         model = State
         fields = '__all__'

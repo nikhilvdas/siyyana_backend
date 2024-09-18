@@ -526,17 +526,50 @@ def edit_employee_profile(request):
     # Save the updated EmployeeWorkSchedule model
     work_schedule.save()
 
-    # Update EmployyeWages fields
-    wages_data = request.POST.getlist('wages_data[]', [])
-    for wage_data in wages_data:
-        subcategory_id = wage_data.get('subcategory_id')
-        wages_amount = wage_data.get('wages')
+    category_ids = request.data.get("category", "")
+    category_ids = [int(id.strip()) for id in category_ids.split(",") if id.strip().isdigit()]
+    subcategory_ids = request.data.get("subcategory", "")
+    subcategory_ids = [int(id.strip()) for id in subcategory_ids.split(",") if id.strip().isdigit()]
 
-        if subcategory_id and wages_amount != '':
-            wages, created = EmployyeWages.objects.get_or_create(user=user, subcategory_id=subcategory_id)
-            wages.wages = wages_amount
-            # Save the updated EmployyeWages model
-            wages.save()
+
+    # Handle category updates with create or update logic
+    if category_ids:
+        categories = []
+        for i in category_ids:
+            try:
+                catgry = Category.objects.get(id=i)
+                categories.append(catgry)
+            except Category.DoesNotExist:
+                pass  # Handle if category doesn't exist
+        user.category.set(categories)  # Use set to replace existing categories with the provided ones
+
+    # Handle subcategory updates with create or update logic
+    if subcategory_ids:
+        subcategories = []
+        for i in subcategory_ids:
+            try:
+                subcatgry = SubCategory.objects.get(id=i)
+                subcategories.append(subcatgry)
+            except SubCategory.DoesNotExist:
+                pass  # Handle if subcategory doesn't exist
+        user.subcategory.set(subcategories)  # Use set to replace existing subcategories with the provided ones
+
+
+    # Update EmployyeWages fields
+    subcategory_ids = request.data.get("subcategory", "")
+    subcategory_ids = [int(id.strip()) for id in subcategory_ids.split(",") if id.strip().isdigit()]
+
+    wages = request.data.get("wages", "")
+    wages = [int(id.strip()) for id in wages.split(",") if id.strip().isdigit()]
+    print("customer creation 2")
+    if wages:
+        for subcategory_id, wage in zip(subcategory_ids, wages):
+            # Use update_or_create to update the wage if it exists, or create it if not
+            EmployyeWages.objects.update_or_create(
+                user=user,
+                subcategory_id=subcategory_id,
+                defaults={'wages': wage}
+            )
 
     return JsonResponse({'status': 'success', 'message': 'Profile and related data updated successfully'})
 
