@@ -109,8 +109,6 @@ class EmployeeRegistration(APIView):
             last_name = request.data.get('last_name')
             prefered_work_location = request.data.get('prefered_work_location')
             country = request.data.get('country')
-            state = request.data.get('state')
-            district = request.data.get('district')
             fcm_token = request.data.get('fcm_token')
             mobile_number = request.data.get('mobile_number')
             whatsapp_number = request.data.get('whatsapp_number')
@@ -140,8 +138,6 @@ class EmployeeRegistration(APIView):
             
       
             country_instance = Country.objects.get(id=country)
-            state_instance = State.objects.get(id=state)
-            district_instance = District.objects.get(id=district)
             prefered_work_location_instance = District.objects.get(id=prefered_work_location)
 
             
@@ -149,12 +145,35 @@ class EmployeeRegistration(APIView):
 
             if CustomUser.objects.filter(email=email).exists():
                 return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
-            user = CustomUser.objects.create_user(username=email, name=name, email=email, password=password, country=country_instance, state=state_instance, 
-                                                  district=district_instance, fcm_token=fcm_token, mobile_number=mobile_number,whatsapp_number=whatsapp_number,about=about,user_type="Employee",
+            user = CustomUser.objects.create_user(username=email, name=name, email=email, password=password, country=country_instance, 
+                                                   fcm_token=fcm_token, mobile_number=mobile_number,whatsapp_number=whatsapp_number,about=about,user_type="Employee",
                                                   profile_picture=profile_picture,charge=charge_type,first_name=first_name,last_name=last_name,prefered_work_location=prefered_work_location_instance,
                                                   id_card_type=id_card_type,id_card_number=id_card_number,id_card=id_card)
 
             print("customer creation")
+
+            state_ids = request.data.get("state", "")
+            state_ids = [int(id.strip()) for id in state_ids.split(",") if id.strip().isdigit()]
+
+            if state_ids:
+                state = []
+                for i in state_ids:
+                    statee = State.objects.get(id=i)
+                    state.append(statee)
+                user.state.set(state)
+
+            district_ids = request.data.get("district", "")
+            district_ids = [int(id.strip()) for id in district_ids.split(",") if id.strip().isdigit()]
+
+            if district_ids:
+                district = []
+                for i in district_ids:
+                    districtt = District.objects.get(id=i)
+                    district.append(districtt)
+                user.district.set(district)
+
+
+
             category_ids = request.data.get("category", "")
             category_ids = [int(id.strip()) for id in category_ids.split(",") if id.strip().isdigit()]
 
@@ -454,11 +473,6 @@ def edit_employee_profile(request):
     if request.POST.get('country_id') != '':
         user.country_id = request.POST.get('country_id', user.country_id)
         
-    if request.POST.get('state_id') != '':
-        user.state_id = request.POST.get('state_id', user.state_id)
-        
-    if request.POST.get('district_id') != '':
-        user.district_id = request.POST.get('district_id', user.district_id)
         
     if request.POST.get('prefered_work_location_id') != '':
         user.prefered_work_location_id = request.POST.get('prefered_work_location_id', user.prefered_work_location_id)
@@ -530,6 +544,37 @@ def edit_employee_profile(request):
     category_ids = [int(id.strip()) for id in category_ids.split(",") if id.strip().isdigit()]
     subcategory_ids = request.data.get("subcategory", "")
     subcategory_ids = [int(id.strip()) for id in subcategory_ids.split(",") if id.strip().isdigit()]
+
+    state_ids = request.data.get("state", "")
+    state_ids = [int(id.strip()) for id in state_ids.split(",") if id.strip().isdigit()]
+
+    if state_ids:
+        states = []
+        for i in state_ids:
+            try:
+                statee = State.objects.get(id=i)
+                states.append(statee)
+            except State.DoesNotExist:
+                pass  # Handle if category doesn't exist
+        user.state.set(states)  # Use set to replace existing categories with the provided ones
+
+    district_ids = request.data.get("district", "")
+    district_ids = [int(id.strip()) for id in district_ids.split(",") if id.strip().isdigit()]
+
+    if district_ids:
+        district = []
+        for i in district_ids:
+            try:
+                districtt = District.objects.get(id=i)
+                district.append(districtt)
+            except District.DoesNotExist:
+                pass  # Handle if category doesn't exist
+        user.district.set(district)  # Use set to replace existing categories with the provided ones
+
+
+
+
+
 
 
     # Handle category updates with create or update logic
