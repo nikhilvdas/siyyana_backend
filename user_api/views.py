@@ -310,6 +310,15 @@ def search_by_category(request):
                 'saturday': f"{work_schedule.saturday_start_time} - {work_schedule.saturday_end_time}" if work_schedule else None,
             }
 
+            # Fetch the employee's wages
+            wages_list = []
+            employee_wages = EmployyeWages.objects.filter(user=user)
+            for wage in employee_wages:
+                wages_list.append({
+                    "subcategory": wage.subcategory.name if wage.subcategory else None,
+                    "wages": wage.wages
+                })
+
             user_data.append({
                 'name': user.name,
                 'mobile_number': user.mobile_number,
@@ -317,16 +326,17 @@ def search_by_category(request):
                 'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
                 'about': user.about,
                 'work_schedule': work_schedule_data,  # Include the work schedule here
+                'wages': wages_list  # Include the wages here
             })
 
-        # Response format includes the searched category and the list of users with work schedule
+        # Response format includes the searched category and the list of users with work schedule and wages
         return JsonResponse({
             'searched_category': category.name,
             'users': user_data
         }, status=200)
 
     except Category.DoesNotExist:
-        return JsonResponse({'error': 'Category not found.'}, status=404)    
+        return JsonResponse({'error': 'Category not found.'}, status=404)
 
 
 @api_view(['GET', 'POST'])
@@ -349,6 +359,15 @@ def save_employee(request):
                 'saturday': f"{work_schedule.saturday_start_time} - {work_schedule.saturday_end_time}" if work_schedule else None,
             }
 
+            # Fetch the employee's wages
+            wages_list = []
+            employee_wages = EmployyeWages.objects.filter(user=saved.employee)
+            for wage in employee_wages:
+                wages_list.append({
+                    "subcategory": wage.subcategory.name if wage.subcategory else None,
+                    "wages": wage.wages
+                })
+
             employees_list.append({
                 "id": saved.employee.id,
                 "employee_name": saved.employee.name,
@@ -356,8 +375,10 @@ def save_employee(request):
                 "employee_whatsapp": saved.employee.whatsapp_number,
                 "employee_profile_picture": request.build_absolute_uri(saved.employee.profile_picture.url) if saved.employee.profile_picture else None,
                 "employee_about": saved.employee.about,
-                "work_schedule": work_schedule_data  # Include work schedule in the response
+                "work_schedule": work_schedule_data,  # Include work schedule in the response
+                "wages": wages_list  # Include wages list in the response
             })
+
         return JsonResponse({"saved_employees": employees_list}, status=200)
 
     if request.method == 'POST':
