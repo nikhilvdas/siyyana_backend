@@ -64,6 +64,7 @@ Users
                             <tr>
                                 <th>SL</th>
                                 <th>Name</th>
+                                <th>Email</th>
                                 <th>Mobile Number</th>
                                 <th>WhatsApp Number</th>
                                 <th>Country</th>
@@ -77,6 +78,7 @@ Users
                             <tr>
                               <td>{{ forloop.counter }}</td>
                               <td>{{ user.name }}</td>
+                              <td>{{ user.email }}</td>
                               <td>
                                 <a href="tel:{{ user.mobile_number }}">
                                     <i class="fas fa-phone"></i> {{ user.mobile_number }}
