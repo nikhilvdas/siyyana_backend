@@ -132,7 +132,6 @@ def verify_otp(request):
 
 @csrf_exempt
 def reset_password(request):
-    print(request.session['otp'])
     if request.method == 'POST':
         otp = request.POST.get('otp')
         email = request.POST.get('email')
