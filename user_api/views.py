@@ -415,19 +415,19 @@ def save_employee(request):
 
 import calendar
 from django.db.models import Q
-
-@api_view(['GET'])
+@api_view(['POST'])
 def my_orders_user_api(request):
     # Ensure the user is authenticated
     if not request.user.is_authenticated:
         return Response({'error': 'User not authenticated'}, status=401)
 
-    # Get the filter option from query parameters
+    # Get the filter option from the POST data (not query parameters)
     date_filter = request.data.get('filter', 'All')
 
     # Define date ranges based on the filter option
     today = timezone.now().date()
     print(f"Filter selected: {date_filter}")
+    
     if date_filter == 'Today':
         date_range = (today, today)
         print(f"Filtering for today: {date_range}")
@@ -451,7 +451,7 @@ def my_orders_user_api(request):
     
     if date_range:
         query &= Q(date__range=date_range)
-    
+
     # Fetch and filter bookings based on each status for the logged-in user
     pending_bookings = Booking.objects.filter(query & Q(status='Pending'))
     accepted_bookings = Booking.objects.filter(query & Q(status='Accept'))
@@ -476,6 +476,7 @@ def my_orders_user_api(request):
         'completed_bookings': completed_serializer.data,
         'rejected_bookings': rejected_serializer.data,
     })
+
 
 
 
