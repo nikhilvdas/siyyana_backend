@@ -271,6 +271,12 @@ def all_categories(request):
 @permission_classes([IsAuthenticated])
 def user_profile_api(request):
     user = request.user
+
+    # Serialize the foreign key fields
+    country = user.country.name if user.country else None
+    state = user.state.name if user.state else None
+    district = user.district.name if user.district else None
+
     # CustomUser data
     user_data = {
         'id': user.id,
@@ -278,11 +284,12 @@ def user_profile_api(request):
         'mobile_number': user.mobile_number,
         'whatsapp_number': user.whatsapp_number,
         'email': user.email,
+        'country': country,  # Serializing the country name
+        'state': state,      # Serializing the state name
+        'district': district # Serializing the district name
     }
     
-
     return JsonResponse(user_data)
-
 
 
 @api_view(['POST'])
