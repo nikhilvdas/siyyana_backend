@@ -20,7 +20,7 @@ class StateSerializer(serializers.ModelSerializer):
 
 
 class DistrictSerializer(serializers.ModelSerializer):
-    state = serializers.StringRelatedField()
+    state = StateSerializer(read_only=True)
     class Meta:
         model = District
         fields = '__all__'

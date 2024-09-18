@@ -23,7 +23,7 @@ class State(models.Model):
 
 class District(models.Model):
     name = models.CharField(max_length=100)
-    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    state = models.ForeignKey(State, on_delete=models.CASCADE,related_name='state')
     class Meta:
         verbose_name_plural = "DISTRICTS"
     def __str__(self):
@@ -136,3 +136,12 @@ class Saved_Employees(models.Model):
 
 
 
+class Onbaording(models.Model):
+    class Meta:
+        verbose_name_plural = "ONBOARDING"
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
+    logo = models.ImageField(upload_to='onboarding')
