@@ -17,6 +17,7 @@ from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.db.models import Count
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -559,3 +560,9 @@ def edit_user_profile(request):
     user.save()
 
     return JsonResponse({'status': 'success', 'message': 'User profile updated successfully'})
+
+
+
+
+
+
