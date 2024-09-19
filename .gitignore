@@ -11,5 +11,3 @@
 # Ignore Media files
 media
 
-# Ignore signals.py file in siyyana_app
-siyyana_app/signals.py
