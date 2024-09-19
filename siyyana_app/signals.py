@@ -25,20 +25,7 @@ from django.dispatch import receiver
 from .models import Booking
 
 
-service_account_info =  {
 
-    "type": "service_account",
-    "project_id": "siyyana-86b0a",
-    "private_key_id": "a5d2b7ab10be39d22c311e1615560be9c668cbb0",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC3ueSFSgaz66cM\nN3HNZLKC+tA/NgPVdcTD/Lm0gTnF2AOEM/esHLoPc+UbL79mnJm+3hGTOU2RG2Sy\nohOgyF9Ga/hZNOGQ148Ve8YRiVIb3nBQC4+2xFSbVZPAy1AXjgjG0S0lnc+Wo9Py\nGcO4kyMPCj8duaAG3K9t17203ASGwWPHMmwMTdaTfblY7ibnZtfC+B+btYMt4PVG\naGRkd50qgeteVDRAXnS3FJh9SZXygke2Fl6erYds/9zEzQzYdoQIGgqHfqdvyZ/G\ngRJcqgDzSC60eusKZA3AV/KE/i6Ni1ORYjy6cmCNC7+4dWEIj+pr9odk1DJ8HUzg\nBKuETeV7AgMBAAECggEAVfv+arEH7QlzHyENtioT73/RmVu+tJaO1YiAIu29q42a\nq7MkjRzOqS+8wBn7EltlCvJkOEo/tpMi8AUxeXR9PniGfL1mecKgeNX6Dzf8wQU7\n/AJFKqy8ygvlf/vHCpcTHXVFE09FmYMnzKzpMAdQh5fsjQ1USxHaWmZ3Jt83kRbD\nC4Fc8udyZkhi7gqWYyUz7RtddR2j7+IDc0Bw3FQq17FbIl8CI74UT7l4EQdOTxU6\nzOlYtidzK8LjYRVt9PHhDJtGEOxnh5EBrB3abXZlLLzkZYqSrbbyTvU119brKnHO\nciBSjUutkMZVLwpTinQCGg7uW6Z30Xg+9dfS7KHEXQKBgQDZrrV2l/JZZg0h5h80\nz8eRPEP7/YG6cDBkA+9mx/0XAPoheKD4XMuT3qYdhEbsNGFwPq8414na5SF2FXPi\n/yQAXjNrjHWyhIyuivhSTR5rafuahJEJmkdXdfwt917Qg6AGlNu6r2PkDkxcT3xm\nqGbqUrINFBWSiZ9EQ6v94m285wKBgQDYEQgCBJk1eZHzaTJ9rWhr79Rn/ROFMDRK\nDak2MbSkwNv+brcbTEQw7Xu5TfD+ro/NGD49g+6RCiyKO6RoLGE7wjQFXIbSjnqT\nO64WhhV4tNRuAbDdH+N8+t27o4NjyVWGBMlGP2/3Y7fhh/NX7NcWV3LfYOJRpAr9\ndpWcFpzMTQKBgQCSg/xRsV4GfCDUsz5H3p5Vi/m6T1wU79QyTU/Cn1MjO54gD0BR\nSqwfgBnQ/ip6a5s14IsxuClqcxS9lRzmKZLCyKTVe7nwiTTjelg/lPanl7MowpeY\nngXswVYWXkysDhwUsfbfRZP3eQQ+kaWKt0hl6Xk8Qktu0UCowt+tx8zS+wKBgDIg\n+W+ma3lZpEAKBxnbcp+gO/KIZ8/92BPaSYj2TUfwKtpEC518u1Fyt8LNT313OIvH\n9SDGjEIAT0cfAUzeBw0bSIB58BnHzq58KS62myKvKZ4ALG2RKXFkrq8LB7/OBVab\no6r1qt+FtjLQHOgoXdqkHVWwH7H7UkVuDtXw9R39AoGAE7dVAZjWMHIE1UZ2G2xG\n746xZjErTAkh1LzuJjxhafxsGj3yqraU5j8Xc9glOjrqu68poU3fri/BWuYrqEYc\np/1eqjWXi+UEEZTAby5toWoTmmSdQCEAglIwK0Bu3yQoXb45Q2XYw9Agg5N2Lz1U\nG8cmmf23bHprvplFcK1fwsw=\n-----END PRIVATE KEY-----\n",
-    "client_email": "firebase-adminsdk-lqnuq@siyyana-86b0a.iam.gserviceaccount.com",
-    "client_id": "111549999066202189830",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-lqnuq%40siyyana-86b0a.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com"
-}
 
 
 
