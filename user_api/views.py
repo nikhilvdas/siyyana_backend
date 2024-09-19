@@ -611,3 +611,28 @@ def edit_user_profile(request):
 
 
 
+
+
+
+# Function-based view to get popular categories by booking count
+def popular_categories(request):
+    # Aggregate bookings count for each category and order by highest count
+    categories = Category.objects.annotate(
+        booking_count=Count('subcategory__employyewages__service__employee')
+    ).order_by('-booking_count')[:5]
+
+    # Prepare the response data
+    # Prepare the response data
+    result = []
+    for category in categories:
+        logo_url = request.build_absolute_uri(category.logo.url) if category.logo else None
+        
+        result.append({
+            'id': category.id,
+            'name': category.name,
+            'booking_count': category.booking_count,
+            'logo': logo_url,
+            'color': category.color,
+        })
+
+    return JsonResponse(result, safe=False)
