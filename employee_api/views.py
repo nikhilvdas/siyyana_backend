@@ -38,11 +38,17 @@ def location_list_api(request):
             serializer = StateSerializer(state, many=True,context={'request':request})
             return Response(serializer.data)
         
-        state_id = request.data.get('state_id')
-        if state_id:
-            state = State.objects.get(id=state_id)
-            district = District.objects.filter(state=state)
-            serializer = DistrictSerializer(district, many=True,context={'request':request})
+        state_ids = request.data.get("state_id", "")
+        state_ids = [int(id.strip()) for id in state_ids.split(",") if id.strip().isdigit()]
+        if state_ids:
+            all_districts = []
+            for i in state_ids:
+                state = State.objects.get(id=i)  # Ensure the state exists
+                districts = District.objects.filter(state=state)
+                all_districts.extend(districts)  # Collect all districts
+
+            # Serialize all districts together
+            serializer = DistrictSerializer(all_districts, many=True, context={'request': request})
             return Response(serializer.data)
 
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -632,18 +638,19 @@ from django.utils import timezone
 from django.db.models import Q
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def my_orders(request):
     # Ensure the user is authenticated
     if not request.user.is_authenticated:
         return Response({'error': 'User not authenticated'}, status=401)
 
-    # Get the filter option from query parameters
-    date_filter = request.GET.get('filter', 'All')
+    # Get the filter option from request data (POST request)
+    date_filter = request.data.get('filter', 'All')
 
     # Define date ranges based on the filter option
     today = timezone.now().date()
     print(f"Filter selected: {date_filter}")
+    
     if date_filter == 'Today':
         date_range = (today, today)
         print(f"Filtering for today: {date_range}")
