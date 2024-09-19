@@ -43262,7 +43262,7 @@ table.table-bordered thead tr th p {
 .page-wrapper .sidebar-main-title h6 {
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: #000;
   text-transform: uppercase;
   margin-bottom: 0;
   letter-spacing: 0.4px;
@@ -43556,7 +43556,7 @@ table.table-bordered thead tr th p {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
-  background-color: #2096ad;
+  background-color: rgba(106, 113, 133, 0.3);
   border-radius: 6px;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li.sidebar-main-title.pin-title {
@@ -43821,7 +43821,6 @@ table.table-bordered thead tr th p {
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li .sidebar-link.active::after {
   opacity: 1;
-  visibility: visible;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li .sidebar-link.active ~ .sidebar-submenu::before {
   height: calc(100% - 12px);

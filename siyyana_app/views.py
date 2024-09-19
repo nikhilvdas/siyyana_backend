@@ -22,9 +22,12 @@ def index(request):
     services_count = Category.objects.all().count()
     sub_services_count = SubCategory.objects.all().count()
     top_services_count = TopCategory.objects.all().count()
-    # Get the top booked employees
     top_booked_employees = CustomUser.objects.filter(user_type = 'Employee')[:5]
     top_booked_customers = CustomUser.objects.filter(user_type = 'User')[:5]
+    subservices_count = SubCategory.objects.all().count()
+    service_request_count = RequestedCategory.objects.all().count()
+    country_count = Country.objects.all().count()
+
 
     context = {
 
@@ -35,7 +38,10 @@ def index(request):
         'sub_services_count':sub_services_count,
         'top_services_count':top_services_count,
         'top_booked_employees': top_booked_employees, 
-        'top_booked_customers': top_booked_customers
+        'top_booked_customers': top_booked_customers,
+        'subservices_count':subservices_count,
+        'service_request_count':service_request_count,
+        'country_count':country_count
 
     }
     return render(request,'index.html',context)

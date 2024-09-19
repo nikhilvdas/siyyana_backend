@@ -90,11 +90,12 @@ Employees
                                 <th>Mobile Number</th>
                                 <th>WhatsApp Number</th>
                                 <th>Profile Picture</th>
+                                <th>Status</th>
+                                <th>Action</th>
                                 <th>Country</th>
                                 <th>State</th>
                                 <th>District</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                
                               </tr>
                         </thead>
                         <tbody>
@@ -123,9 +124,6 @@ Employees
                                   None
                                 {% endif %}
                               </td>
-                              <td>{{ user.country}}</td>
-                              <td>{{ user.state.name }}</td>
-                              <td>{{ user.district.name }}</td>
                               <td>
                                 {% if user.status == 'Active' %}
                                 <label class="switch">
@@ -158,6 +156,11 @@ Employees
                                   </li>
                                 </ul>
                               </td>
+                              <td>{{ user.country}}</td>
+                              <td>{{ user.state.name }}</td>
+                              <td>{{ user.district.name }}</td>
+                              
+                              
                             </tr>
                             {% endfor %}
                         </tbody>

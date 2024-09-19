@@ -79,13 +79,46 @@ class UserRegistration(APIView):
 
 
 
+# class UserLogin(APIView):
+#     def post(self, request):
+#         email = request.data.get('email')
+#         password = request.data.get('password')
+#         if CustomUser.objects.filter(email=email).exists():
+#             user = CustomUser.objects.get(email=email,user_type="User")
+#             if user.check_password(password):
+#                 refresh = RefreshToken.for_user(user)
+#                 return Response({
+#                     'message': 'Login successful',
+#                     'access_token': str(refresh.access_token),
+#                     'refresh_token': str(refresh),
+#                     'user_details': UserSerializer(user).data
+#                 }, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({"error": "Invalid password"}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             return Response({"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserLogin(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        if CustomUser.objects.filter(email=email).exists():
-            user = CustomUser.objects.get(email=email,user_type="User")
+        fcm_token = request.data.get('fcm_token')
+
+        if not email or not password:
+            return Response({"error": "Email and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if CustomUser.objects.filter(email=email, user_type="User").exists():
+            user = CustomUser.objects.get(email=email, user_type="User")
+            
+            # Check password first
             if user.check_password(password):
+                # Update FCM token only if it's provided
+                if fcm_token:
+                    user.fcm_token = fcm_token
+                    user.save()
+
+                # Generate tokens
                 refresh = RefreshToken.for_user(user)
                 return Response({
                     'message': 'Login successful',
@@ -97,7 +130,6 @@ class UserLogin(APIView):
                 return Response({"error": "Invalid password"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 
