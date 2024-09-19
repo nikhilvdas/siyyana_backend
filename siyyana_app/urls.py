@@ -56,5 +56,9 @@ urlpatterns = [
     path('view-profile/<int:id>/', views.view_profile,name='view_profile'),
     path('staff-status-change/<int:id>/', views.staff_status_change, name='staff_status_change'),
     
-    
+    path('onboarding', views.onboarding,name='onboarding'),
+    path('add-onboarding', views.add_onboarding,name='add_onboarding'),
+    path('edit-onboarding/<int:id>/', views.edit_onboarding,name='edit_onboarding'),
+    path('onboarding-delete/<int:id>/', views.onboarding_delete,name='onboarding_delete'),
+
 ]

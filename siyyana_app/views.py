@@ -643,17 +643,61 @@ def district_delete(request,id):
 
 
 
-
-
-
+@login_required(login_url="siyyana_app:login")
 def requested_services(request):
     requested_services = RequestedCategory.objects.all()
     context = {'requested_services':requested_services}
     return render(request,'requested-services.html',context)
 
-
+@login_required(login_url="siyyana_app:login")
 def delete_requested_services(request,id):
     data = RequestedCategory.objects.get(id=id)
     data.delete()
     messages.success(request,'Deleted successfully')
     return redirect('siyyana_app:requested_services')
+
+
+
+
+@login_required(login_url="siyyana_app:login")
+def onboarding(request):
+    data = Onbaording.objects.all()
+    context = {'data':data}
+    return render(request,'onboarding.html',context)
+
+
+@login_required(login_url="siyyana_app:login")
+def add_onboarding(request):
+    if request.method == 'POST':
+        form = OnboardingAddForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'added successfully')
+            return redirect('siyyana_app:onboarding')
+    else:
+        form = OnboardingAddForm()
+    context = {'form':form}
+    return render(request,'add-onboarding.html',context)
+
+
+@login_required(login_url="siyyana_app:login")
+def edit_onboarding(request,id):
+    update = Onbaording.objects.get(id=id)
+    form = OnboardingAddForm(instance=update)
+    if request.method == 'POST':
+        form = OnboardingAddForm(request.POST,request.FILES,instance=update)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Updated successfully')
+            return redirect('siyyana_app:onboarding')
+    context = {'form':form}
+    return render(request,'add-onboarding.html',context)
+
+
+
+@login_required(login_url="siyyana_app:login")
+def onboarding_delete(request,id):
+    data = Onbaording.objects.get(id=id)
+    data.delete()
+    messages.success(request,'Deleted successfully')
+    return redirect('siyyana_app:onboarding')

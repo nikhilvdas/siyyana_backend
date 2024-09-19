@@ -795,3 +795,13 @@ def employee_all_reviews(request):
     
     # Return the response as JSON
     return Response(response_data)
+
+
+
+
+
+@api_view(['GET'])
+def get_onboardings(request):
+    onboardings = Onbaording.objects.all()
+    serializer = OnboardingSerializer(onboardings, many=True, context={'request': request})
+    return Response(serializer.data)

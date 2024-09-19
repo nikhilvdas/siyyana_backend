@@ -122,3 +122,17 @@ class EmployeeViewForm(forms.ModelForm):
 
 
 
+class OnboardingAddForm(forms.ModelForm):
+    class Meta:
+        model = Onbaording
+        fields = '__all__'
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'required': True}),
+
+        }
+
+
+

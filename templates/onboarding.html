@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %}
+
+{% block pageheading %}
+Onboarding
+{% endblock %}
+
+
+      <!-- Page Sidebar Ends-->
+      <div class="page-body">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  {% comment %} <form method="post" action="{% url 'siyyana_app:import_excel_country' %}" class="row g-3 mb-2">
+                    {% csrf_token %}
+                    <div class="col-md-2">
+                      <input type="file" class="form-control form-control-sm" name="excel_file" required>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" class="btn btn-primary" value="Import excel">
+                    </div>
+                </form> {% endcomment %}
+                  <div class="list-product-header">
+                    
+                    <div>
+                      <a class="btn"  style="background-color: #2096ad; border-color: #2096ad; color: white;" href="{% url 'siyyana_app:add_onboarding' %}"
+                        ><i class="fa fa-plus"></i>Add</a
+                      >
+                    </div>
+                    
+                  <div class="list-product">
+                      <table class="display" id="row-select-delete">
+                        <thead>
+                          <tr>
+                            <th>SL</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Logo</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in data %}
+                          <tr>
+                            <td>{{forloop.counter }}</td>
+                            <td>{{i.name}}</td>
+                            <td>{{i.description}}</td>
+                            {% if i.logo %}
+                            <td><img src='{{i.logo.url}}' style="width:30px;height:30px;"></td>
+                            {% else %}
+                            <td>None</td>
+                            {% endif %}
+                            <td>
+                              <ul class="action">
+                                <li class="edit">
+                                  <a href="{% url 'siyyana_app:edit_onboarding' i.id %}"
+                                    ><i class="icon-pencil-alt"></i
+                                  ></a>
+                                </li>
+                                <li class="delete">
+                                  <a  onclick="showConfirmation('{%  url 'siyyana_app:onboarding_delete' i.id %}')"><i class="icon-trash me-2"></i></a>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Container-fluid Ends-->
+      </div>
+      <!-- footer start-->
+
+
+{% endblock content %}

@@ -27,6 +27,6 @@ urlpatterns = [
 
     path('employee-all-reviews', views.employee_all_reviews, name='employee_all_reviews'),
 
-    
+    path('onboardings', views.get_onboardings, name='get_onboardings'),
 
 ]

@@ -206,3 +206,19 @@ class EmployeeWorkTimeSlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeeWorkTimeSlot
         fields = ['day', 'start_time', 'end_time']
+
+
+
+
+
+
+class OnboardingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Onbaording
+        fields = ['id', 'name', 'description', 'logo']
+
+    def get_logo(self, obj):
+        request = self.context.get('request')
+        if obj.logo:
+            return request.build_absolute_uri(obj.logo.url)
+        return None 
