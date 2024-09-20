@@ -384,6 +384,7 @@ def search_by_category(request):
                 })
 
             user_data.append({
+                'id':user.id,
                 'name': user.name,
                 'mobile_number': user.mobile_number,
                 'whatsapp_number': user.whatsapp_number,
