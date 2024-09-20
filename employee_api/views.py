@@ -140,6 +140,22 @@ class EmployeeRegistration(APIView):
             friday_end_time = request.data.get('friday_end_time')
             saturday_start_time = request.data.get('saturday_start_time')
             saturday_end_time = request.data.get('saturday_end_time')
+
+            # Convert empty strings to None for time fields
+            sunday_start_time = sunday_start_time if sunday_start_time else None
+            sunday_end_time = sunday_end_time if sunday_end_time else None
+            monday_start_time = monday_start_time if monday_start_time else None
+            monday_end_time = monday_end_time if monday_end_time else None
+            tuesday_start_time = tuesday_start_time if tuesday_start_time else None
+            tuesday_end_time = tuesday_end_time if tuesday_end_time else None
+            wednesday_start_time = wednesday_start_time if wednesday_start_time else None
+            wednesday_end_time = wednesday_end_time if wednesday_end_time else None
+            thursday_start_time = thursday_start_time if thursday_start_time else None
+            thursday_end_time = thursday_end_time if thursday_end_time else None
+            friday_start_time = friday_start_time if friday_start_time else None
+            friday_end_time = friday_end_time if friday_end_time else None
+            saturday_start_time = saturday_start_time if saturday_start_time else None
+            saturday_end_time = saturday_end_time if saturday_end_time else None
             
             
       
