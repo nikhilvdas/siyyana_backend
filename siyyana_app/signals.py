@@ -67,6 +67,7 @@ def get_access_token():
 def send_firebase_notification(title, description, fcm_token):
     try:
         access_token = get_access_token()
+        print(f"Access token: {access_token}")
         if not access_token:
             print("Failed to obtain access token")
             return

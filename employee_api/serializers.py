@@ -186,10 +186,11 @@ class BookingSerializer(serializers.ModelSerializer):
     service = EmplpoyeeWagesSerializer()  # Remove `many=True`
     employee = serializers.StringRelatedField()
     user = UserSerializerForBookingDetails()
+    employee_reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
-        fields = ["id", 'employee', 'date','start_time', 'end_time', 'status', 'category_logo', 'service', 'user']
+        fields = ["id", 'employee','employee_reviews', 'date','start_time', 'end_time', 'status', 'category_logo', 'service', 'user']
 
     def get_category_logo(self, obj):
         request = self.context.get('request')
@@ -197,6 +198,50 @@ class BookingSerializer(serializers.ModelSerializer):
             logo_url = obj.service.subcategory.service.logo.url
             return request.build_absolute_uri(logo_url) if request else logo_url
         return None
+    
+
+    def get_employee_reviews(self, obj):
+        employee = obj.employee
+        reviews = Review.objects.filter(employee=employee)
+        
+        # Calculate review statistics
+        rating_summary = {
+            'total_reviews': reviews.count(),
+            'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+            'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+            'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+            'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+            'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+        }
+
+        # Count the reviews by star rating
+        # rating_distribution = {
+        #     '5_star': reviews.filter(average_rating__gte=4.9).count(),  # 4.9 to 5.0
+        #     '4_star': reviews.filter(average_rating__gte=3.9, average_rating__lt=4.9).count(),  # 3.9 to <4.9
+        #     '3_star': reviews.filter(average_rating__gte=2.9, average_rating__lt=3.9).count(),  # 2.9 to <3.9
+        #     '2_star': reviews.filter(average_rating__gte=1.9, average_rating__lt=2.9).count(),  # 1.9 to <2.9
+        #     '1_star': reviews.filter(average_rating__lt=1.9).count(),  # less than 1.9
+        # }
+
+        # Include each individual review
+        # reviews_list = [
+        #     {
+        #         'user_name': review.user.name if review.user else "Anonymous",
+        #         'profile_pic': self.context['request'].build_absolute_uri(review.user.profile_picture.url) if review.user else None,
+        #         'review_date': review.review_date.strftime("%b %Y"),
+        #         'average_rating': review.average_rating,
+        #         'service_summary': review.service_summary,
+        #         'review': review.review,
+        #     }
+        #     for review in reviews
+        # ]
+
+        # Combine and return the review data
+        return {
+            'rating_summary': rating_summary,
+            # 'rating_distribution': rating_distribution,
+            # 'reviews': reviews_list
+        }
     
 
 
