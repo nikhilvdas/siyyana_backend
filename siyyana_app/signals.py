@@ -105,58 +105,84 @@ def send_firebase_notification(title, description, fcm_token):
 
 
 
-# Pre-save signal to detect if the booking was rescheduled
 @receiver(pre_save, sender=Booking)
 def booking_rescheduled(sender, instance, **kwargs):
-    print('booking reshedule')
-    if instance.pk:  # Check if this is an update (i.e., existing booking)
+    if instance.pk:  # Check if it's an update (existing booking)
         previous_booking = Booking.objects.get(pk=instance.pk)
-        # Check if the date or time has changed
         if (previous_booking.date != instance.date) or (previous_booking.start_time != instance.start_time) or (previous_booking.end_time != instance.end_time):
             # Notify the user about the rescheduled booking
+            Notification.objects.create(
+                user=instance.user,
+                title="📆 Service Rescheduled",
+                description=f"Your service for {instance.service.subcategory.name} has been rescheduled by {instance.employee.name}. The new date is {instance.date} at {instance.start_time}.",
+                user_type='User'
+            )
             send_firebase_notification(
                 title="📆 Service Rescheduled",
                 description=f"Your service for {instance.service.subcategory.name} has been rescheduled by {instance.employee.name}. The new date is {instance.date} at {instance.start_time}.",
                 fcm_token=instance.user.fcm_token
             )
 
-
-
-
-# Post-save signal to detect booking creation or status changes
 @receiver(post_save, sender=Booking)
 def booking_notifications(sender, instance, created, **kwargs):
-
     if created:
-        # Send notification to the employee about the new booking
+        Notification.objects.create(
+            employee=instance.employee,
+            title="🚨 Service Alert",
+            description=f"You have a new service request for {instance.service.subcategory.name} from {instance.user.name}.",
+            user_type='Employee'
+        )
         send_firebase_notification(
             title="🚨 Service Alert",
-            description=f"You have a new service request for {instance.service.subcategory.name} from {instance.user.name}. Check the app to view the details.",
+            description=f"You have a new service request for {instance.service.subcategory.name} from {instance.user.name}.",
             fcm_token=instance.employee.fcm_token
         )
     else:
-        # Status change notifications
         if instance.status == 'Accept':
+            Notification.objects.create(
+                user=instance.user,
+                title="Booking Accepted",
+                description=f"{instance.employee.name} has accepted your booking for {instance.service.subcategory.name}.",
+                user_type='User'
+            )
             send_firebase_notification(
                 title="Booking Accepted",
-                description=f"{instance.employee.name} has accepted your booking for {instance.service.subcategory.name}! Check the app for details and any additional instructions.",
+                description=f"{instance.employee.name} has accepted your booking for {instance.service.subcategory.name}.",
                 fcm_token=instance.user.fcm_token
             )
         elif instance.status == 'Completed':
+            Notification.objects.create(
+                user=instance.user,
+                title="🎊 Service Completed",
+                description=f"The service for {instance.service.subcategory.name} has been completed by {instance.employee.name}.",
+                user_type='User'
+            )
             send_firebase_notification(
-                title="🎊 Service Successfully Completed",
-                description=f"The service for {instance.service.subcategory.name} has been completed by {instance.employee.name}. Thank you!",
+                title="🎊 Service Completed",
+                description=f"The service for {instance.service.subcategory.name} has been completed by {instance.employee.name}.",
                 fcm_token=instance.user.fcm_token
             )
         elif instance.status == 'Reject':
+            Notification.objects.create(
+                user=instance.user,
+                title="❌ Booking Rejected",
+                description=f"Your booking for {instance.service.subcategory.name} was rejected by {instance.employee.name}.",
+                user_type='User'
+            )
             send_firebase_notification(
                 title="❌ Booking Rejected",
-                description=f"Your booking for {instance.service.subcategory.name} has been rejected by {instance.employee.name}. Please check the app for details.",
+                description=f"Your booking for {instance.service.subcategory.name} was rejected by {instance.employee.name}.",
                 fcm_token=instance.user.fcm_token
             )
         elif instance.status == 'Cancelled':
+            Notification.objects.create(
+                employee=instance.employee,
+                title="❌ Booking Cancelled",
+                description=f"{instance.user.name} cancelled the service for {instance.service.subcategory.name}.",
+                user_type='Employee'
+            )
             send_firebase_notification(
                 title="❌ Booking Cancelled",
-                description=f"Your upcoming service for {instance.service.subcategory.name} has been cancelled by {instance.user.name}. Review the app for updates.",
+                description=f"{instance.user.name} cancelled the service for {instance.service.subcategory.name}.",
                 fcm_token=instance.employee.fcm_token
             )

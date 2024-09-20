@@ -1,5 +1,7 @@
 from django.db import models
 
+from accounts.models import CustomUser
+
 # Create your models here.
 
 
@@ -145,3 +147,30 @@ class Onbaording(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
     logo = models.ImageField(upload_to='onboarding')
+
+
+
+
+
+
+
+
+class Notification(models.Model):
+
+    class Meta:
+        verbose_name_plural = "NOTIFICATION HISTORY"
+    USER_TYPE_CHOICES = [
+        ('User', 'User'),
+        ('Employee', 'Employee'),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)
+    employee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='employee_notifications', null=True, blank=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)  # To distinguish between user and employee
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.title} - {self.user or self.employee}"

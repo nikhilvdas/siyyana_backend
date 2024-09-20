@@ -837,3 +837,34 @@ def get_onboardings(request):
     onboardings = Onbaording.objects.all()
     serializer = OnboardingSerializer(onboardings, many=True, context={'request': request})
     return Response(serializer.data)
+
+
+
+
+
+@api_view(['POST'])
+def notification_history_api(request):
+    idd = request.data.get('employee_id_or_user_id')
+    if not idd:
+        return Response({"error": "ID is required."}, status=400)
+
+    try:
+        user = CustomUser.objects.get(id=idd)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found."}, status=404)
+
+    if user.user_type == 'User':
+        notifications = Notification.objects.filter(user=user, user_type='User').order_by('-timestamp')
+    elif user.user_type == 'Employee':
+        notifications = Notification.objects.filter(employee=user, user_type='Employee').order_by('-timestamp')
+    else:
+        return Response({"error": "Invalid user type."}, status=400)
+
+    notification_list = [{
+        'title': notification.title,
+        'description': notification.description,
+        'timestamp': notification.timestamp,
+        'is_read': notification.is_read
+    } for notification in notifications]
+
+    return Response(notification_list)
