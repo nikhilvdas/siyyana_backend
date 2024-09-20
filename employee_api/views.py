@@ -844,12 +844,11 @@ def get_onboardings(request):
 
 @api_view(['POST'])
 def notification_history_api(request):
-    idd = request.data.get('employee_id_or_user_id')
-    if not idd:
-        return Response({"error": "ID is required."}, status=400)
+    print(request.user)
+    user = request.user
 
     try:
-        user = CustomUser.objects.get(id=idd)
+        user = CustomUser.objects.get(id=user.id)
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found."}, status=404)
 
