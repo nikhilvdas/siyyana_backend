@@ -109,6 +109,7 @@ class Booking(models.Model):
 
     class Meta:
         verbose_name_plural = "BOOKING"
+        ordering = ['id']
     def __str__(self):
         return f'{self.user} - {self.service} - {self.date} - {self.status}'
 

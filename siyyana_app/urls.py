@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('top-subservices', views.top_subservices,name='top_subservices'),
     path('add-top-subservices', views.add_top_subservices,name='add_top_subservices'),
+    path('delete-topsubservices/<int:id>/', views.delete_topsubservices,name='delete_topsubservices'),
 
     
 

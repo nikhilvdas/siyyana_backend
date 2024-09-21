@@ -233,6 +233,13 @@ def add_top_subservices(request):
 
 
 
+@login_required(login_url="siyyana_app:login")
+def delete_topsubservices(request,id):
+    delete = TopSubCategory.objects.get(id=id)
+    delete.delete()
+    return redirect('siyyana_app:top_subservices')
+
+
 
 @login_required(login_url="siyyana_app:login")
 def employee_list(request):
