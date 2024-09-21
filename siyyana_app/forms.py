@@ -53,6 +53,19 @@ class TopServicesAddForm(forms.ModelForm):
         }
 
 
+class TopSubServicesAddForm(forms.ModelForm):
+    class Meta:
+        model = TopSubCategory
+        fields = '__all__'
+
+        widgets = {
+
+            'SubCategory': forms.Select(attrs={'class': 'form-control','required':True}),
+        }
+
+
+
+
 class CountryAddForm(forms.ModelForm):
     class Meta:
         model = Country

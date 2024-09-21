@@ -237,6 +237,7 @@ def category_with_subcategory_and_employees(request):
         top_subcategory_data.append({
             'subcategory': {
                 'id': subcategory.id,
+                'category_id': subcategory.service.id if subcategory.service.id else None,
                 'name': subcategory.name,
                 'logo': request.build_absolute_uri(subcategory.logo.url) if subcategory.logo else None,
                 'color': subcategory.color

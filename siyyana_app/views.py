@@ -208,6 +208,31 @@ def delete_topservices(request,id):
 
 
 
+@login_required(login_url="siyyana_app:login")
+def top_subservices(request):
+    data = TopSubCategory.objects.all().order_by('-id')
+    context = {'data':data}
+    return render(request,'top-sub-services.html',context)
+
+@login_required(login_url="siyyana_app:login")
+def add_top_subservices(request):
+    if request.method == 'POST':
+        form = TopSubServicesAddForm(request.POST,request.FILES)
+        category_id  = request.POST.get('SubCategory')
+        if TopSubCategory.objects.filter(SubCategory__id=category_id).exists():
+            messages.error(request,'Already Exists')
+            return redirect('siyyana_app:top_subservices')
+        if form.is_valid():
+            form.save()
+            messages.success(request,'added successfully')
+            return redirect('siyyana_app:top_subservices')
+    else:
+        form = TopSubServicesAddForm()
+    context = {'form':form}
+    return render(request,'add-top-sub-services.html',context)
+
+
+
 
 @login_required(login_url="siyyana_app:login")
 def employee_list(request):

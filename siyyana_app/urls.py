@@ -25,6 +25,13 @@ urlpatterns = [
     path('edit-topservices/<int:id>/', views.edit_topservices,name='edit_topservices'),
     path('delete-topservices/<int:id>/', views.delete_topservices,name='delete_topservices'),
 
+    path('top-subservices', views.top_subservices,name='top_subservices'),
+    path('add-top-subservices', views.add_top_subservices,name='add_top_subservices'),
+
+    
+
+    
+
     path('employee-list', views.employee_list,name='employee_list'),
     path('employee-delete/<int:id>/', views.employee_delete,name='employee_delete'),
     
