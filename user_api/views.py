@@ -239,6 +239,7 @@ def category_with_subcategory_and_employees(request):
                 'id': subcategory.id,
                 'name': subcategory.name,
                 'logo': request.build_absolute_uri(subcategory.logo.url) if subcategory.logo else None,
+                'color': subcategory.color
             },
             'users': [{
                 'id': user.id,

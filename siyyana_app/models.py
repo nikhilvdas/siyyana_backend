@@ -48,7 +48,9 @@ class Category(models.Model):
 class SubCategory(models.Model):
     name = models.CharField(max_length=100)
     logo = models.ImageField(upload_to='subcategory',blank=True,null=True)
+    color = models.CharField(max_length=7,blank=True,null=True)
     service = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     class Meta:
         verbose_name_plural = "SUBCATEGORY"
     def __str__(self):

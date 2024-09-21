@@ -30,6 +30,7 @@ Sub Services
                             <th>Category name</th>
                             <th>Sub category</th>
                             <th>Logo</th>
+                            <th>Color</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -44,6 +45,7 @@ Sub Services
                             {% else %}
                             <td>None</td>
                             {% endif %}
+                            <td><span style="background-color: {{ i.color }}; padding: 5px 10px; color: white;"></td>
                             <td>
                               <ul class="action">
                                 <li class="edit">
