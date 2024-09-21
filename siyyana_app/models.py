@@ -47,6 +47,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='subcategory',blank=True,null=True)
     service = models.ForeignKey(Category, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = "SUBCATEGORY"
@@ -72,6 +73,15 @@ class TopCategory(models.Model):
     def __str__(self):
         return self.Category.name
     Category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
+
+class TopSubCategory(models.Model):
+    class Meta:
+        verbose_name_plural = "TOP SUBCATEGORY"
+    def __str__(self):
+        return self.SubCategory.name
+    SubCategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
 
 
 

@@ -29,6 +29,7 @@ Sub Services
                             <th>SL</th>
                             <th>Category name</th>
                             <th>Sub category</th>
+                            <th>Logo</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -38,6 +39,11 @@ Sub Services
                             <td>{{forloop.counter }}</td>
                             <td>{{i.service}}</td>
                             <td>{{i.name}}</td>
+                            {% if i.logo %}
+                            <td><img src='{{i.logo.url}}' style="width:30px;height:30px;"></td>
+                            {% else %}
+                            <td>None</td>
+                            {% endif %}
                             <td>
                               <ul class="action">
                                 <li class="edit">

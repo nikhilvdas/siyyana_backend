@@ -226,7 +226,37 @@ def category_with_subcategory_and_employees(request):
     top_categories = TopCategory.objects.all()
     topcategories_serializer = TopCategorySerializer(top_categories, many=True, context={'request': request})
 
-    return Response({'datas': serializer.data,'top_categories': topcategories_serializer.data}, status=status.HTTP_200_OK)
+    top_subcategories = TopSubCategory.objects.all()
+    top_subcategory_data = []
+
+    for top_sub in top_subcategories:
+        # Get the subcategory related to this top subcategory
+        subcategory = top_sub.SubCategory
+        users = CustomUser.objects.filter(subcategory=subcategory)
+        # Add the subcategory and its users to the response data
+        top_subcategory_data.append({
+            'subcategory': {
+                'id': subcategory.id,
+                'name': subcategory.name,
+                'logo': request.build_absolute_uri(subcategory.logo.url) if subcategory.logo else None,
+            },
+            'users': [{
+                'id': user.id,
+                'name': user.name,
+                'mobile_number': user.mobile_number,
+                'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+                'about': user.about,
+                'charge': user.charge,
+                'employee_wages': [{
+                    'id': wage.id,
+                    'subcategory': wage.subcategory.name,
+                    'wages': wage.wages
+                } for wage in EmployyeWages.objects.filter(user=user)] 
+            } for user in users]
+        })
+
+
+    return Response({'datas': serializer.data,'top_categories': topcategories_serializer.data,'top_subcategories': top_subcategory_data}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

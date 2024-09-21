@@ -36,6 +36,7 @@ class SubServicesAddForm(forms.ModelForm):
         widgets = {
 
             'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'service': forms.Select(attrs={'class': 'form-control','required':True}),
         }
 
