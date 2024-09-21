@@ -89,12 +89,12 @@
     />
   </head>
   <style>
-    @media only screen and (max-width: 575.98px) {
-      .login-card {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        margin-top: -4rem;
-      }
+    @media only screen and (max-width: 575.98px){
+.login-card {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: -4rem;
+}
     }
   </style>
 
@@ -102,19 +102,13 @@
   <div class="container-fluid p-0">
     <div class="row m-0">
       <div class="col-12 p-0">
-        <div
-          class="login-card login-dark"
-          style="
-            background: linear-gradient(117deg, #000 32.09%, #086b9498.68%);
-          "
-        >
+        <div class="login-card login-dark" style='background: linear-gradient(117deg, #000 32.09%, #086b94 98.68%);'>
           <div>
             <div>
               <a class="logo" href="{% url 'siyyana_app:login' %}"
-                ><img
-                  class="img-fluid for-light"
-                  style="width: 250px"
-                  src="{% static 'assets/images/logo/siyyana_logo.png' %}"
+                ><img class="img-fluid for-light"
+                  style="width:250px;"
+                  src = "{% static 'assets/images/logo/siyyana_logo.png' %}"
                   alt="looginpage" /><img
               /></a>
             </div>
@@ -133,41 +127,19 @@
                 <div class="form-group">
                   <label class="col-form-label">Password</label>
                   <div class="form-input position-relative">
-                    <input
-                      class="form-control"
-                      type="password"
-                      name="password"
-                      id="password"
-                      required=""
-                    />
-                    <div class="show-hide">
-                      <span
-                        class="show"
-                        onclick="togglePasswordVisibility()"
-                      ></span>
-                    </div>
+                      <input class="form-control" type="password" name="password" id="password" required="" />
+                      <div class="show-hide">
+                          <span class="show" onclick="togglePasswordVisibility()"></span>
+                      </div>
                   </div>
-                </div>
+              </div>
                 <div class="form-group">
-                  {% comment %}
-                  <a href="{% url 'accounts_app:forgot_password' %}"
-                    >Forgot Password?</a
-                  >
-                  {% endcomment %}
+                  {% comment %} <a href="{% url 'accounts_app:forgot_password' %}">Forgot Password?</a> {% endcomment %}
                 </div>
                 <div class="form-group mb-0">
                   <div class="text-end mt-3">
                     <button
-                      class="btn btn-primary btn-block w-100"
-                      type="submit"
-                      style="
-                        background: linear-gradient(
-                          117deg,
-                          #000 32.09%,
-                          #086b9498.68%
-                        );
-                      "
-                    >
+                      class="btn btn-primary btn-block w-100" type="submit" style="background: linear-gradient(117deg, #000 32.09%, #2096ad 98.68%)">
                       Log in
                     </button>
                   </div>
@@ -196,35 +168,35 @@
 
     <script>
       function togglePasswordVisibility() {
-        var passwordInput = document.getElementById("password");
-        var showHideSpan = document.querySelector(".show-hide span");
-
-        if (passwordInput.type === "password") {
-          passwordInput.type = "text";
-          showHideSpan.classList.remove("show");
-          showHideSpan.classList.add("hide");
-        } else {
-          passwordInput.type = "password";
-          showHideSpan.classList.remove("hide");
-          showHideSpan.classList.add("show");
-        }
+          var passwordInput = document.getElementById("password");
+          var showHideSpan = document.querySelector(".show-hide span");
+  
+          if (passwordInput.type === "password") {
+              passwordInput.type = "text";
+              showHideSpan.classList.remove("show");
+              showHideSpan.classList.add("hide");
+          } else {
+              passwordInput.type = "password";
+              showHideSpan.classList.remove("hide");
+              showHideSpan.classList.add("show");
+          }
       }
     </script>
     <!-- latest jquery-->
-    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src = "{% static 'assets/js/jquery.min.js' %}"></script>
     <!-- Bootstrap js-->
-    <script src="{% static 'assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src = "{% static 'assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
     <!-- feather icon js-->
-    <script src="{% static 'assets/js/icons/feather-icon/feather.min.js' %}"></script>
-    <script src="{% static 'assets/js/icons/feather-icon/feather-icon.js' %}"></script>
+    <script src = "{% static 'assets/js/icons/feather-icon/feather.min.js' %}"></script>
+    <script src = "{% static 'assets/js/icons/feather-icon/feather-icon.js' %}"></script>
     <!-- scrollbar js-->
     <!-- Sidebar jquery-->
-    <script src="{% static 'assets/js/config.js' %}"></script>
+    <script src = "{% static 'assets/js/config.js' %}"></script>
     <!-- Plugins JS start-->
     <!-- calendar js-->
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
-    <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src = "{% static 'assets/js/script.js' %}"></script>
     <!-- Plugin used-->
   </div>
 </html>
