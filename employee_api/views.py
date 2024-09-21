@@ -774,6 +774,97 @@ def get_time_slots(request):
 
 
 
+# @api_view(['POST'])
+# def employee_all_reviews(request):
+#     # Fetch the employee by ID from POST data
+#     employee_id = request.data.get('employee_id')
+    
+#     # Validate employee existence
+#     employee = get_object_or_404(CustomUser, id=employee_id)
+    
+#     # Fetch all reviews for the employee and apply initial ordering
+#     reviews = Review.objects.filter(employee=employee)
+
+#     # Fetch the filter parameter from the request
+#     filter_type = request.data.get('filter', 'all')
+
+#     # Initialize the rating field for distribution based on the filter
+#     rating_field = 'average_rating'
+
+#     # Apply filters and set the rating field based on the parameter received
+#     if filter_type == 'timing':
+#         reviews = reviews.order_by('-timing')
+#         rating_field = 'timing'
+#     elif filter_type == 'price':
+#         reviews = reviews.order_by('-price')
+#         rating_field = 'price'
+#     elif filter_type == 'quality':
+#         reviews = reviews.order_by('-service_quality')
+#         rating_field = 'service_quality'
+#     elif filter_type == 'behavior':
+#         reviews = reviews.order_by('-behavior')
+#         rating_field = 'behavior'
+#     else:  # Default case: 'all' or no filter
+#         reviews = reviews.order_by('-review_date')
+
+#     # Prepare reviews list with required fields for the UI
+#     reviews_list = [
+#         {
+#             'user_name': review.user.name if review.user else "Anonymous",
+#             'profile_pic': request.build_absolute_uri(review.user.profile_picture.url) if review.user and review.user.profile_picture else None,
+#             'review_date': review.review_date.strftime("%b %Y"),
+#             'average_rating': review.average_rating,
+#             'service_summary': review.service_summary,
+#             'timing': review.timing,
+#             'price': review.price,
+#             'service_quality': review.service_quality,
+#             'behavior': review.behavior,
+#             'review': review.review,
+#         }
+#         for review in reviews
+#     ]
+
+#     # Calculate overall rating summary using aggregation
+#     average_rating = reviews.aggregate(average_rating=Avg('average_rating'))['average_rating']
+#     average_rating = round(average_rating, 1) if average_rating is not None else 0 
+
+#     rating_summary = {
+#         'total_reviews': reviews.count(),
+#         'average_rating': average_rating,
+#         'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+#         'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+#         'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+#         'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+#     }
+
+#     # Calculate the count of reviews for each star rating based on the selected rating field
+#     rating_distribution = {
+#         '5_star': reviews.filter(**{f'{rating_field}__gte': 4.9}).count(),
+#         '4_star': reviews.filter(**{f'{rating_field}__gte': 3.9, f'{rating_field}__lt': 4.9}).count(),
+#         '3_star': reviews.filter(**{f'{rating_field}__gte': 2.9, f'{rating_field}__lt': 3.9}).count(),
+#         '2_star': reviews.filter(**{f'{rating_field}__gte': 1.9, f'{rating_field}__lt': 2.9}).count(),
+#         '1_star': reviews.filter(**{f'{rating_field}__lt': 1.9}).count(),
+#     }
+
+#     # Prepare the final response data to fit the UI
+#     response_data = {
+#         'employee': employee.name,
+#         'rating_summary': {
+#             'total_reviews': rating_summary['total_reviews'],
+#             'average_rating': rating_summary['average_rating'],
+#             'timing_avg': round(rating_summary['timing_avg'], 1) if rating_summary['timing_avg'] is not None else 0,
+#             'price_avg': round(rating_summary['price_avg'], 1) if rating_summary['price_avg'] is not None else 0,
+#             'service_quality_avg': round(rating_summary['service_quality_avg'], 1) if rating_summary['service_quality_avg'] is not None else 0,
+#             'behavior_avg': round(rating_summary['behavior_avg'], 1) if rating_summary['behavior_avg'] is not None else 0,
+#         },
+#         'rating_distribution': rating_distribution,
+#         'reviews': reviews_list,
+#     }
+
+#     # Return the response as JSON
+#     return Response(response_data)
+
+
 @api_view(['POST'])
 def employee_all_reviews(request):
     # Fetch the employee by ID from POST data
@@ -788,7 +879,7 @@ def employee_all_reviews(request):
     # Fetch the filter parameter from the request
     filter_type = request.data.get('filter', 'all')
 
-    # Initialize the rating field for distribution based on the filter
+    # Initialize the rating field for distribution and average calculation based on the filter
     rating_field = 'average_rating'
 
     # Apply filters and set the rating field based on the parameter received
@@ -824,17 +915,18 @@ def employee_all_reviews(request):
         for review in reviews
     ]
 
-    # Calculate overall rating summary using aggregation
-    average_rating = reviews.aggregate(average_rating=Avg('average_rating'))['average_rating']
-    average_rating = round(average_rating, 1) if average_rating is not None else 0 
+    # Dynamically calculate the average based on the selected filter field
+    filtered_avg = reviews.aggregate(filtered_avg=Avg(rating_field))['filtered_avg']
+    filtered_avg = round(filtered_avg, 1) if filtered_avg is not None else 0
 
+    # Calculate the rest of the average metrics
     rating_summary = {
         'total_reviews': reviews.count(),
-        'average_rating': average_rating,
-        'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
-        'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
-        'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
-        'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+        'average_rating': filtered_avg,  # Dynamic average based on filter
+        'timing_avg': round(reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'], 1) if reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'] is not None else 0,
+        'price_avg': round(reviews.aggregate(price_avg=Avg('price'))['price_avg'], 1) if reviews.aggregate(price_avg=Avg('price'))['price_avg'] is not None else 0,
+        'service_quality_avg': round(reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'], 1) if reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'] is not None else 0,
+        'behavior_avg': round(reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'], 1) if reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'] is not None else 0,
     }
 
     # Calculate the count of reviews for each star rating based on the selected rating field
@@ -849,14 +941,7 @@ def employee_all_reviews(request):
     # Prepare the final response data to fit the UI
     response_data = {
         'employee': employee.name,
-        'rating_summary': {
-            'total_reviews': rating_summary['total_reviews'],
-            'average_rating': rating_summary['average_rating'],
-            'timing_avg': round(rating_summary['timing_avg'], 1) if rating_summary['timing_avg'] is not None else 0,
-            'price_avg': round(rating_summary['price_avg'], 1) if rating_summary['price_avg'] is not None else 0,
-            'service_quality_avg': round(rating_summary['service_quality_avg'], 1) if rating_summary['service_quality_avg'] is not None else 0,
-            'behavior_avg': round(rating_summary['behavior_avg'], 1) if rating_summary['behavior_avg'] is not None else 0,
-        },
+        'rating_summary': rating_summary,
         'rating_distribution': rating_distribution,
         'reviews': reviews_list,
     }
