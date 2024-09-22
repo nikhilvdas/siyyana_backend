@@ -253,7 +253,7 @@ def category_with_subcategory_and_employees(request):
                     'id': wage.id,
                     'subcategory': wage.subcategory.name,
                     'wages': wage.wages
-                } for wage in EmployyeWages.objects.filter(user=user)] 
+                } for wage in EmployyeWages.objects.filter(user=user)]
             } for user in users]
         })
 

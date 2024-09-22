@@ -109,13 +109,27 @@ class TopCategorySerializer(serializers.ModelSerializer):
 
 
 
+class ReviewSerializerUser(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['timing', 'service_quality', 'price', 'behavior', 'service_summary', 'review', 'review_date', 'average_rating']
+
+
 
 class BookingSerializerUser(serializers.ModelSerializer):
     employee = EmployeeSerializer(read_only=True)
-    service = EmplpoyeeWagesSerializer() 
+    service = EmplpoyeeWagesSerializer()
+    reviews = serializers.SerializerMethodField()
+
     class Meta:
         model = Booking
-        fields = ['id', 'employee', 'service', 'date', 'start_time', 'end_time', 'status']
+        fields = ['id', 'employee', 'service', 'date', 'start_time', 'end_time', 'status', 'reviews']
+
+    def get_reviews(self, obj):
+        if obj.status == 'Completed':
+            reviews = obj.reviews.all()
+            return ReviewSerializerUser(reviews, many=True).data
+        return None
 
 
 
