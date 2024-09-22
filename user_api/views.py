@@ -223,6 +223,7 @@ def reset_password(request):
 def category_with_subcategory_and_employees(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True, context={'request': request})
+
     top_categories = TopCategory.objects.all()
     topcategories_serializer = TopCategorySerializer(top_categories, many=True, context={'request': request})
 
@@ -233,6 +234,7 @@ def category_with_subcategory_and_employees(request):
         # Get the subcategory related to this top subcategory
         subcategory = top_sub.SubCategory
         users = CustomUser.objects.filter(subcategory=subcategory)
+
         # Add the subcategory and its users to the response data
         top_subcategory_data.append({
             'subcategory': {
@@ -257,8 +259,11 @@ def category_with_subcategory_and_employees(request):
             } for user in users]
         })
 
-
-    return Response({'datas': serializer.data,'top_categories': topcategories_serializer.data,'top_subcategories': top_subcategory_data}, status=status.HTTP_200_OK)
+    return Response({
+        'datas': serializer.data,
+        'top_categories': topcategories_serializer.data,
+        'top_subcategories': top_subcategory_data
+    }, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
