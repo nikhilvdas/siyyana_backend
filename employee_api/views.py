@@ -422,7 +422,7 @@ def employee_profile_api(request):
     user = request.user
     # CustomUser data
     user_data = {
-        
+
         'id': user.id,
         'name': user.name,
         'first_name': user.first_name,
@@ -503,6 +503,10 @@ def edit_employee_profile(request):
     user = request.user
     
     # Update CustomUser fields
+    if request.POST.get('name') != '':
+        user.name = request.POST.get('name', user.name)
+
+
     if request.POST.get('first_name') != '':
         user.first_name = request.POST.get('first_name', user.first_name)
         

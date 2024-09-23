@@ -486,6 +486,20 @@ def save_employee(request):
                     "wages": wage.wages
                 })
 
+            # Fetch reviews for the employee
+            reviews = Review.objects.filter(employee=saved.employee).order_by('-review_date')
+
+            # Calculate overall rating and rating distribution
+            rating_summary = {
+                'total_reviews': reviews.count(),
+                'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+                'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+                'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+                'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+                'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+            }
+
+            # Append employee data with ratings
             employees_list.append({
                 "id": saved.employee.id,
                 "employee_name": saved.employee.name,
@@ -494,8 +508,10 @@ def save_employee(request):
                 "employee_profile_picture": request.build_absolute_uri(saved.employee.profile_picture.url) if saved.employee.profile_picture else None,
                 "employee_about": saved.employee.about,
                 "work_schedule": work_schedule_data,  # Include work schedule in the response
-                "wages": wages_list  # Include wages list in the response
+                "wages": wages_list,  # Include wages list in the response
+                "ratings": rating_summary  # Include review ratings in the response
             })
+
 
         return JsonResponse({"saved_employees": employees_list}, status=200)
 
