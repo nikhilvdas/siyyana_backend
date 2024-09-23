@@ -23,10 +23,33 @@ class SubCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'users']
 
     def get_users(self, obj):
-        # Filtering users associated with this particular subcategory
-        users = CustomUser.objects.filter(subcategory=obj,user_type="Employee")
-        return UserSerializer(users, many=True).data
+        users = CustomUser.objects.filter(subcategory=obj, user_type="Employee")
+        user_data = []
 
+        for user in users:
+            # Serialize the user data
+            user_info = UserSerializer(user).data
+
+            # Fetch reviews for the employee
+            reviews = Review.objects.filter(employee=user).order_by('-review_date')
+
+            # Calculate overall rating and rating distribution
+            rating_summary = {
+                'total_reviews': reviews.count(),
+                'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+                'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+                'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+                'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+                'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+            }
+
+            # Add the calculated ratings outside of employee_work_schedule
+            user_info['ratings'] = rating_summary
+
+            # Append the modified user data
+            user_data.append(user_info)
+
+        return user_data
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
@@ -58,6 +81,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
             # Calculate overall rating and rating distribution
             rating_summary = {
+                
                 'total_reviews': reviews.count(),
                 'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
                 'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
