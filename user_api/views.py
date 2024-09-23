@@ -346,6 +346,7 @@ def all_categories(request):
         customuser_count = CustomUser.objects.filter(category=category).count()
 
         categories_data.append({
+            
             'id': category.id,
             'name': category.name,
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
