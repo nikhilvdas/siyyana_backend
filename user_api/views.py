@@ -346,7 +346,7 @@ def all_categories(request):
         customuser_count = CustomUser.objects.filter(category=category).count()
 
         categories_data.append({
-            
+
             'id': category.id,
             'name': category.name,
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
@@ -507,6 +507,7 @@ def save_employee(request):
 
             # Append employee data with ratings
             employees_list.append({
+
                 "id": saved.employee.id,
                 "employee_name": saved.employee.name,
                 "employee_mobile": saved.employee.mobile_number,
@@ -516,6 +517,7 @@ def save_employee(request):
                 "work_schedule": work_schedule_data,  # Include work schedule in the response
                 "wages": wages_list,  # Include wages list in the response
                 "ratings": rating_summary  # Include review ratings in the response
+                
             })
 
 
