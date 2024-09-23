@@ -50,7 +50,6 @@ class SubCategorySerializer(serializers.ModelSerializer):
             user_data.append(user_info)
 
         return user_data
-
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
@@ -62,7 +61,18 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_subcategories(self, obj):
         subcategories = SubCategory.objects.filter(service=obj)
-        return SubCategorySerializer(subcategories, many=True).data
+        subcategory_data = SubCategorySerializer(subcategories, many=True).data
+
+        # Create the "All employees" subcategory
+        all_employees_data = self.get_all_employees(obj)
+        all_employees_subcategory = {
+            'id': None,  # You can assign a special ID or leave it as None
+            'name': 'All employees',
+            'users': all_employees_data['all']
+        }
+
+        # Prepend the "All employees" subcategory to the response
+        return [all_employees_subcategory] + subcategory_data
 
     def get_count(self, obj):
         subcategories = SubCategory.objects.filter(service=obj).count()
@@ -73,7 +83,7 @@ class CategorySerializer(serializers.ModelSerializer):
         users = CustomUser.objects.filter(category=obj, user_type="Employee")
 
         employee_data = []
-        all_employee_list = []  # This will store the 'all' list
+        all_employee_list = []
 
         for user in users:
             # Fetch reviews for the employee
@@ -81,7 +91,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
             # Calculate overall rating and rating distribution
             rating_summary = {
-                
                 'total_reviews': reviews.count(),
                 'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
                 'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
@@ -101,11 +110,9 @@ class CategorySerializer(serializers.ModelSerializer):
             # Add each employee data to both the main list and the 'all' list
             all_employee_list.append(employee_info)
 
-        # Return a dictionary with both the employee data and the 'all' list
         return {
             'all': all_employee_list
         }
-
 
 
 class TopCategorySerializer(serializers.ModelSerializer):

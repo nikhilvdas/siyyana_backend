@@ -231,11 +231,9 @@ def category_with_subcategory_and_employees(request):
     top_subcategory_data = []
 
     for top_sub in top_subcategories:
-        # Get the subcategory related to this top subcategory
         subcategory = top_sub.SubCategory
         users = CustomUser.objects.filter(subcategory=subcategory)
 
-        # Add the subcategory and its users to the response data
         top_subcategory_data.append({
             'subcategory': {
                 'id': subcategory.id,
@@ -255,7 +253,15 @@ def category_with_subcategory_and_employees(request):
                     'id': wage.id,
                     'subcategory': wage.subcategory.name,
                     'wages': wage.wages
-                } for wage in EmployyeWages.objects.filter(user=user)]
+                } for wage in EmployyeWages.objects.filter(user=user)],
+                'ratings': {
+                    'total_reviews': Review.objects.filter(employee=user).count(),
+                    'average_rating': Review.objects.filter(employee=user).aggregate(Avg('average_rating')).get('average_rating', 0),
+                    'timing_avg': Review.objects.filter(employee=user).aggregate(Avg('timing')).get('timing', 0),
+                    'price_avg': Review.objects.filter(employee=user).aggregate(Avg('price')).get('price', 0),
+                    'service_quality_avg': Review.objects.filter(employee=user).aggregate(Avg('service_quality')).get('service_quality', 0),
+                    'behavior_avg': Review.objects.filter(employee=user).aggregate(Avg('behavior')).get('behavior', 0),
+                }
             } for user in users]
         })
 
@@ -264,7 +270,6 @@ def category_with_subcategory_and_employees(request):
         'top_categories': topcategories_serializer.data,
         'top_subcategories': top_subcategory_data
     }, status=status.HTTP_200_OK)
-
 
 @api_view(['POST'])
 def booking_api(request):
