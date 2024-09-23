@@ -430,6 +430,7 @@ def employee_profile_api(request):
         'whatsapp_number': user.whatsapp_number,
         'email': user.email,
         'about': user.about,
+        'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
         'category': [
             {'id': category.id, 'name': category.name}
             for category in user.category.all()
