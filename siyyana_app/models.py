@@ -54,6 +54,7 @@ class SubCategory(models.Model):
     class Meta:
         verbose_name_plural = "SUBCATEGORY"
     def __str__(self):
+        
         return self.name
 
 

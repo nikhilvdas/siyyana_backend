@@ -337,23 +337,48 @@ def reschedule_booking(request):
 
 
 
+# def all_categories(request):
+#     categories_data = []
+
+#     categories = Category.objects.all()
+#     for category in categories:
+#         subcategory_count = category.subcategory_set.count()
+#         customuser_count = CustomUser.objects.filter(category=category).count()
+
+#         categories_data.append({
+
+#             'id': category.id,
+#             'name': category.name,
+#             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
+#             'subcategory_count': subcategory_count,
+#             'customuser_count': customuser_count,
+#         })
+
+#     return JsonResponse({'categories': categories_data}, safe=False)
+
 def all_categories(request):
     categories_data = []
 
+    # Fetch all categories
     categories = Category.objects.all()
+
     for category in categories:
-        subcategory_count = category.subcategory_set.count()
+        # Count subcategories/services under each category
+        service_count = SubCategory.objects.filter(service=category).count()
+        
+        # Count employees related to the category
         customuser_count = CustomUser.objects.filter(category=category).count()
 
+        # Append category data including service count and custom user count
         categories_data.append({
-
             'id': category.id,
             'name': category.name,
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
-            'subcategory_count': subcategory_count,
+            'service_count': service_count,
             'customuser_count': customuser_count,
         })
 
+    # Return the data as a JSON response
     return JsonResponse({'categories': categories_data}, safe=False)
 
 
