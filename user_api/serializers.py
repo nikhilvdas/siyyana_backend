@@ -82,7 +82,6 @@ class CategorySerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         users = CustomUser.objects.filter(category=obj, user_type="Employee")
 
-        employee_data = []
         all_employee_list = []
 
         for user in users:
@@ -99,19 +98,26 @@ class CategorySerializer(serializers.ModelSerializer):
                 'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
             }
 
-            # Build individual employee data
+            # Fetch employee wages for each subcategory
+            employee_wages = EmployyeWages.objects.filter(user=user)
+            wages_data = [{
+                'subcategory_id': wage.subcategory.id if wage.subcategory else None,
+                'subcategory_name': wage.subcategory.name if wage.subcategory else None,
+                'wages': wage.wages
+            } for wage in employee_wages]
+
+            # Build individual employee data with wages
             employee_info = {
                 'employee_id': user.id,
                 'name': user.name,
-                'profile_picture': user.profile_picture.url,
+                'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
                 'rating_summary': rating_summary,
+                'employee_wages': wages_data  # Include wages data here
             }
 
-            # Add each employee data to both the main list and the 'all' list
             all_employee_list.append(employee_info)
 
         return {
-            
             'all': all_employee_list
         }
 
