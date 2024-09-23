@@ -374,7 +374,7 @@ def all_categories(request):
             'id': category.id,
             'name': category.name,
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
-            'service_count': service_count,
+            'subcategory_count': service_count,
             'customuser_count': customuser_count,
         })
 
