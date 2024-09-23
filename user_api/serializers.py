@@ -103,7 +103,7 @@ class CategorySerializer(serializers.ModelSerializer):
             employee_info = {
                 'employee_id': user.id,
                 'name': user.name,
-                'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+                'profile_picture': user.profile_picture.url,
                 'rating_summary': rating_summary,
             }
 
@@ -111,6 +111,7 @@ class CategorySerializer(serializers.ModelSerializer):
             all_employee_list.append(employee_info)
 
         return {
+            
             'all': all_employee_list
         }
 
