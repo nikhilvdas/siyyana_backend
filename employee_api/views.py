@@ -422,6 +422,7 @@ def employee_profile_api(request):
     user = request.user
     # CustomUser data
     user_data = {
+        
         'id': user.id,
         'name': user.name,
         'first_name': user.first_name,

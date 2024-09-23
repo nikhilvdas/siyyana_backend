@@ -420,15 +420,30 @@ def search_by_category(request):
                     "wages": wage.wages
                 })
 
+            # Fetch reviews for the employee
+            reviews = Review.objects.filter(employee=user).order_by('-review_date')
+
+            # Calculate overall rating and rating distribution
+            rating_summary = {
+                'total_reviews': reviews.count(),
+                'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+                'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+                'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+                'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+                'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+            }
+
+            # Construct user data including work schedule, wages, and review ratings
             user_data.append({
-                'id':user.id,
+                'id': user.id,
                 'name': user.name,
                 'mobile_number': user.mobile_number,
                 'whatsapp_number': user.whatsapp_number,
                 'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
                 'about': user.about,
                 'work_schedule': work_schedule_data,  # Include the work schedule here
-                'wages': wages_list  # Include the wages here
+                'wages': wages_list,  # Include the wages here
+                'ratings': rating_summary  # Include the review ratings here
             })
 
         # Response format includes the searched category and the list of users with work schedule and wages
