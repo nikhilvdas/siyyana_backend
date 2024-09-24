@@ -93,8 +93,8 @@ Users
                                
                             </td>
                               <td>{{ user.country}}</td>
-                              <td>{{ user.state.name }}</td>
-                              <td>{{ user.district.name }}</td>
+                              <td>{% if user.state.all %}{{ user.state.all|join:", " }}{% endif %}</td>
+                              <td>{% if user.district.all %}{{ user.district.all|join:", " }}{% endif %}</td>
                               
                               <td>
                                 <ul class="action">

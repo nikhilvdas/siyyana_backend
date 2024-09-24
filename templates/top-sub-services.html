@@ -38,11 +38,11 @@ Top Sub Services
                             <td>{{i.SubCategory.name}}</td>
                             <td>
                               <ul class="action">
-                                <li class="edit">
+                                {% comment %} <li class="edit">
                                   <a href="{% url 'siyyana_app:edit_topservices' i.id %}"
                                     ><i class="icon-pencil-alt"></i
                                   ></a>
-                                </li>
+                                </li> {% endcomment %}
                                 <li class="delete">
                                   <a  onclick="showConfirmation('{%  url 'siyyana_app:delete_topsubservices' i.id %}')"><i class="icon-trash me-2"></i></a> 
                                 </li>

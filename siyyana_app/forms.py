@@ -36,10 +36,18 @@ class SubServicesAddForm(forms.ModelForm):
         widgets = {
 
             'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
-            'logo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control','required':True}),
             'service': forms.Select(attrs={'class': 'form-control','required':True}),
             'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control', 'required': True}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(SubServicesAddForm, self).__init__(*args, **kwargs)
+
+        # Make the img field not required during editing
+        if self.instance.pk:
+            self.fields['logo'].required = False
+            self.fields['logo'].widget.attrs.pop('required', None)
 
 
 class TopServicesAddForm(forms.ModelForm):
