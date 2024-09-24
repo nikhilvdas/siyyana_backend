@@ -13,7 +13,7 @@
       name="keywords"
       content="Shortime Online Restaurant: Savor exquisite flavors delivered to your doorstep. Elevate your dining experience with our curated menu and convenient online ordering."
     />
-    <meta name="author" content="pixelstrap" />
+    <meta name="author" content="pixelstrap"/>
     <link
       rel="icon"
       href="{% static 'assets/images/SiyaanaLogo.ico' %}"
@@ -32,6 +32,8 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
       rel="stylesheet"
     />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <link
       rel="stylesheet"
       type="text/css"
@@ -133,6 +135,8 @@
                       </div>
                   </div>
               </div>
+              <div class="g-recaptcha" data-sitekey="6LfgRE0qAAAAAKKmjHbCeM85jjHq2I1KLuGqPShu"></div> 
+
                 <div class="form-group">
                   {% comment %} <a href="{% url 'accounts_app:forgot_password' %}">Forgot Password?</a> {% endcomment %}
                 </div>
@@ -144,6 +148,9 @@
                     </button>
                   </div>
                 </div>
+                {% if error %}
+                <p style="color:red;">{{ error }}</p>
+                {% endif %}
               </form>
             </div>
           </div>

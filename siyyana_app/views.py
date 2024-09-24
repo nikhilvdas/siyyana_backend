@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
+import requests
 from siyyana_app.models import *
 from siyyana_app.forms import *
 from django.contrib import messages
@@ -12,6 +13,8 @@ from django.db.models import Count
 import openpyxl
 from io import BytesIO
 import pandas as pd
+
+from siyyana_project import settings
 # Create your views here.
 
 @login_required(login_url="siyyana_app:login")
@@ -55,14 +58,26 @@ def login(request):
     if request.method == 'POST':
         username_or_email = request.POST.get('username_or_email')
         password = request.POST.get('password')
-        user = auth.authenticate(request, username=username_or_email, password=password)
-        if user is not None:
-            auth.login(request, user)
-            request.session['username'] = username_or_email
-            return redirect('siyyana_app:index')
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        # Verify reCAPTCHA
+        data = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if result['success']:
+            user = auth.authenticate(request, username=username_or_email, password=password)
+            if user is not None:
+                auth.login(request, user)
+                request.session['username'] = username_or_email
+                return redirect('siyyana_app:index')
+            else:
+                # messages.error(request, 'Invalid credential..')
+                return render(request, 'login.html', {'error': 'Invalid username or password.'})
         else:
-            messages.error(request, 'Invalid credential..')
-            return redirect('siyyana_app:login')
+            # Handle reCAPTCHA failure
+            return render(request, 'login.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
     return render(request, 'login.html')
 
 
