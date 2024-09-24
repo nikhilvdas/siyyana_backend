@@ -371,11 +371,13 @@ def all_categories(request):
 
         # Append category data including service count and custom user count
         categories_data.append({
+
             'id': category.id,
             'name': category.name,
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
             'subcategory_count': service_count,
             'customuser_count': customuser_count,
+            
         })
 
     # Return the data as a JSON response

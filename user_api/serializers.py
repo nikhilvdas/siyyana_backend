@@ -101,7 +101,7 @@ class CategorySerializer(serializers.ModelSerializer):
             # Fetch employee wages for each subcategory
             employee_wages = EmployyeWages.objects.filter(user=user)
             wages_data = [{
-                'id': wage.subcategory.id if wage.subcategory else None,
+                'id': wage.id,
                 'subcategory': wage.subcategory.name if wage.subcategory else None,
                 'wages': wage.wages
             } for wage in employee_wages]
