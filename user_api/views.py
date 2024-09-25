@@ -221,12 +221,28 @@ def reset_password(request):
 
 @api_view(['GET'])
 def category_with_subcategory_and_employees(request):
+    # Serialize all categories
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True, context={'request': request})
 
-    top_categories = TopCategory.objects.all()
-    topcategories_serializer = TopCategorySerializer(top_categories, many=True, context={'request': request})
+    # Fetch top categories with booking count annotation
+    top_categories = Category.objects.annotate(
+        booking_count=Count('subcategory__employyewages__service__employee')
+    ).order_by('-booking_count')[:5]
 
+    # Prepare the top categories data manually, as it's customized
+    top_categories_data = []
+    for category in top_categories:
+        logo_url = request.build_absolute_uri(category.logo.url) if category.logo else None
+        top_categories_data.append({
+            'id': category.id,
+            'name': category.name,
+            'booking_count': category.booking_count,
+            'logo': logo_url,
+            'color': category.color,
+        })
+
+    # Handle top subcategories and employees
     top_subcategories = TopSubCategory.objects.all()
     top_subcategory_data = []
 
@@ -265,11 +281,13 @@ def category_with_subcategory_and_employees(request):
             } for user in users]
         })
 
+    # Return combined data
     return Response({
         'datas': serializer.data,
-        'top_categories': topcategories_serializer.data,
+        'top_categories': top_categories_data,  # Manually prepared top categories
         'top_subcategories': top_subcategory_data
     }, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 def booking_api(request):

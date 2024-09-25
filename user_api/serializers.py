@@ -3,7 +3,7 @@ from accounts.models import *
 from django.conf import settings
 from siyyana_app.models import *
 from employee_api.serializers import *
-
+from django.db.models import Count
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -129,8 +129,34 @@ class TopCategorySerializer(serializers.ModelSerializer):
         model = TopCategory
         fields = ['id', 'Category']
 
+    def to_representation(self, instance):
+        # Annotate the categories with booking_count
+        categories = Category.objects.annotate(
+            booking_count=Count('subcategory__employyewages__service__employee')
+        ).order_by('-booking_count')[:5]
+
+        # Prepare the response data
+        result = []  # This will store category details
+        request = self.context.get('request')  # To access request for absolute URI
+        for category in categories:
+            # Build the logo URL
+            logo_url = request.build_absolute_uri(category.logo.url) if category.logo else None
+            
+            # Append category data directly to result
+            result.append({
+                'id': category.id,
+                'name': category.name,
+                'booking_count': category.booking_count,
+                'logo': logo_url,
+                'color': category.color,
+            })
+
+        # Directly return the result list, ensuring no extra list wrapping
+        return result
+    
 
 
+    
 class ReviewSerializerUser(serializers.ModelSerializer):
     class Meta:
         model = Review
