@@ -730,10 +730,10 @@ def my_orders(request):
         query &= Q(date__range=date_range)
 
     # Fetch bookings based on each status and apply the date filter
-    pending_bookings = Booking.objects.filter(query & Q(status='Pending'))
-    accepted_bookings = Booking.objects.filter(query & Q(status='Accept'))
-    completed_bookings = Booking.objects.filter(query & Q(status='Completed'))
-    rejected_bookings = Booking.objects.filter(query & Q(status='Reject'))
+    pending_bookings = Booking.objects.filter(query & Q(status='Pending')).order_by('-id')
+    accepted_bookings = Booking.objects.filter(query & Q(status='Accept')).order_by('-id')
+    completed_bookings = Booking.objects.filter(query & Q(status='Completed')).order_by('-id')
+    rejected_bookings = Booking.objects.filter(query & Q(status='Reject')).order_by('-id')
 
     # Serialize the bookings
     pending_serializer = BookingSerializer(pending_bookings, many=True, context={'request': request})
@@ -993,3 +993,18 @@ def notification_history_api(request):
     } for notification in notifications]
 
     return Response(notification_list)
+
+
+
+
+
+
+
+
+def get_currency_types(request):
+    if request.method == 'GET':
+        # Use values() to directly retrieve the 'id' and 'name' fields as dictionaries
+        currency_list = list(Currency_Type.objects.values('id', 'name'))
+
+        # Return as JSON response
+        return JsonResponse({'currencies': currency_list}, status=200)

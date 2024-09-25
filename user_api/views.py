@@ -629,10 +629,10 @@ def my_orders_user_api(request):
         query &= Q(date__range=date_range)
 
     # Fetch and filter bookings based on each status for the logged-in user
-    pending_bookings = Booking.objects.filter(query & Q(status='Pending'))
-    accepted_bookings = Booking.objects.filter(query & Q(status='Accept'))
-    completed_bookings = Booking.objects.filter(query & Q(status='Completed'))
-    rejected_bookings = Booking.objects.filter(query & Q(status='Reject'))
+    pending_bookings = Booking.objects.filter(query & Q(status='Pending')).order_by('-id')
+    accepted_bookings = Booking.objects.filter(query & Q(status='Accept')).order_by('-id')
+    completed_bookings = Booking.objects.filter(query & Q(status='Completed')).order_by('-id')
+    rejected_bookings = Booking.objects.filter(query & Q(status='Reject')).order_by('-id')
 
     print(f"Pending bookings: {pending_bookings}")
     print(f"Accepted bookings: {accepted_bookings}")

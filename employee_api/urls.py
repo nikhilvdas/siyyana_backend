@@ -30,6 +30,7 @@ urlpatterns = [
     path('onboardings', views.get_onboardings, name='get_onboardings'),
 
     path('notification-history-api', views.notification_history_api, name='notification_history_api'),
+    path('get-currency-types', views.get_currency_types, name='get_currency_types'),
 
     
 

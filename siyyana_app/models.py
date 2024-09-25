@@ -188,3 +188,18 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.user or self.employee}"
+
+
+
+
+
+
+class Currency_Type(models.Model):
+
+    class Meta:
+        verbose_name_plural = "CURRENCY TYPE"
+
+    def __str__(self):
+        return self.name
+    
+    name = models.CharField(max_length=100)
