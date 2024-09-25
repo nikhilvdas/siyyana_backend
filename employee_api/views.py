@@ -308,6 +308,9 @@ class EmployeeLogin(APIView):
 
         if CustomUser.objects.filter(email=email, user_type="Employee").exists():
             user = CustomUser.objects.get(email=email, user_type="Employee")
+            # Check if user is active
+            if not user.status == 'Active':
+                return Response({"error": "Your account is Disabled by Admin. Please contact support."}, status=status.HTTP_403_FORBIDDEN)
             
             # Check password first
             if user.check_password(password):

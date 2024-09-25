@@ -82,8 +82,17 @@ class CountryAddForm(forms.ModelForm):
         widgets = {
             
             'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
-            'flag' : forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'flag' : forms.ClearableFileInput(attrs={'class': 'form-control','required':True}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(CountryAddForm, self).__init__(*args, **kwargs)
+
+        # Make the img field not required during editing
+        if self.instance.pk:
+            self.fields['flag'].required = False
+            self.fields['flag'].widget.attrs.pop('required', None)
+
 
 
 
@@ -159,3 +168,13 @@ class OnboardingAddForm(forms.ModelForm):
 
 
 
+
+class CurrencyTypeAddForm(forms.ModelForm):
+    class Meta:
+        model = Currency_Type
+        fields = '__all__'
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control','required':True}),
+
+        }

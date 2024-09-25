@@ -63,6 +63,8 @@ class SubCategory(models.Model):
 class RequestedCategory(models.Model):
     name = models.CharField(max_length=100)
     subcategory = models.CharField(max_length=1000)
+    datetime = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    status = models.CharField(max_length=100,choices=(('Read','Read'),('Unread','Unread')),default='Unread')
     class Meta:
         verbose_name_plural = "REQUESTED CATEGORY"
     def __str__(self):

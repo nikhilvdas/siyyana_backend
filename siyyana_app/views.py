@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404, render,redirect
 import requests
 from siyyana_app.models import *
 from siyyana_app.forms import *
@@ -21,15 +21,17 @@ from siyyana_project import settings
 def index(request):
     employee_count = CustomUser.objects.filter(user_type = 'Employee').count()
     user_count = CustomUser.objects.filter(user_type = 'User').count()
-    booking_count = Booking.objects.all().count()
+    booking_count = Booking.objects.filter(status="Completed").count()
     services_count = Category.objects.all().count()
     sub_services_count = SubCategory.objects.all().count()
     top_services_count = TopCategory.objects.all().count()
     top_booked_employees = CustomUser.objects.filter(user_type = 'Employee')[:5]
     top_booked_customers = CustomUser.objects.filter(user_type = 'User')[:5]
     subservices_count = SubCategory.objects.all().count()
-    service_request_count = RequestedCategory.objects.all().count()
+    service_request_count = RequestedCategory.objects.filter(status="Unread").count()
     country_count = Country.objects.all().count()
+    state_count = State.objects.all().count()
+    district_count = District.objects.all().count()
 
 
     context = {
@@ -44,7 +46,9 @@ def index(request):
         'top_booked_customers': top_booked_customers,
         'subservices_count':subservices_count,
         'service_request_count':service_request_count,
-        'country_count':country_count
+        'country_count':country_count,
+        'state_count':state_count,
+        'district_count':district_count
 
     }
     return render(request,'index.html',context)
@@ -321,7 +325,7 @@ def export_employees_to_excel(employees):
 
     # Define the column headers for employees
     headers = [
-        'Name', 'Mobile Number', 'WhatsApp Number', 'About', 'Category', 'Subcategory', 
+        'Name', 'Mobile Number', 'WhatsApp Number','Profile picture' 'About', 'Category', 'Subcategory', 
         'Charge', 'User Type', 'Date of Birth', 'Status',
         'Country', 'State', 'District', 'Preferred Work Location', 'ID Card Type', 'ID Card Number'
     ]
@@ -335,25 +339,26 @@ def export_employees_to_excel(employees):
         sheet.cell(row=row_num, column=1, value=employee.name)
         sheet.cell(row=row_num, column=2, value=employee.mobile_number)
         sheet.cell(row=row_num, column=3, value=employee.whatsapp_number)
-        sheet.cell(row=row_num, column=4, value=employee.about)
+        sheet.cell(row=row_num, column=4, value=employee.profile_picture.url)
+        sheet.cell(row=row_num, column=5, value=employee.about)
         
         # Get Categories and Subcategories as comma-separated values
         categories = ", ".join([category.name for category in employee.category.all()])
         subcategories = ", ".join([subcategory.name for subcategory in employee.subcategory.all()])
         
-        sheet.cell(row=row_num, column=5, value=categories)
-        sheet.cell(row=row_num, column=6, value=subcategories)
+        sheet.cell(row=row_num, column=6, value=categories)
+        sheet.cell(row=row_num, column=7, value=subcategories)
         
-        sheet.cell(row=row_num, column=7, value=employee.charge)
-        sheet.cell(row=row_num, column=8, value=employee.user_type)
-        sheet.cell(row=row_num, column=9, value=employee.date_of_birth)
-        sheet.cell(row=row_num, column=10, value=employee.status)
-        sheet.cell(row=row_num, column=11, value=employee.country.name if employee.country else 'No Country')
-        sheet.cell(row=row_num, column=12, value=employee.state.name if employee.state else 'No State')
-        sheet.cell(row=row_num, column=13, value=employee.district.name if employee.district else 'No District')
-        sheet.cell(row=row_num, column=14, value=employee.prefered_work_location.name if employee.prefered_work_location else 'No Preferred Location')
-        sheet.cell(row=row_num, column=15, value=employee.id_card_type)
-        sheet.cell(row=row_num, column=16, value=employee.id_card_number)
+        sheet.cell(row=row_num, column=8, value=employee.charge)
+        sheet.cell(row=row_num, column=9, value=employee.user_type)
+        sheet.cell(row=row_num, column=10, value=employee.date_of_birth)
+        sheet.cell(row=row_num, column=11, value=employee.status)
+        sheet.cell(row=row_num, column=12, value=employee.country.name if employee.country else 'No Country')
+        sheet.cell(row=row_num, column=13, value=employee.state.name if employee.state else 'No State')
+        sheet.cell(row=row_num, column=14, value=employee.district.name if employee.district else 'No District')
+        sheet.cell(row=row_num, column=15, value=employee.prefered_work_location.name if employee.prefered_work_location else 'No Preferred Location')
+        sheet.cell(row=row_num, column=16, value=employee.id_card_type)
+        sheet.cell(row=row_num, column=17, value=employee.id_card_number)
 
     # Save the workbook to the BytesIO object
     workbook.save(output)
@@ -701,8 +706,28 @@ def district_delete(request,id):
 @login_required(login_url="siyyana_app:login")
 def requested_services(request):
     requested_services = RequestedCategory.objects.all()
+    for i in requested_services:
+        print(i.datetime)
     context = {'requested_services':requested_services}
     return render(request,'requested-services.html',context)
+
+
+
+def change_requested_services_status(request, pk, new_status):
+    requested_category = get_object_or_404(RequestedCategory, id=pk)
+
+    if new_status == 'Read':
+        requested_category.status = 'Read'
+    elif new_status == 'Unread':
+        requested_category.status = 'Unread'
+    requested_category.save()
+
+    messages.success(request, 'Updated successfully.')
+    return redirect('siyyana_app:requested_services')
+
+
+
+
 
 @login_required(login_url="siyyana_app:login")
 def delete_requested_services(request,id):
@@ -756,3 +781,32 @@ def onboarding_delete(request,id):
     data.delete()
     messages.success(request,'Deleted successfully')
     return redirect('siyyana_app:onboarding')
+
+
+
+
+def currency_type(request):
+    data = Currency_Type.objects.all()
+    context = {'data':data}
+    return render(request,'currency-type.html',context)
+
+
+@login_required(login_url="siyyana_app:login")
+def add_currency_type(request):
+    form = CurrencyTypeAddForm()
+    if request.method == 'POST':
+        form = CurrencyTypeAddForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'added successfully')
+            return redirect('siyyana_app:currency_type')
+    context = {'form':form}
+    return render(request,'add-currency-type.html',context)
+
+
+
+def currency_delete(request,id):
+    data = Currency_Type.objects.get(id=id)
+    data.delete()
+    messages.success(request,'Deleted successfully')
+    return redirect('siyyana_app:currency_type')

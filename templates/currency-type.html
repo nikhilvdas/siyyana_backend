@@ -3,7 +3,7 @@
 {% block content %}
 
 {% block pageheading %}
-Requested Services
+Currency Type
 {% endblock %}
 
 
@@ -26,50 +26,35 @@ Requested Services
                 </form> {% endcomment %}
                   <div class="list-product-header">
                     
-                    {% comment %} <div>
-                      <a class="btn"  style="background-color: #086b94; border-color: #086b94; color: white;" href="{% url 'siyyana_app:add_country' %}"
-                        ><i class="fa fa-plus"></i>Add Country</a
+                    <div>
+                      <a class="btn"  style="background-color: #086b94; border-color: #086b94; color: white;" href="{% url 'siyyana_app:add_currency_type' %}"
+                        ><i class="fa fa-plus"></i>Add Currency Type</a
                       >
                     </div>
-                     {% endcomment %}
+                    
                   <div class="list-product">
                       <table class="display" id="row-select-delete">
                         <thead>
                           <tr>
                             <th>SL</th>
-                            <th>Service</th>
-                            <th>Sub Services</th>
-                            <th>Date</th>
-                            <th>Status</th>
+                            <th>Currency type</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for i in requested_services %}
+                          {% for i in data %}
                           <tr>
                             <td>{{forloop.counter }}</td>
                             <td>{{i.name}}</td>
-                            <td>{{i.subcategory}}</td>
-                            <td>{{i.datetime}}</td>
-                            <td>
-                              <div class="btn-group">
-                                <button
-                                  class="btn {% if i.status == 'Read' %} btn-success {% else %} btn-danger {% endif %} rounded-pill dropdown-toggle"
-                                  type="button" style="padding: 1px 12px !important; font-size: 14px;" data-bs-toggle="dropdown"
-                                  aria-expanded="false">{{i.status}}</button>
-                                  <ul class="dropdown-menu dropdown-block">
-                                    <li><a class="dropdown-item" href="{% url 'siyyana_app:change_requested_services_status' i.id 'Read' %}">Read</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="{% url 'siyyana_app:change_requested_services_status' i.id 'Unread' %}">Unread</a>
-                                    </li>
-                                  </ul>
-                              </div>
-                            </td>
                             <td>
                               <ul class="action">
-                              
+                                {% comment %} <li class="edit">
+                                  <a href="{% url 'siyyana_app:edit_country' i.id %}"
+                                    ><i class="icon-pencil-alt"></i
+                                  ></a>
+                                </li> {% endcomment %}
                                 <li class="delete">
-                                  <a  onclick="showConfirmation('{%  url 'siyyana_app:delete_requested_services' i.id %}')"><i class="icon-trash me-2"></i></a>
+                                  <a  onclick="showConfirmation('{%  url 'siyyana_app:currency_delete' i.id %}')"><i class="icon-trash me-2"></i></a>
                                 </li>
                               </ul>
                             </td>

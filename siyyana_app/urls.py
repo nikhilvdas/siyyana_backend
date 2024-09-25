@@ -37,6 +37,7 @@ urlpatterns = [
     path('employee-delete/<int:id>/', views.employee_delete,name='employee_delete'),
     
     path('requested-services', views.requested_services,name='requested_services'),
+    path('change-requested-services-status/<int:pk>/<str:new_status>/', views.change_requested_services_status, name='change_requested_services_status'),
     path('delete-requested-services/<int:id>/', views.delete_requested_services,name='delete_requested_services'),
     
 
@@ -68,5 +69,11 @@ urlpatterns = [
     path('add-onboarding', views.add_onboarding,name='add_onboarding'),
     path('edit-onboarding/<int:id>/', views.edit_onboarding,name='edit_onboarding'),
     path('onboarding-delete/<int:id>/', views.onboarding_delete,name='onboarding_delete'),
+
+    path('currency-type', views.currency_type,name='currency_type'),
+    path('add-currency-type', views.add_currency_type,name='add_currency_type'),
+    path('currency-delete/<int:id>/', views.currency_delete,name='currency_delete'),
+
+    
 
 ]
