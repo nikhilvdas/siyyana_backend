@@ -111,7 +111,7 @@ class CategorySerializer(serializers.ModelSerializer):
                 'id': user.id,
                 'name': user.name,
                 'profile_picture': user.profile_picture.url,
-                'rating_summary': rating_summary,
+                'rating': rating_summary,
                 'employee_wages': wages_data  # Include wages data here
             }
 
