@@ -81,90 +81,83 @@ Employees
                     </div> {% endcomment %}
                     
                   <div class="list-product"  style="overflow-x: auto;">
-                      <table class="display" id="row-select-delete">
-                        <thead>
-                            <tr>
-                                <th>SL</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Mobile Number</th>
-                                <th>WhatsApp Number</th>
-                                <th>Profile Picture</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                                <th>Country</th>
-                                <th>State</th>
-                                <th>District</th>
-                                
-                              </tr>
-                        </thead>
-                        <tbody>
-                            {% for user in users %}
-                            <tr>
+                    <table class="display" id="row-select-delete">
+                      <thead>
+                          <tr>
+                              <th>SL</th>
+                              <th>Name</th>
+                              <th>Email</th>
+                              <th>Completed Bookings</th> <!-- New column -->
+                              <th>Mobile Number</th>
+                              <th>WhatsApp Number</th>
+                              <th>Profile Picture</th>
+                              <th>Status</th>
+                              <th>Action</th>
+                              <th>Country</th>
+                              <th>State</th>
+                              <th>District</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for user in users %}
+                          <tr>
                               <td>{{ forloop.counter }}</td>
                               <td>{{ user.name }}</td>
                               <td>{{ user.email }}</td>
+                              <td>{{ user.completed_bookings_count }}</td> <!-- Completed bookings count -->
+
                               <td>
-                                <a href="tel:{{ user.mobile_number }}">
-                                    <i class="fas fa-phone"></i> {{ user.mobile_number }}
-                                </a>
-                            </td>
-                    
-                            <!-- Call Dial Pad Link -->
-                            <td>
-                                <a href="https://wa.me/{{ user.whatsapp_number }}" target="_blank">
-                                    <i class="fab fa-whatsapp"></i> {{ user.whatsapp_number }}
-                                </a>
-                               
-                            </td>
-                              <td>
-                                {% if user.profile_picture %}
-                                  <img src="{{ user.profile_picture.url }}" style="width:49px;height:50px;">
-                                {% else %}
-                                  None
-                                {% endif %}
+                                  <a href="tel:{{ user.mobile_number }}">
+                                      <i class="fas fa-phone"></i> {{ user.mobile_number }}
+                                  </a>
                               </td>
                               <td>
-                                {% if user.status == 'Active' %}
-                                <label class="switch">
-                                  <input type="checkbox" class="checkbox-category" data-category-url="{% url 'siyyana_app:staff_status_change' user.id %}" checked>
-                                  <span class="slider round"></span>
-                                </label>
-                                {% else %}
-                                <label class="switch">
-                                  <input type="checkbox" class="checkbox-category" data-category-url="{% url 'siyyana_app:staff_status_change' user.id %}" >
-                                  <span class="slider round"></span>
-                                </label>
-                                {% endif %}
+                                  <a href="https://wa.me/{{ user.whatsapp_number }}" target="_blank">
+                                      <i class="fab fa-whatsapp"></i> {{ user.whatsapp_number }}
+                                  </a>
                               </td>
                               <td>
-                                <ul class="action">
-                                  {% comment %} <li class="edit">
-                                    <a href="#">
-                                      <i class="icon-pencil-alt"></i>
-                                    </a>
-                                  </li> {% endcomment %}
-                                  <li class="delete">
-                                    <a onclick="showConfirmation('{% url 'siyyana_app:employee_delete' user.id %}')">
-                                      <i class="icon-trash me-2"></i>
-                                    </a>
-                                  </li>
-                                  <li class="delete">
-                                    <a href="{% url 'siyyana_app:view_profile' user.id %}">
-                                      <i class="icon-eye me-2"></i>
-                                    </a>
-                                  </li>
-                                </ul>
+                                  {% if user.profile_picture %}
+                                      <img src="{{ user.profile_picture.url }}" style="width:49px;height:50px;">
+                                  {% else %}
+                                      None
+                                  {% endif %}
                               </td>
-                              <td>{{ user.country}}</td>
+                              <td>
+                                  {% if user.status == 'Active' %}
+                                      <label class="switch">
+                                          <input type="checkbox" class="checkbox-category" data-category-url="{% url 'siyyana_app:staff_status_change' user.id %}" checked>
+                                          <span class="slider round"></span>
+                                      </label>
+                                  {% else %}
+                                      <label class="switch">
+                                          <input type="checkbox" class="checkbox-category" data-category-url="{% url 'siyyana_app:staff_status_change' user.id %}">
+                                          <span class="slider round"></span>
+                                      </label>
+                                  {% endif %}
+                              </td>
+                              <td>
+                                  <ul class="action">
+                                      <li class="delete">
+                                          <a onclick="showConfirmation('{% url 'siyyana_app:employee_delete' user.id %}')">
+                                              <i class="icon-trash me-2"></i>
+                                          </a>
+                                      </li>
+                                      <li class="delete">
+                                          <a href="{% url 'siyyana_app:view_profile' user.id %}">
+                                              <i class="icon-eye me-2"></i>
+                                          </a>
+                                      </li>
+                                  </ul>
+                              </td>
+                              <td>{{ user.country }}</td>
                               <td>{% if user.state.all %}{{ user.state.all|join:", " }}{% endif %}</td>
                               <td>{% if user.district.all %}{{ user.district.all|join:", " }}{% endif %}</td>
-                              
-                              
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                      </table>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                  
                   </div>
                 </div>
               </div>

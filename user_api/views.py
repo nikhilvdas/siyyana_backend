@@ -158,7 +158,7 @@ def request_otp(request):
             )
             return JsonResponse({'message': 'OTP sent successfully.'})
         except CustomUser.DoesNotExist:
-            return JsonResponse({'error': 'Email not found.'}, status=400)
+            return JsonResponse({'error': 'User doesnot exist.'}, status=400)
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt
@@ -172,7 +172,7 @@ def verify_otp(request):
             if user.otp == otp:
                 otp_age = timezone.now() - user.otp_created_at
                 if otp_age <= timedelta(minutes=5):  # Check if OTP is still valid
-                    return JsonResponse({'message': 'OTP verified successfully.'})
+                    return JsonResponse({'message': 'OTP verified successfully.','user_type':user.user_type})
                 else:
                     return JsonResponse({'error': 'OTP has expired.'}, status=400)
             else:

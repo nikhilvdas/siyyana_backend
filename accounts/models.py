@@ -121,7 +121,7 @@ class EmployyeWages(models.Model):
         return f"Un: {self.user} - Mob: {self.user.mobile_number} - Type: {self.user.user_type} "
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,blank=True,null=True,related_name='employee_wages')
     subcategory = models.ForeignKey('siyyana_app.SubCategory', on_delete=models.CASCADE,blank=True,null=True)
-    wages = models.IntegerField(blank=True,null=True)
+    wages = models.CharField(max_length=50,blank=True,null=True)
 
 
 

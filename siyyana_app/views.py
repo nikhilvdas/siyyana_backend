@@ -13,7 +13,7 @@ from django.db.models import Count
 import openpyxl
 from io import BytesIO
 import pandas as pd
-
+from django.db.models import Count, Q
 from siyyana_project import settings
 # Create your views here.
 
@@ -266,8 +266,10 @@ def employee_list(request):
     subcategory_id = request.GET.get('subcategory')
     export_excel = request.GET.get('export_excel')
 
-    # Start with all employees
-    employees = CustomUser.objects.filter(user_type='Employee').order_by('-id')
+    # Start with all employees and annotate with completed bookings count
+    employees = CustomUser.objects.filter(user_type='Employee').annotate(
+        completed_bookings_count=Count('employee', filter=Q(employee__status='Completed'))
+    ).order_by('-completed_bookings_count')
 
     # Apply filters
     if country_id and country_id != 'All':
@@ -292,7 +294,6 @@ def employee_list(request):
     districts = District.objects.all()
     subcategories = SubCategory.objects.all()
 
-
     if export_excel:
         return export_employees_to_excel(employees)
 
@@ -306,6 +307,7 @@ def employee_list(request):
     }
 
     return render(request, 'employee.html', context)
+
 
 
 def export_employees_to_excel(employees):

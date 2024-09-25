@@ -283,6 +283,7 @@
                                   <th>Name</th>
                                   <th>Whatsapp</th>
                                   <th>Mobile</th>
+                                  <th>Sevice</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -300,6 +301,7 @@
                                       <i class="fas fa-phone"></i> {{ employee.mobile_number }}
                                     </a>
                                   </td>
+                                  <td>{{ employee.category.all|join:", " }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
