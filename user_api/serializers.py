@@ -80,47 +80,60 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_all_employees(self, obj):
         request = self.context.get('request')
-        users = CustomUser.objects.filter(category=obj, user_type="Employee")
 
+        # Get subcategories related to the current category
+        subcategories = SubCategory.objects.filter(service=obj)
+        employee_count = 0  # Initialize employee count
         all_employee_list = []
 
-        for user in users:
-            # Fetch reviews for the employee
-            reviews = Review.objects.filter(employee=user).order_by('-review_date')
+        # If there are subcategories, fetch employees
+        if subcategories.exists():
+            users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee").distinct()
 
-            # Calculate overall rating and rating distribution
-            rating_summary = {
-                'total_reviews': reviews.count(),
-                'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
-                'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
-                'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
-                'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
-                'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
-            }
+            for user in users:
+                # Fetch reviews for the employee
+                reviews = Review.objects.filter(employee=user).order_by('-review_date')
 
-            # Fetch employee wages for each subcategory
-            employee_wages = EmployyeWages.objects.filter(user=user)
-            wages_data = [{
-                'id': wage.id,
-                'subcategory': wage.subcategory.name if wage.subcategory else None,
-                'wages': wage.wages
-            } for wage in employee_wages]
+                # Calculate overall rating and rating distribution
+                rating_summary = {
+                    'total_reviews': reviews.count(),
+                    'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+                    'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+                    'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+                    'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+                    'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+                }
 
-            # Build individual employee data with wages
-            employee_info = {
-                'id': user.id,
-                'name': user.name,
-                'profile_picture': user.profile_picture.url,
-                'ratings': rating_summary,
-                'employee_wages': wages_data  # Include wages data here
-            }
+                # Fetch employee wages for each subcategory
+                employee_wages = EmployyeWages.objects.filter(user=user)
+                wages_data = [{
+                    'id': wage.id,
+                    'subcategory': wage.subcategory.name if wage.subcategory else None,
+                    'wages': wage.wages
+                } for wage in employee_wages]
 
-            all_employee_list.append(employee_info)
+                # Build individual employee data with wages
+                employee_info = {
+                    'id': user.id,
+                    'name': user.name,
+                    'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+                    'ratings': rating_summary,
+                    'employee_wages': wages_data  # Include wages data here
+                }
+
+                all_employee_list.append(employee_info)
+
+            # Update employee count based on users found
+            employee_count = users.count()
+
+        # If no subcategories, return empty list
+        else:
+            all_employee_list = []
 
         return {
-            'all': all_employee_list
+            'employee_count': employee_count,  # Return the employee count
+            'all': all_employee_list  # List of employees or empty
         }
-
 
 class TopCategorySerializer(serializers.ModelSerializer):
     Category = CategoryListSerializer(read_only=True)
