@@ -68,15 +68,23 @@ class CategorySerializer(serializers.ModelSerializer):
         all_employees_subcategory = {
             'id': None,  # You can assign a special ID or leave it as None
             'name': 'All employees',
-            'users': all_employees_data['all']
+            'users': all_employees_data['all']  # List of employees
         }
 
         # Prepend the "All employees" subcategory to the response
         return [all_employees_subcategory] + subcategory_data
 
     def get_count(self, obj):
-        subcategories = SubCategory.objects.filter(service=obj).count()
-        return subcategories
+        subcategories = SubCategory.objects.filter(service=obj)
+        subcategory_count = subcategories.count()
+
+        # Count employees across all subcategories
+        employee_count = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee").count()
+
+        return {
+            'subcategory_count': subcategory_count,
+            'employee_count': employee_count
+        }
 
     def get_all_employees(self, obj):
         request = self.context.get('request')
@@ -84,6 +92,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
         all_employee_list = []
 
+        # Iterate through the employees, if any
         for user in users:
             # Fetch reviews for the employee
             reviews = Review.objects.filter(employee=user).order_by('-review_date')
@@ -110,12 +119,16 @@ class CategorySerializer(serializers.ModelSerializer):
             employee_info = {
                 'id': user.id,
                 'name': user.name,
-                'profile_picture': user.profile_picture.url,
+                'profile_picture': user.profile_picture.url if user.profile_picture else None,
                 'ratings': rating_summary,
                 'employee_wages': wages_data  # Include wages data here
             }
 
             all_employee_list.append(employee_info)
+
+        # If there are no employees, ensure we return an empty list
+        if not all_employee_list:
+            all_employee_list = []
 
         return {
             'all': all_employee_list

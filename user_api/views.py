@@ -228,7 +228,7 @@ def category_with_subcategory_and_employees(request):
     # Fetch top categories with booking count annotation
     top_categories = Category.objects.annotate(
         booking_count=Count('subcategory__employyewages__service__employee')
-    ).order_by('-booking_count')
+    ).order_by('-booking_count')[:8]
 
     # Prepare the top categories data manually, as it's customized
     top_categories_data = []
