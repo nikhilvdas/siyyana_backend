@@ -116,7 +116,7 @@ class CategorySerializer(serializers.ModelSerializer):
                 employee_info = {
                     'id': user.id,
                     'name': user.name,
-                    'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+                    'profile_picture': user.profile_picture.url,
                     'ratings': rating_summary,
                     'employee_wages': wages_data  # Include wages data here
                 }
