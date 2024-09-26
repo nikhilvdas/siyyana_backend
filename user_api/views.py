@@ -228,7 +228,7 @@ def category_with_subcategory_and_employees(request):
     # Fetch top categories with booking count annotation
     top_categories = Category.objects.annotate(
         booking_count=Count('subcategory__employyewages__service__employee')
-    ).order_by('-booking_count')[:5]
+    ).order_by('-booking_count')
 
     # Prepare the top categories data manually, as it's customized
     top_categories_data = []
@@ -354,24 +354,31 @@ def reschedule_booking(request):
 
 
 
-
 # def all_categories(request):
 #     categories_data = []
 
+#     # Fetch all categories
 #     categories = Category.objects.all()
+
 #     for category in categories:
-#         subcategory_count = category.subcategory_set.count()
+#         # Count subcategories/services under each category
+#         service_count = SubCategory.objects.filter(service=category).count()
+        
+#         # Count employees related to the category
 #         customuser_count = CustomUser.objects.filter(category=category).count()
 
+#         # Append category data including service count and custom user count
 #         categories_data.append({
 
 #             'id': category.id,
 #             'name': category.name,
 #             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
-#             'subcategory_count': subcategory_count,
+#             'subcategory_count': service_count,
 #             'customuser_count': customuser_count,
+            
 #         })
 
+#     # Return the data as a JSON response
 #     return JsonResponse({'categories': categories_data}, safe=False)
 
 def all_categories(request):
@@ -381,27 +388,32 @@ def all_categories(request):
     categories = Category.objects.all()
 
     for category in categories:
-        # Count subcategories/services under each category
-        service_count = SubCategory.objects.filter(service=category).count()
-        
-        # Count employees related to the category
-        customuser_count = CustomUser.objects.filter(category=category).count()
+        # Fetch subcategories under the current category
+        subcategories = SubCategory.objects.filter(service=category)
 
-        # Append category data including service count and custom user count
+        subcategory_count = subcategories.count()
+
+        # Count employees (CustomUser) based on subcategory
+        employees_in_subcategories = CustomUser.objects.filter(subcategory__in=subcategories).distinct()
+
+        employee_count = employees_in_subcategories.count()
+
         categories_data.append({
-
             'id': category.id,
             'name': category.name,
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
-            'subcategory_count': service_count,
-            'customuser_count': customuser_count,
-            
+            'subcategory_count': subcategory_count,
+            'customuser_count': employee_count,
+            'subcategories': [{
+                'id': sub.id,
+                'name': sub.name,
+                'logo': request.build_absolute_uri(sub.logo.url) if sub.logo else None,
+                'employees': employees_in_subcategories.filter(subcategory=sub).count(),  # Employee count for each subcategory
+            } for sub in subcategories]  # List all subcategories
         })
 
     # Return the data as a JSON response
     return JsonResponse({'categories': categories_data}, safe=False)
-
-
 
 
 
