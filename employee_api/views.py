@@ -15,7 +15,7 @@ from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from datetime import timedelta
-
+import re
 
 
 # Create your views here.
@@ -203,14 +203,15 @@ class EmployeeRegistration(APIView):
             subcategory_ids = [int(id.strip()) for id in subcategory_ids.split(",") if id.strip().isdigit()]
 
             wages = request.data.get("wages", "")
-            wages = [int(id.strip()) for id in wages.split(",") if id.strip().isdigit()]
+            # Split the wages by commas and strip any leading/trailing whitespace
+            wages = [wage.strip() for wage in wages.split(",") if wage.strip()]
             print("customer creation 2")
 
             for subcategory_id, wage in zip(subcategory_ids, wages):
                 EmployyeWages.objects.create(
                     user=user,
                     subcategory_id=subcategory_id,
-                    wages=wage
+                    wages=wage  # Store the full wage string, including the currency
                 )
             print("customer creation 3")
  
