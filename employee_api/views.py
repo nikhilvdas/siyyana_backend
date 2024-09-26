@@ -983,9 +983,9 @@ def notification_history_api(request):
         return Response({"error": "User not found."}, status=404)
 
     if user.user_type == 'User':
-        notifications = Notification.objects.filter(user=user, user_type='User').order_by('-timestamp')
+        notifications = Notification.objects.filter(user=user, user_type='User').order_by('-timestamp')[:10]
     elif user.user_type == 'Employee':
-        notifications = Notification.objects.filter(employee=user, user_type='Employee').order_by('-timestamp')
+        notifications = Notification.objects.filter(employee=user, user_type='Employee').order_by('-timestamp')[:10]
     else:
         return Response({"error": "Invalid user type."}, status=400)
 
