@@ -187,10 +187,10 @@ class BookingSerializerUser(serializers.ModelSerializer):
         fields = ['id', 'employee', 'service', 'date', 'start_time', 'end_time', 'status', 'reviews']
 
     def get_reviews(self, obj):
-        if obj.status == 'Completed':
-            reviews = obj.reviews.all()
-            return ReviewSerializerUser(reviews, many=True).data
-        return None
+        # if obj.status == 'Completed':
+        reviews = obj.reviews.all()
+        return ReviewSerializerUser(reviews, many=True).data
+        # return None
 
 
 

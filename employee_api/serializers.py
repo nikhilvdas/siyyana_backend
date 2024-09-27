@@ -201,9 +201,9 @@ class BookingSerializer(serializers.ModelSerializer):
     
 
     def get_employee_reviews(self, obj):
-        employee = obj.employee
-        reviews = Review.objects.filter(employee=employee)
-        
+        # Retrieve reviews related to this specific booking
+        reviews = Review.objects.filter(booking=obj)
+
         # Calculate review statistics
         rating_summary = {
             'total_reviews': reviews.count(),
@@ -213,6 +213,7 @@ class BookingSerializer(serializers.ModelSerializer):
             'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
             'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
         }
+
         # If the booking status is 'Completed', include individual reviews
         if obj.status == 'Completed':
             individual_reviews = []
@@ -239,7 +240,6 @@ class BookingSerializer(serializers.ModelSerializer):
             'rating_summary': rating_summary,
             'ratings': [],  # Return an empty list if no reviews are present
         }
-
 
 
 

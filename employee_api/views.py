@@ -16,7 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from datetime import timedelta
 import re
-
+from django.contrib.auth import logout
 
 # Create your views here.
 def index(request):
@@ -1063,3 +1063,18 @@ def get_currency_types(request):
 
         # Return as JSON response
         return JsonResponse({'currencies': currency_list}, status=200)
+    
+
+
+
+
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    user = request.user  # Get the logged-in user
+    user.delete()  # Delete the user account
+    logout(request)  # Log the user out after deletion
+    return Response({"detail": "Account deleted successfully."}, status=status.HTTP_200_OK)
