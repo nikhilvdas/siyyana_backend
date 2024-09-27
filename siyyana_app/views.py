@@ -58,32 +58,47 @@ def index(request):
 
 
 
+# def login(request):
+#     if request.method == 'POST':
+#         username_or_email = request.POST.get('username_or_email')
+#         password = request.POST.get('password')
+#         recaptcha_response = request.POST.get('g-recaptcha-response')
+#         # Verify reCAPTCHA
+#         data = {
+#             'secret': settings.RECAPTCHA_PRIVATE_KEY,
+#             'response': recaptcha_response
+#         }
+#         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+#         result = r.json()
+#         if result['success']:
+#             user = auth.authenticate(request, username=username_or_email, password=password)
+#             if user is not None:
+#                 auth.login(request, user)
+#                 request.session['username'] = username_or_email
+#                 return redirect('siyyana_app:index')
+#             else:
+#                 # messages.error(request, 'Invalid credential..')
+#                 return render(request, 'login.html', {'error': 'Invalid username or password.'})
+#         else:
+#             # Handle reCAPTCHA failure
+#             return render(request, 'login.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
+#     return render(request, 'login.html')
+
 def login(request):
     if request.method == 'POST':
         username_or_email = request.POST.get('username_or_email')
         password = request.POST.get('password')
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        # Verify reCAPTCHA
-        data = {
-            'secret': settings.RECAPTCHA_PRIVATE_KEY,
-            'response': recaptcha_response
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result = r.json()
-        if result['success']:
-            user = auth.authenticate(request, username=username_or_email, password=password)
-            if user is not None:
-                auth.login(request, user)
-                request.session['username'] = username_or_email
-                return redirect('siyyana_app:index')
-            else:
-                # messages.error(request, 'Invalid credential..')
-                return render(request, 'login.html', {'error': 'Invalid username or password.'})
-        else:
-            # Handle reCAPTCHA failure
-            return render(request, 'login.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
-    return render(request, 'login.html')
 
+        user = auth.authenticate(request, username=username_or_email, password=password)
+        if user is not None:
+            auth.login(request, user)
+            request.session['username'] = username_or_email
+            return redirect('siyyana_app:index')
+        else:
+            messages.error(request, 'Invalid credential..')
+            return render(request, 'login.html', {'error': 'Invalid username or password.'})
+    
+    return render(request, 'login.html')
 
 
 

@@ -32,7 +32,7 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
       rel="stylesheet"
     />
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% comment %} <script src="https://www.google.com/recaptcha/api.js" async defer></script> {% endcomment %}
 
     <link
       rel="stylesheet"
@@ -135,7 +135,7 @@
                       </div>
                   </div>
               </div>
-              <div class="g-recaptcha" data-sitekey="6LfgRE0qAAAAAKKmjHbCeM85jjHq2I1KLuGqPShu"></div> 
+              {% comment %} <div class="g-recaptcha" data-sitekey="6LfgRE0qAAAAAKKmjHbCeM85jjHq2I1KLuGqPShu"></div>  {% endcomment %}
 
                 <div class="form-group">
                   {% comment %} <a href="{% url 'accounts_app:forgot_password' %}">Forgot Password?</a> {% endcomment %}
@@ -148,9 +148,9 @@
                     </button>
                   </div>
                 </div>
-                {% if error %}
+                {% comment %} {% if error %}
                 <p style="color:red;">{{ error }}</p>
-                {% endif %}
+                {% endif %} {% endcomment %}
               </form>
             </div>
           </div>
