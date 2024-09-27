@@ -401,7 +401,7 @@ def employee_home(request):
     user = request.user
     print(user)
     if request.method == 'GET':
-        total_booking = Booking.objects.filter(employee=user).count()
+        total_booking = Booking.objects.filter(employee=user, status__in=['Pending', 'Active']).count()
         completed_booking = Booking.objects.filter(employee=user, status='Completed').count()
         active_work_orders = Booking.objects.filter(employee=user, status='Pending')
         active_work_orders_serializer = BookingSerializer(active_work_orders, many=True,context={'request':request})
