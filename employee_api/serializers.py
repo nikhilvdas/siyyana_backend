@@ -213,36 +213,32 @@ class BookingSerializer(serializers.ModelSerializer):
             'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
             'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
         }
+        # If the booking status is 'Completed', include individual reviews
+        if obj.status == 'Completed':
+            individual_reviews = []
+            for review in reviews:
+                individual_reviews.append({
+                    'id': review.id,
+                    'user_id': review.user.id if review.user else None,
+                    'timing': review.timing,
+                    'service_quality': review.service_quality,
+                    'price': review.price,
+                    'behavior': review.behavior,
+                    'service_summary': review.service_summary,
+                    'review': review.review,
+                    'review_date': review.review_date,
+                    'average_rating': review.average_rating,
+                })
 
-        # Count the reviews by star rating
-        # rating_distribution = {
-        #     '5_star': reviews.filter(average_rating__gte=4.9).count(),  # 4.9 to 5.0
-        #     '4_star': reviews.filter(average_rating__gte=3.9, average_rating__lt=4.9).count(),  # 3.9 to <4.9
-        #     '3_star': reviews.filter(average_rating__gte=2.9, average_rating__lt=3.9).count(),  # 2.9 to <3.9
-        #     '2_star': reviews.filter(average_rating__gte=1.9, average_rating__lt=2.9).count(),  # 1.9 to <2.9
-        #     '1_star': reviews.filter(average_rating__lt=1.9).count(),  # less than 1.9
-        # }
-
-        # Include each individual review
-        # reviews_list = [
-        #     {
-        #         'user_name': review.user.name if review.user else "Anonymous",
-        #         'profile_pic': self.context['request'].build_absolute_uri(review.user.profile_picture.url) if review.user else None,
-        #         'review_date': review.review_date.strftime("%b %Y"),
-        #         'average_rating': review.average_rating,
-        #         'service_summary': review.service_summary,
-        #         'review': review.review,
-        #     }
-        #     for review in reviews
-        # ]
-
-        # Combine and return the review data
+            return {
+                'rating_summary': rating_summary,
+                'ratings': individual_reviews,  # Include the detailed reviews
+            }
+        
         return {
             'rating_summary': rating_summary,
-            # 'rating_distribution': rating_distribution,
-            # 'reviews': reviews_list
+            'ratings': [],  # Return an empty list if no reviews are present
         }
-    
 
 
 
