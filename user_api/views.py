@@ -242,12 +242,13 @@ def category_with_subcategory_and_employees(request):
             'color': category.color,
         })
 
-    # Handle top subcategories and employees
-    top_subcategories = TopSubCategory.objects.all()
-    top_subcategory_data = []
+    # Handle top subcategories based on booking count
+    top_subcategories = SubCategory.objects.annotate(
+        booking_count=Count('employyewages__service__employee')  # Correcting the reference
+    ).order_by('-booking_count')[:8]  # Fetching top 8 subcategories based on booking count
 
-    for top_sub in top_subcategories:
-        subcategory = top_sub.SubCategory
+    top_subcategory_data = []
+    for subcategory in top_subcategories:
         users = CustomUser.objects.filter(subcategory=subcategory)
 
         top_subcategory_data.append({
@@ -256,7 +257,8 @@ def category_with_subcategory_and_employees(request):
                 'category_id': subcategory.service.id if subcategory.service.id else None,
                 'name': subcategory.name,
                 'logo': request.build_absolute_uri(subcategory.logo.url) if subcategory.logo else None,
-                'color': subcategory.color
+                'color': subcategory.color,
+                'booking_count': subcategory.booking_count  # Include booking count here
             },
             'users': [{
                 'id': user.id,
@@ -285,9 +287,8 @@ def category_with_subcategory_and_employees(request):
     return Response({
         'datas': serializer.data,
         'top_categories': top_categories_data,  # Manually prepared top categories
-        'top_subcategories': top_subcategory_data
+        'top_subcategories': top_subcategory_data  # Now includes top subcategories based on booking count
     }, status=status.HTTP_200_OK)
-
 
 @api_view(['POST'])
 def booking_api(request):
@@ -452,71 +453,75 @@ def search_by_category(request):
     if not category_name:
         return JsonResponse({'error': 'Category name is required.'}, status=400)
 
-    try:
+    # try:
         # Get the category that matches the search term
-        category = Category.objects.get(name__icontains=category_name)
-        
-        # Fetch users associated with the category
+    category = Category.objects.get(name__icontains=category_name)
+    subcategory = SubCategory.objects.filter(name__icontains=category_name).first()
+    
+    # Fetch users associated with the category
+    if category:
         users = CustomUser.objects.filter(category=category).distinct()
+    if subcategory:
+        users = CustomUser.objects.filter(subcategory=subcategory).distinct()
 
-        user_data = []
-        for user in users:
-            # Fetch the employee's work schedule
-            work_schedule = EmployeeWorkSchedule.objects.filter(user=user).first()
-            work_schedule_data = {
-                'sunday': f"{work_schedule.sunday_start_time} - {work_schedule.sunday_end_time}" if work_schedule else None,
-                'monday': f"{work_schedule.monday_start_time} - {work_schedule.monday_end_time}" if work_schedule else None,
-                'tuesday': f"{work_schedule.tuesday_start_time} - {work_schedule.tuesday_end_time}" if work_schedule else None,
-                'wednesday': f"{work_schedule.wednesday_start_time} - {work_schedule.wednesday_end_time}" if work_schedule else None,
-                'thursday': f"{work_schedule.thursday_start_time} - {work_schedule.thursday_end_time}" if work_schedule else None,
-                'friday': f"{work_schedule.friday_start_time} - {work_schedule.friday_end_time}" if work_schedule else None,
-                'saturday': f"{work_schedule.saturday_start_time} - {work_schedule.saturday_end_time}" if work_schedule else None,
-            }
+    user_data = []
+    for user in users:
+        # Fetch the employee's work schedule
+        work_schedule = EmployeeWorkSchedule.objects.filter(user=user).first()
+        work_schedule_data = {
+            'sunday': f"{work_schedule.sunday_start_time} - {work_schedule.sunday_end_time}" if work_schedule else None,
+            'monday': f"{work_schedule.monday_start_time} - {work_schedule.monday_end_time}" if work_schedule else None,
+            'tuesday': f"{work_schedule.tuesday_start_time} - {work_schedule.tuesday_end_time}" if work_schedule else None,
+            'wednesday': f"{work_schedule.wednesday_start_time} - {work_schedule.wednesday_end_time}" if work_schedule else None,
+            'thursday': f"{work_schedule.thursday_start_time} - {work_schedule.thursday_end_time}" if work_schedule else None,
+            'friday': f"{work_schedule.friday_start_time} - {work_schedule.friday_end_time}" if work_schedule else None,
+            'saturday': f"{work_schedule.saturday_start_time} - {work_schedule.saturday_end_time}" if work_schedule else None,
+        }
 
-            # Fetch the employee's wages
-            wages_list = []
-            employee_wages = EmployyeWages.objects.filter(user=user)
-            for wage in employee_wages:
-                wages_list.append({
-                    "id": wage.id,
-                    "subcategory": wage.subcategory.name if wage.subcategory else None,
-                    "wages": wage.wages
-                })
-
-            # Fetch reviews for the employee
-            reviews = Review.objects.filter(employee=user).order_by('-review_date')
-
-            # Calculate overall rating and rating distribution
-            rating_summary = {
-                'total_reviews': reviews.count(),
-                'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
-                'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
-                'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
-                'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
-                'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
-            }
-
-            # Construct user data including work schedule, wages, and review ratings
-            user_data.append({
-                'id': user.id,
-                'name': user.name,
-                'mobile_number': user.mobile_number,
-                'whatsapp_number': user.whatsapp_number,
-                'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
-                'about': user.about,
-                'work_schedule': work_schedule_data,  # Include the work schedule here
-                'wages': wages_list,  # Include the wages here
-                'ratings': rating_summary  # Include the review ratings here
+        # Fetch the employee's wages
+        wages_list = []
+        employee_wages = EmployyeWages.objects.filter(user=user)
+        for wage in employee_wages:
+            wages_list.append({
+                "id": wage.id,
+                "subcategory": wage.subcategory.name if wage.subcategory else None,
+                "wages": wage.wages
             })
 
-        # Response format includes the searched category and the list of users with work schedule and wages
-        return JsonResponse({
-            'searched_category': category.name,
-            'users': user_data
-        }, status=200)
+        # Fetch reviews for the employee
+        reviews = Review.objects.filter(employee=user).order_by('-review_date')
 
-    except Category.DoesNotExist:
-        return JsonResponse({'error': 'Category not found.'}, status=404)
+        # Calculate overall rating and rating distribution
+        rating_summary = {
+            'total_reviews': reviews.count(),
+            'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
+            'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
+            'price_avg': reviews.aggregate(price_avg=Avg('price'))['price_avg'],
+            'service_quality_avg': reviews.aggregate(service_quality_avg=Avg('service_quality'))['service_quality_avg'],
+            'behavior_avg': reviews.aggregate(behavior_avg=Avg('behavior'))['behavior_avg'],
+        }
+
+        # Construct user data including work schedule, wages, and review ratings
+        user_data.append({
+            'id': user.id,
+            'name': user.name,
+            'mobile_number': user.mobile_number,
+            'whatsapp_number': user.whatsapp_number,
+            'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+            'about': user.about,
+            'work_schedule': work_schedule_data,  # Include the work schedule here
+            'wages': wages_list,  # Include the wages here
+            'ratings': rating_summary  # Include the review ratings here
+        })
+
+    # Response format includes the searched category and the list of users with work schedule and wages
+    return JsonResponse({
+        'searched_category': category.name,
+        'users': user_data
+    }, status=200)
+
+    # except Category.DoesNotExist:
+    #     return JsonResponse({'error': 'Category not found.'}, status=404)
 
 
 @api_view(['GET', 'POST'])

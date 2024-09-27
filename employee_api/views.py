@@ -80,8 +80,12 @@ def create_time_slots(user, day, start_time, end_time):
         end_time = datetime.strptime(end_time, '%H:%M').time()
 
      # Delete existing slots for the user and day
-    EmployeeWorkTimeSlot.objects.filter(user=user, day=day).delete()
-    print(f"Deleted existing time slots for {day}")
+    # Check if existing slots exist for the user and day
+    existing_slots = EmployeeWorkTimeSlot.objects.filter(user=user, day=day)
+    
+    if existing_slots:
+        existing_slots.delete()
+        print(f"Deleted existing time slots for {day}")
     
     current_time = start_time
     print('Entered create_time_slots function')
