@@ -78,6 +78,10 @@ def create_time_slots(user, day, start_time, end_time):
         start_time = datetime.strptime(start_time, '%H:%M').time()
     if isinstance(end_time, str):
         end_time = datetime.strptime(end_time, '%H:%M').time()
+
+     # Delete existing slots for the user and day
+    EmployeeWorkTimeSlot.objects.filter(user=user, day=day).delete()
+    print(f"Deleted existing time slots for {day}")
     
     current_time = start_time
     print('Entered create_time_slots function')
@@ -611,6 +615,53 @@ def edit_employee_profile(request):
     # Save the updated EmployeeWorkSchedule model
     work_schedule.save()
 
+    sunday_start_time = request.data.get('sunday_start_time')
+    sunday_end_time = request.data.get('sunday_end_time')
+    monday_start_time = request.data.get('monday_start_time')
+    monday_end_time = request.data.get('monday_end_time')
+    tuesday_start_time = request.data.get('tuesday_start_time')
+    tuesday_end_time = request.data.get('tuesday_end_time')
+    wednesday_start_time = request.data.get('wednesday_start_time')
+    wednesday_end_time = request.data.get('wednesday_end_time')
+    thursday_start_time = request.data.get('thursday_start_time')
+    thursday_end_time = request.data.get('thursday_end_time')
+    friday_start_time = request.data.get('friday_start_time')
+    friday_end_time = request.data.get('friday_end_time')
+    saturday_start_time = request.data.get('saturday_start_time')
+    saturday_end_time = request.data.get('saturday_end_time')
+
+    # Convert empty strings to None for time fields
+    sunday_start_time = sunday_start_time if sunday_start_time else None
+    sunday_end_time = sunday_end_time if sunday_end_time else None
+    monday_start_time = monday_start_time if monday_start_time else None
+    monday_end_time = monday_end_time if monday_end_time else None
+    tuesday_start_time = tuesday_start_time if tuesday_start_time else None
+    tuesday_end_time = tuesday_end_time if tuesday_end_time else None
+    wednesday_start_time = wednesday_start_time if wednesday_start_time else None
+    wednesday_end_time = wednesday_end_time if wednesday_end_time else None
+    thursday_start_time = thursday_start_time if thursday_start_time else None
+    thursday_end_time = thursday_end_time if thursday_end_time else None
+    friday_start_time = friday_start_time if friday_start_time else None
+    friday_end_time = friday_end_time if friday_end_time else None
+    saturday_start_time = saturday_start_time if saturday_start_time else None
+    saturday_end_time = saturday_end_time if saturday_end_time else None
+
+ # Call the utility function to create time slots for each day
+    if sunday_start_time and sunday_end_time:
+        create_time_slots(user, "Sunday", sunday_start_time, sunday_end_time)
+    if monday_start_time and monday_end_time:
+        create_time_slots(user, "Monday", monday_start_time, monday_end_time)
+    if tuesday_start_time and tuesday_end_time:
+        create_time_slots(user, "Tuesday", tuesday_start_time, tuesday_end_time)
+    if wednesday_start_time and wednesday_end_time:
+        create_time_slots(user, "Wednesday", wednesday_start_time, wednesday_end_time)
+    if thursday_start_time and thursday_end_time:
+        create_time_slots(user, "Thursday", thursday_start_time, thursday_end_time)
+    if friday_start_time and friday_end_time:
+        create_time_slots(user, "Friday", friday_start_time, friday_end_time)
+    if saturday_start_time and saturday_end_time:
+        create_time_slots(user, "Saturday", saturday_start_time, saturday_end_time)
+
     category_ids = request.data.get("category", "")
     category_ids = [int(id.strip()) for id in category_ids.split(",") if id.strip().isdigit()]
     subcategory_ids = request.data.get("subcategory", "")
@@ -641,10 +692,6 @@ def edit_employee_profile(request):
             except District.DoesNotExist:
                 pass  # Handle if category doesn't exist
         user.district.set(district)  # Use set to replace existing categories with the provided ones
-
-
-
-
 
 
 
