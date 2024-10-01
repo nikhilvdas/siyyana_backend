@@ -362,8 +362,18 @@ def subcategories_by_category(request):
 
     # Fetch subcategories based on the provided category IDs
     subcategories = SubCategory.objects.filter(service__id__in=category_ids)
-    serializer = SubCategorySerializer(subcategories, many=True)
-    return Response(serializer.data)
+    sub_category_list = []
+    for i in subcategories:
+        sub_category_list.append({
+            "id": i.id,
+            "name": i.name,
+            "logo": request.build_absolute_uri(i.logo.url) if i.logo else None,
+            # "service": {
+            #     "id": i.service.id,
+            #     "name": i.service.name
+            # }
+        })
+    return Response(sub_category_list)
 
 
 
