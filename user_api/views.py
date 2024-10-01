@@ -432,7 +432,7 @@ def user_profile_api(request):
         'id': user.id,
         'name': user.name,
         'mobile_number': user.mobile_number,
-        'profile_picture':request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+        'profile_picture':None,
         'whatsapp_number': user.whatsapp_number,
         'email': user.email,
         'country': country,  # Serializing the country name
