@@ -429,10 +429,11 @@ def user_profile_api(request):
 
     # CustomUser data
     user_data = {
+
         'id': user.id,
         'name': user.name,
         'mobile_number': user.mobile_number,
-        'profile_picture':None,
+        'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
         'whatsapp_number': user.whatsapp_number,
         'email': user.email,
         'country': country,  # Serializing the country name
@@ -737,20 +738,14 @@ def edit_user_profile(request):
 
     if request.POST.get('name') != '':
         user.name = request.POST.get('name', user.name)
-
     if request.POST.get('email') != '':
         user.email = request.POST.get('email', user.email)
-
     if request.POST.get('whatsapp_number') != '':
         user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
-
     if request.POST.get('mobile_number') != '':
         user.mobile_number = request.POST.get('mobile_number', user.mobile_number)
-
     if request.POST.get('country_id') != '':
         user.country_id = request.POST.get('country_id', user.country_id)
-
-
     if 'profile_picture' in request.FILES:
         user.profile_picture = request.FILES['profile_picture']
 
