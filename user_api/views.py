@@ -219,11 +219,12 @@ def reset_password(request):
 
 
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def category_with_subcategory_and_employees(request):
     # Serialize all categories
+    district = request.POST.get('district',None)
     categories = Category.objects.all()
-    serializer = CategorySerializer(categories, many=True, context={'request': request})
+    serializer = CategorySerializer(categories, many=True, context={'request': request, 'district': district})
 
     # Fetch top categories with booking count annotation
     top_categories = Category.objects.annotate(

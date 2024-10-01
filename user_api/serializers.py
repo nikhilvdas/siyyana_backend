@@ -23,8 +23,20 @@ class SubCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'users']
 
     def get_users(self, obj):
-        users = CustomUser.objects.filter(subcategory=obj, user_type="Employee")
+        logged_in_user = self.context['request'].user
+        district = self.context.get('district')
+        if district:
+            district = District.objects.get(name=district)
+        else:
+            district = None
+        
+        if not district:
+            district = logged_in_user.district.all()
+            users = CustomUser.objects.filter(subcategory=obj, user_type="Employee",district__in=district).distinct()
+        else:
+            users = CustomUser.objects.filter(subcategory=obj, user_type="Employee",district=district).distinct()
         user_data = []
+        # Get the current logged-in user from the context
 
         for user in users:
             # Serialize the user data
@@ -35,6 +47,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
             # Calculate overall rating and rating distribution
             rating_summary = {
+
                 'total_reviews': reviews.count(),
                 'average_rating': reviews.aggregate(average_rating=Avg('average_rating'))['average_rating'],
                 'timing_avg': reviews.aggregate(timing_avg=Avg('timing'))['timing_avg'],
@@ -60,8 +73,10 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'logo', 'color', 'count', 'all_employees', 'subcategories']
 
     def get_subcategories(self, obj):
+        request = self.context.get('request')
+        district = self.context.get('district')
         subcategories = SubCategory.objects.filter(service=obj)
-        subcategory_data = SubCategorySerializer(subcategories, many=True).data
+        subcategory_data = SubCategorySerializer(subcategories, many=True, context={'request': request, 'district': district}).data
 
         # Create the "All employees" subcategory
         all_employees_data = self.get_all_employees(obj)
@@ -80,15 +95,31 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_all_employees(self, obj):
         request = self.context.get('request')
+        district = self.context.get('district')
+        if district:
+            district = District.objects.get(name=district)
+        else:
+            district = None
 
         # Get subcategories related to the current category
         subcategories = SubCategory.objects.filter(service=obj)
         employee_count = 0  # Initialize employee count
         all_employee_list = []
+        usr = None
+        if not district:
+            usr = request.user
+            usr = CustomUser.objects.get(id=usr.id)
+            district = usr.district.all()
+            print(district)
 
+        # Check if there are subcategories
         # If there are subcategories, fetch employees
         if subcategories.exists():
-            users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee").distinct()
+            if not usr:
+                users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee",district=district).distinct()
+
+            else:   
+                users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee",district__in=district).distinct()
 
             for user in users:
                 # Fetch reviews for the employee
