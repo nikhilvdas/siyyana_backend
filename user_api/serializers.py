@@ -116,10 +116,13 @@ class CategorySerializer(serializers.ModelSerializer):
         # If there are subcategories, fetch employees
         if subcategories.exists():
             if not usr:
-                users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee",district=district).distinct()
-
-            else:   
-                users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee",district__in=district).distinct()
+                users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee", district=district).annotate(
+                    average_rating=Avg('employee_reviews__average_rating')  # Corrected the relation to employee_reviews
+                ).order_by('-average_rating').distinct()
+            else:
+                users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee", district__in=district).annotate(
+                    average_rating=Avg('employee_reviews__average_rating')  # Corrected the relation to employee_reviews
+                ).order_by('-average_rating').distinct()
 
             for user in users:
                 # Fetch reviews for the employee

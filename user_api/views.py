@@ -250,7 +250,9 @@ def category_with_subcategory_and_employees(request):
 
     top_subcategory_data = []
     for subcategory in top_subcategories:
-        users = CustomUser.objects.filter(subcategory=subcategory)
+        users = CustomUser.objects.filter(subcategory=subcategory).annotate(
+                average_rating=Avg('employee_reviews__average_rating')  # Corrected the relation to employee_reviews
+            ).order_by('-average_rating')
 
         top_subcategory_data.append({
             'subcategory': {
