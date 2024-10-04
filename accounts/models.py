@@ -55,7 +55,7 @@ class CustomUser(AbstractUser):
     name = models.CharField(max_length=50, blank=True, null=True)
     mobile_number = models.CharField(max_length=15, blank=True, null=True)
     whatsapp_number = models.CharField(max_length=15, blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_picture_new/', blank=True, default='images/profile.png')
+    profile_picture = models.ImageField(upload_to='profile_picture_new/', blank=True,null=True)
     about = models.TextField(max_length=10000, blank=True, null=True)
     category = models.ManyToManyField('siyyana_app.Category',blank=True)
     subcategory = models.ManyToManyField('siyyana_app.SubCategory',blank=True,related_name='subcategory')
