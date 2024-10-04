@@ -74,30 +74,33 @@ from datetime import datetime, timedelta, date
 
 def create_time_slots(user, day, start_time, end_time):
     """Utility function to create 1-hour time slots."""
+    
+    # Convert string inputs into time objects if necessary
     if isinstance(start_time, str):
         start_time = datetime.strptime(start_time, '%H:%M').time()
     if isinstance(end_time, str):
         end_time = datetime.strptime(end_time, '%H:%M').time()
-
-     # Delete existing slots for the user and day
-    # Check if existing slots exist for the user and day
+    
+    # Delete existing slots for the user and day
     existing_slots = EmployeeWorkTimeSlot.objects.filter(user=user, day=day)
     
-    if existing_slots:
+    if existing_slots.exists():
         existing_slots.delete()
         print(f"Deleted existing time slots for {day}")
     
-    current_time = start_time
     print('Entered create_time_slots function')
+    
+    # Set the initial time to start_time
+    current_time = start_time
 
     while current_time < end_time:
+        # Calculate the next time slot by adding 1 hour
         next_time = (datetime.combine(date.today(), current_time) + timedelta(hours=1)).time()
-        print(f'Current time: {current_time}, Next time: {next_time}')
-        
-        # Ensure that the next time does not exceed the end time
+
+        # Ensure the next time does not exceed the end time
         if next_time > end_time:
             next_time = end_time
-        
+
         # Create the time slot for this interval
         EmployeeWorkTimeSlot.objects.create(
             user=user,
@@ -105,12 +108,18 @@ def create_time_slots(user, day, start_time, end_time):
             start_time=current_time,
             end_time=next_time
         )
+        print(f"Created time slot from {current_time} to {next_time}")
         
-        # Move to the next 1-hour slot
+        # Move to the next time slot
         current_time = next_time
-    
+        
+        # Break if the next time equals the end time
+        if current_time == end_time:
+            break
+
     print('Time slots created successfully')
-            
+
+
 class EmployeeRegistration(APIView):
     
     def post(self, request):

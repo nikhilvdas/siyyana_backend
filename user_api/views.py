@@ -459,6 +459,7 @@ def user_profile_api(request):
 @api_view(['POST'])
 def search_by_category(request):
     category_name = request.data.get('category', None)
+    
     if not category_name:
         return JsonResponse({'error': 'Category name is required.'}, status=400)
 
