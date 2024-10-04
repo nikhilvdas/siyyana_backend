@@ -32,9 +32,21 @@ class SubCategorySerializer(serializers.ModelSerializer):
         
         if not district:
             district = logged_in_user.district.all()
-            users = CustomUser.objects.filter(subcategory=obj, user_type="Employee",district__in=district).distinct()
+            users = CustomUser.objects.filter(subcategory=obj, user_type="Employee",district__in=district).annotate(
+            # Annotate the users with the average rating, replacing null with 0
+            average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())
+        ).order_by(
+            # Sort by average_rating, but put users with 0 rating at the bottom
+            '-average_rating', 'id'
+        ).distinct()
         else:
-            users = CustomUser.objects.filter(subcategory=obj, user_type="Employee",district=district).distinct()
+            users = CustomUser.objects.filter(subcategory=obj, user_type="Employee",district=district).annotate(
+            # Annotate the users with the average rating, replacing null with 0
+            average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())
+        ).order_by(
+            # Sort by average_rating, but put users with 0 rating at the bottom
+            '-average_rating', 'id'
+        ).distinct()
         user_data = []
         # Get the current logged-in user from the context
 
@@ -43,7 +55,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
             user_info = UserSerializer(user).data
 
             # Fetch reviews for the employee
-            reviews = Review.objects.filter(employee=user).order_by('-average_rating')
+            reviews = Review.objects.filter(employee=user)
 
             # Calculate overall rating and rating distribution
             rating_summary = {
