@@ -459,20 +459,32 @@ def user_profile_api(request):
 @api_view(['POST'])
 def search_by_category(request):
     category_name = request.data.get('category', None)
+    district = request.data.get('district', None)
+    if district:
+            district = District.objects.get(name=district)
+    else:
+        district = None
+
+    usr = None
+    if not district:
+        usr = request.user
+        usr = CustomUser.objects.get(id=usr.id)
+        district = usr.district.all()
     
+
     if not category_name:
         return JsonResponse({'error': 'Category name is required.'}, status=400)
 
     # try:
         # Get the category that matches the search term
     category = Category.objects.get(name__icontains=category_name)
-    subcategory = SubCategory.objects.filter(name__icontains=category_name).first()
     
     # Fetch users associated with the category
     if category:
-        users = CustomUser.objects.filter(category=category).distinct()
-    if subcategory:
-        users = CustomUser.objects.filter(subcategory=subcategory).distinct()
+        if not usr:
+            users = CustomUser.objects.filter(category=category,district = district).distinct()
+        else:
+            users = CustomUser.objects.filter(category=category,district__in = district).distinct()
 
     user_data = []
     for user in users:
