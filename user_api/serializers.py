@@ -168,8 +168,8 @@ class CategorySerializer(serializers.ModelSerializer):
                     'id': user.id,
                     'name': user.name,
                     'profile_picture': user.profile_picture.url,
-                    'phone' : user.mobile_number,
-                    'whatsapp': user.whatsapp_number,
+                    'mobile_number' : user.mobile_number,
+                    'whatsapp_number': user.whatsapp_number,
                     'ratings': rating_summary,
                     'employee_wages': wages_data  # Include wages data here
                 }
