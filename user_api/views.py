@@ -217,6 +217,7 @@ def reset_password(request):
 
 
 
+from django.db.models.functions import Coalesce
 
 
 @api_view(['GET','POST'])
@@ -251,8 +252,8 @@ def category_with_subcategory_and_employees(request):
     top_subcategory_data = []
     for subcategory in top_subcategories:
         users = CustomUser.objects.filter(subcategory=subcategory).annotate(
-                average_rating=Avg('employee_reviews__average_rating')  # Corrected the relation to employee_reviews
-            ).order_by('-average_rating')
+            average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Explicitly set output_field to FloatField
+        ).order_by('-average_rating')
 
         top_subcategory_data.append({
             'subcategory': {

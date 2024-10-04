@@ -63,6 +63,11 @@ class SubCategorySerializer(serializers.ModelSerializer):
             user_data.append(user_info)
 
         return user_data
+    
+from django.db.models.functions import Coalesce
+from django.db.models import Avg, FloatField
+
+
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
@@ -117,16 +122,16 @@ class CategorySerializer(serializers.ModelSerializer):
         if subcategories.exists():
             if not usr:
                 users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee", district=district).annotate(
-                    average_rating=Avg('employee_reviews__average_rating')  # Corrected the relation to employee_reviews
+                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
                 ).order_by('-average_rating').distinct()
             else:
                 users = CustomUser.objects.filter(subcategory__in=subcategories, user_type="Employee", district__in=district).annotate(
-                    average_rating=Avg('employee_reviews__average_rating')  # Corrected the relation to employee_reviews
+                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
                 ).order_by('-average_rating').distinct()
 
             for user in users:
                 # Fetch reviews for the employee
-                reviews = Review.objects.filter(employee=user).order_by('-average_rating')
+                reviews = Review.objects.filter(employee=user)
 
                 # Calculate overall rating and rating distribution
                 rating_summary = {
