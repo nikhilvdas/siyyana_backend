@@ -408,6 +408,7 @@ def all_categories(request):
             'logo': request.build_absolute_uri(category.logo.url) if category.logo else None,
             'subcategory_count': subcategory_count,
             'customuser_count': employee_count,
+            'color': category.color,
             'subcategories': [{
                 'id': sub.id,
                 'name': sub.name,
