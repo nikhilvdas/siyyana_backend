@@ -291,6 +291,8 @@ def category_with_subcategory_and_employees(request):
         'top_subcategories': top_subcategory_data  # Now includes top subcategories based on booking count
     }, status=status.HTTP_200_OK)
 
+
+
 @api_view(['POST'])
 def booking_api(request):
     if request.method == 'POST':
