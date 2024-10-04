@@ -421,14 +421,10 @@ def employee_home(request):
         active_work_orders = Booking.objects.filter(employee=user, status='Pending')
         active_work_orders_serializer = BookingSerializer(active_work_orders, many=True,context={'request':request})
         return Response({'employee_dashboard':
-                         
                          {'total_booking': total_booking,
                          'completed_booking': completed_booking,
                          },
-
                          'active_work_orders': active_work_orders_serializer.data,
-                          
-                          
                         })
 
 

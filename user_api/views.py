@@ -525,12 +525,14 @@ def search_by_category(request):
 
         # Construct user data including work schedule, wages, and review ratings
         user_data.append({
+            
             'id': user.id,
             'name': user.name,
             'mobile_number': user.mobile_number,
             'whatsapp_number': user.whatsapp_number,
             'profile_picture': request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
             'about': user.about,
+            'charge': user.charge,
             'work_schedule': work_schedule_data,  # Include the work schedule here
             'wages': wages_list,  # Include the wages here
             'ratings': rating_summary  # Include the review ratings here
@@ -596,6 +598,7 @@ def save_employee(request):
                 "employee_name": saved.employee.name,
                 "employee_mobile": saved.employee.mobile_number,
                 "employee_whatsapp": saved.employee.whatsapp_number,
+                'charge': saved.employee.charge,
                 "employee_profile_picture": request.build_absolute_uri(saved.employee.profile_picture.url) if saved.employee.profile_picture else None,
                 "employee_about": saved.employee.about,
                 "work_schedule": work_schedule_data,  # Include work schedule in the response
