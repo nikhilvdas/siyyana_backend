@@ -123,7 +123,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
             for user in users:
                 # Fetch reviews for the employee
-                reviews = Review.objects.filter(employee=user).order_by('-review_date')
+                reviews = Review.objects.filter(employee=user).order_by('-average_rating')
 
                 # Calculate overall rating and rating distribution
                 rating_summary = {
