@@ -150,7 +150,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return None
 
     def get_total_orders(self, obj):
-        return Booking.objects.filter(employee=obj).count()
+        return Booking.objects.filter(employee=obj,status='Completed').count()
 
     def get_reviews(self, obj):
         reviews = Review.objects.filter(employee=obj)
