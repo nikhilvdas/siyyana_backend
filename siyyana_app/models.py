@@ -97,6 +97,7 @@ STATUS_CHOICES = (
     ('Pending', 'Pending'),
     ('Reject', 'Reject'),
     ('Completed', 'Completed'),
+    ('Cancelled', 'Cancelled'),
 
 )
 
@@ -173,7 +174,6 @@ class Onbaording(models.Model):
 
 
 class Notification(models.Model):
-
     class Meta:
         verbose_name_plural = "NOTIFICATION HISTORY"
     USER_TYPE_CHOICES = [
@@ -198,10 +198,8 @@ class Notification(models.Model):
 
 
 class Currency_Type(models.Model):
-
     class Meta:
         verbose_name_plural = "CURRENCY TYPE"
-
     def __str__(self):
         return self.name
     
