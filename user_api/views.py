@@ -466,6 +466,7 @@ def search_by_category(request):
         district = None
 
     usr = None
+
     if not district:
         usr = request.user
         usr = CustomUser.objects.get(id=usr.id)
@@ -477,14 +478,22 @@ def search_by_category(request):
 
     # try:
         # Get the category that matches the search term
-    category = Category.objects.get(name__icontains=category_name)
-    
-    # Fetch users associated with the category
-    if category:
+    category = None
+    try:
+        category = Category.objects.get(name__icontains=category_name)
         if not usr:
             users = CustomUser.objects.filter(category=category,district = district).distinct()
         else:
-            users = CustomUser.objects.filter(category=category,district__in = district).distinct()
+            users = CustomUser.objects.filter(category=category ,district__in = district).distinct()
+    except Category.DoesNotExist:
+        if not usr:
+            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district = district).distinct()
+        else:
+            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district__in = district).distinct()
+
+
+    
+        
 
     user_data = []
     for user in users:
@@ -525,7 +534,7 @@ def search_by_category(request):
 
         # Construct user data including work schedule, wages, and review ratings
         user_data.append({
-            
+
             'id': user.id,
             'name': user.name,
             'mobile_number': user.mobile_number,
@@ -540,7 +549,7 @@ def search_by_category(request):
 
     # Response format includes the searched category and the list of users with work schedule and wages
     return JsonResponse({
-        'searched_category': category.name,
+        'searched_category': category.name if category else category_name,
         'users': user_data
     }, status=200)
 
