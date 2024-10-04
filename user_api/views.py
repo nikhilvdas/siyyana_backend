@@ -665,7 +665,7 @@ def my_orders_user_api(request):
     query = Q(user=request.user)
     
     if date_range:
-        query &= Q(date__range=date_range)
+        query &= Q(created_date__range=date_range)
 
     # Fetch and filter bookings based on each status for the logged-in user
     pending_bookings = Booking.objects.filter(query & Q(status='Pending')).order_by('-id')

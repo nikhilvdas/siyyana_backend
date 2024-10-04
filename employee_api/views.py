@@ -797,7 +797,7 @@ def my_orders(request):
     # Apply the date filter if provided
     query = Q(employee=request.user)
     if date_range:
-        query &= Q(date__range=date_range)
+        query &= Q(created_date__range=date_range)
 
     # Fetch bookings based on each status and apply the date filter
     pending_bookings = Booking.objects.filter(query & Q(status='Pending')).order_by('-id')

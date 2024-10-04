@@ -109,6 +109,7 @@ class Booking(models.Model):
     start_time = models.TimeField(blank=True,null=True)
     end_time = models.TimeField(blank=True,null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Pending')
+    created_date = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "BOOKING"
