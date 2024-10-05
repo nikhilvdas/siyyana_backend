@@ -524,7 +524,7 @@ def employee_profile_api(request):
 @permission_classes([IsAuthenticated])
 def edit_employee_profile(request):
     user = request.user
-    
+    email = request.POST.get('email', '').strip()
     # Update CustomUser fields
     if request.POST.get('name') != '':
         user.name = request.POST.get('name', user.name)
@@ -542,8 +542,10 @@ def edit_employee_profile(request):
     if request.POST.get('whatsapp_number') != '':
         user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
         
-    if request.POST.get('email') != '':
-        user.email = request.POST.get('email', user.email)
+    # Check if the new email is already taken by another user
+    if email and email != user.email:
+        if CustomUser.objects.filter(email=email).exists():
+            return Response({"error": "Email already exists."},status=status.HTTP_400_BAD_REQUEST)
         
     if request.POST.get('about') != '':
         user.about = request.POST.get('about', user.about)
