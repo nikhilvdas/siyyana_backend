@@ -25,6 +25,9 @@ urlpatterns = [
     path('post-review', post_review, name='post-review'),
     path('popular-categories', popular_categories, name='popular_categories'),
 
+    path('category-subcategory-list', category_subcategory_list, name='category_subcategory_list'),
+
+
 
 
 

@@ -863,3 +863,28 @@ def popular_categories(request):
         })
 
     return JsonResponse(result, safe=False)
+
+
+
+
+
+
+def category_subcategory_list(request):
+    # Fetch all categories
+    categories = Category.objects.all()
+    subcategory = SubCategory.objects.all()
+
+    # Prepare a list to store the final result
+    result = []
+
+    for i in categories:
+        result.append({
+            'name': i.name
+        })
+        
+    for i in subcategory:
+        result.append({
+            'name': i.name
+        })
+
+    return JsonResponse({'categories_and_subcategories': result}, safe=False)
