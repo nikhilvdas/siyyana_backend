@@ -481,6 +481,9 @@ def search_by_category(request):
     category = None
     try:
         category = Category.objects.get(name__icontains=category_name)
+        # Check if the category has associated subcategories
+        if not SubCategory.objects.filter(service=category).exists():
+            return JsonResponse({'error': 'No result found.'}, status=400)
         if not usr:
             users = CustomUser.objects.filter(category=category,district = district,user_type="Employee").annotate(
                     average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
