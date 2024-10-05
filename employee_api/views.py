@@ -432,6 +432,12 @@ def employee_home(request):
         booking_id = request.data.get('booking_id')
         status = request.data.get('status')
         booking = get_object_or_404(Booking, id=booking_id)
+        if booking.status == 'Accept' and status == 'Cancelled':
+            return Response({'message': 'Employee has accepted the booking. cancellation not applicable'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if booking.status == 'Cancelled' and status == 'Accept':
+            return Response({'message': 'Booking has been cancelled. cannot accept'}, status=status.HTTP_400_BAD_REQUEST)
+
         booking.status = status
         booking.save()
         return Response({'message': 'Booking status updated successfully'})
