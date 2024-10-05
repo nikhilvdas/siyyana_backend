@@ -482,14 +482,22 @@ def search_by_category(request):
     try:
         category = Category.objects.get(name__icontains=category_name)
         if not usr:
-            users = CustomUser.objects.filter(category=category,district = district).distinct()
+            users = CustomUser.objects.filter(category=category,district = district,user_type="Employee").annotate(
+                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
+                ).order_by('-average_rating').distinct()
         else:
-            users = CustomUser.objects.filter(category=category ,district__in = district).distinct()
+            users = CustomUser.objects.filter(category=category ,district__in = district,user_type="Employee").annotate(
+                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
+                ).order_by('-average_rating').distinct()
     except Category.DoesNotExist:
         if not usr:
-            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district = district).distinct()
+            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district = district).annotate(
+                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
+                ).order_by('-average_rating').distinct()
         else:
-            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district__in = district).distinct()
+            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district__in = district).annotate(
+                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
+                ).order_by('-average_rating').distinct()
 
 
     
