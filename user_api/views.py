@@ -461,7 +461,7 @@ def search_by_category(request):
     category_name = request.data.get('category', None)
     district = request.data.get('district', None)
     if district:
-            district = District.objects.get(name=district)
+        district = District.objects.get(name=district)
     else:
         district = None
 
@@ -471,40 +471,54 @@ def search_by_category(request):
         usr = request.user
         usr = CustomUser.objects.get(id=usr.id)
         district = usr.district.all()
-    
 
     if not category_name:
         return JsonResponse({'error': 'Category name is required.'}, status=400)
 
-    # try:
-        # Get the category that matches the search term
     category = None
     try:
+        # Get the category that matches the search term
         category = Category.objects.get(name__icontains=category_name)
-        # Check if the category has associated subcategories
-        if not CustomUser.objects.filter(subcategory__service=category).exists():
-            return JsonResponse({'error': 'No result found.'}, status=400)
+
+        # Check if the category has associated subcategories and filter employees accordingly
+        # If the employee hasn't selected a subcategory, exclude them from the result
         if not usr:
-            users = CustomUser.objects.filter(category=category,district = district,user_type="Employee").annotate(
-                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
-                ).order_by('-average_rating').distinct()
+            users = CustomUser.objects.filter(
+                category=category,
+                subcategory__service=category,  # Ensure employees have selected a subcategory
+                district=district,
+                user_type="Employee"
+            ).annotate(
+                average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())
+            ).order_by('-average_rating').distinct()
         else:
-            users = CustomUser.objects.filter(category=category ,district__in = district,user_type="Employee").annotate(
-                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
-                ).order_by('-average_rating').distinct()
+            users = CustomUser.objects.filter(
+                category=category,
+                subcategory__service=category,  # Ensure employees have selected a subcategory
+                district__in=district,
+                user_type="Employee"
+            ).annotate(
+                average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())
+            ).order_by('-average_rating').distinct()
+
     except Category.DoesNotExist:
+        # If the category doesn't exist, search in subcategories by name
         if not usr:
-            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district = district).annotate(
-                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
-                ).order_by('-average_rating').distinct()
+            users = CustomUser.objects.filter(
+                subcategory__name__icontains=category_name,
+                user_type="Employee",
+                district=district
+            ).annotate(
+                average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())
+            ).order_by('-average_rating').distinct()
         else:
-            users = CustomUser.objects.filter(subcategory__name__icontains=category_name, user_type="Employee",district__in = district).annotate(
-                    average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())  # Set output_field to FloatField
-                ).order_by('-average_rating').distinct()
-
-
-    
-        
+            users = CustomUser.objects.filter(
+                subcategory__name__icontains=category_name,
+                user_type="Employee",
+                district__in=district
+            ).annotate(
+                average_rating=Coalesce(Avg('employee_reviews__average_rating'), 0, output_field=FloatField())
+            ).order_by('-average_rating').distinct()
 
     user_data = []
     for user in users:
@@ -545,7 +559,6 @@ def search_by_category(request):
 
         # Construct user data including work schedule, wages, and review ratings
         user_data.append({
-
             'id': user.id,
             'name': user.name,
             'mobile_number': user.mobile_number,
@@ -563,7 +576,6 @@ def search_by_category(request):
         'searched_category': category.name if category else category_name,
         'users': user_data
     }, status=200)
-
     # except Category.DoesNotExist:
     #     return JsonResponse({'error': 'Category not found.'}, status=404)
 
