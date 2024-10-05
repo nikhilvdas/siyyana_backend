@@ -430,15 +430,16 @@ def employee_home(request):
 
     if request.method == 'POST':
         booking_id = request.data.get('booking_id')
-        status = request.data.get('status')
+        status_value = request.data.get('status')  # Renamed to avoid confusion with imported status
         booking = get_object_or_404(Booking, id=booking_id)
-        if booking.status == 'Accept' and status == 'Cancelled':
-            return Response({'message': 'Employee has accepted the booking. cancellation not applicable'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if booking.status == 'Cancelled' and status == 'Accept':
-            return Response({'message': 'Booking has been cancelled. cannot accept'}, status=status.HTTP_400_BAD_REQUEST)
 
-        booking.status = status
+        if booking.status == 'Accept' and status_value == 'Cancelled':
+            return Response({'message': 'Employee has accepted the booking. Cancellation not applicable'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if booking.status == 'Cancelled' and status_value == 'Accept':
+            return Response({'message': 'Booking has been cancelled. Cannot accept'}, status=status.HTTP_400_BAD_REQUEST)
+
+        booking.status = status_value
         booking.save()
         return Response({'message': 'Booking status updated successfully'})
     
