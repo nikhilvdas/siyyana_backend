@@ -793,10 +793,12 @@ def edit_user_profile(request):
 
     if request.POST.get('name') != '':
         user.name = request.POST.get('name', user.name)
-    # Check if the new email is already taken by another user
+   # Check if the new email is already taken by another user
     if email and email != user.email:
         if CustomUser.objects.filter(email=email).exists():
-            return Response({"error": "Email already exists."},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user.email = email  # Update email after validation
     if request.POST.get('whatsapp_number') != '':
         user.whatsapp_number = request.POST.get('whatsapp_number', user.whatsapp_number)
     if request.POST.get('mobile_number') != '':

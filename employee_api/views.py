@@ -545,7 +545,9 @@ def edit_employee_profile(request):
     # Check if the new email is already taken by another user
     if email and email != user.email:
         if CustomUser.objects.filter(email=email).exists():
-            return Response({"error": "Email already exists."},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user.email = email  # Update email after validation
         
     if request.POST.get('about') != '':
         user.about = request.POST.get('about', user.about)
