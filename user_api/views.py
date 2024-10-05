@@ -482,7 +482,7 @@ def search_by_category(request):
     try:
         category = Category.objects.get(name__icontains=category_name)
         # Check if the category has associated subcategories
-        if not SubCategory.objects.filter(service=category).exists():
+        if not CustomUser.objects.filter(subcategory__service=category).exists():
             return JsonResponse({'error': 'No result found.'}, status=400)
         if not usr:
             users = CustomUser.objects.filter(category=category,district = district,user_type="Employee").annotate(
